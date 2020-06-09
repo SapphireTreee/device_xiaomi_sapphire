@@ -138,9 +138,7 @@ BOARD_BOOTCONFIG := \
     androidboot.memcg=1 \
     androidboot.usbcontroller=4e00000.dwc3
 
-BOARD_KERNEL_CMDLINE := \
-    video=vfb:640x400,bpp=32,memsize=3072000
-
+# Kernel prebuilt
 TARGET_KERNEL_ARCH := arm64
 INLINE_KERNEL_BUILDING := true
 TARGET_KERNEL_HEADER_ARCH := arm64
