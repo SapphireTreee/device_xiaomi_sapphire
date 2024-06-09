@@ -189,6 +189,18 @@ class XiaomiSm6225UdfpsHandler : public UdfpsHandler {
         setFingerDown(false);
     }
 
+    void preEnroll() {
+        LOG(DEBUG) << __func__;
+    }
+
+    void enroll() {
+        LOG(DEBUG) << __func__;
+    }
+
+    void postEnroll() {
+        LOG(DEBUG) << __func__;
+    }
+
   private:
     fingerprint_device_t* mDevice;
     android::base::unique_fd touch_fd_;
