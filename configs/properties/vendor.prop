@@ -158,12 +158,10 @@ persist.vendor.quick.charge=1
 # Codec C2
 debug.c2.use_dmabufheaps=1
 debug.stagefright.c2inputsurface=-1
-debug.stagefright.ccodec=4
 persist.media.codec2.enabled=1
 persist.media.codec2.hw=1
 media.hardware.video.decoding=1
 vendor.qc2audio.offload.enabled=true
-debug.stagefright.omx_default_rank=0
 vendor.qc2audio.per_frame.flac.dec.enabled=true
 vendor.qc2audio.suspend.enabled=true
 
