@@ -78,7 +78,8 @@ PRODUCT_PACKAGES += \
     libqcomvisualizer \
     libqcomvoiceprocessing \
     libtinycompress \
-    libvolumelistener
+    libvolumelistener \
+    libbatterylistener
 
 AUDIO_HAL_DIR := hardware/qcom-caf/sm6225/audio/primary-hal
 
