@@ -35,6 +35,10 @@ blob_fixups: blob_fixups_user_type = {
         .replace_needed('libstagefright_foundation.so', 'libstagefright_foundation-v33.so'),
     'libcodec2_hidl@1.0.so': blob_fixup()
         .add_needed('libshim.so'),
+    'vendor/etc/qcril_database/upgrade/config/6.0_config.sql': blob_fixup()
+        .binary_regex_replace(rb'persist\.vendor\.radio\.poweron_opt', rb'persist.vendor.radio.poweron_ign'),
+    ('vendor/lib64/libqcrilNr.so', 'vendor/lib64/libril-db.so'): blob_fixup()
+        .binary_regex_replace(rb'persist\.vendor\.radio\.poweron_opt', rb'persist.vendor.radio.poweron_ign'),
     'vendor/lib64/vendor.libdpmframework.so': blob_fixup()
         .add_needed('libhidlbase_shim.so'),
     'vendor/etc/seccomp_policy/c2audio.vendor.ext-arm64.policy': blob_fixup()
