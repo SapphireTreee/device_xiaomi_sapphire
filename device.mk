@@ -274,10 +274,8 @@ PRODUCT_COPY_FILES += \
     $(call find-copy-subdir-files,*,$(LOCAL_PATH)/configs/keylayout/,$(TARGET_COPY_OUT_VENDOR)/usr/keylayout)
 
 # IFAA
-ifeq ($(TARGET_HAS_UDFPS),true)
 PRODUCT_PACKAGES += \
     IFAAService
-endif
 
 # IPACM
 PRODUCT_PACKAGES += \
