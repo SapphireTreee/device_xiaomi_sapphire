@@ -419,6 +419,7 @@ PRODUCT_PACKAGES += \
 PRODUCT_ENFORCE_RRO_TARGETS := *
 
 PRODUCT_PACKAGES += \
+    ApertureResSapphire \
     CarrierConfigResCommon \
     FrameworksResCommon \
     FrameworksResTarget \
