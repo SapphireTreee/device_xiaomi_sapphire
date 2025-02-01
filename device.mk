@@ -435,10 +435,6 @@ PRODUCT_PACKAGES += \
 DEVICE_PACKAGE_OVERLAYS += \
     $(LOCAL_PATH)/overlay-lineage
 
-# Packages
-PRODUCT_PACKAGES += \
-    GoogleCameraGo
-
 # Partitions
 PRODUCT_USE_DYNAMIC_PARTITIONS := true
 
