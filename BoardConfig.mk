@@ -87,6 +87,9 @@ BOARD_KERNEL_SEPARATED_DTBO := true
 # Filesystem
 TARGET_FS_CONFIG_GEN := $(DEVICE_PATH)/configs/config.fs
 
+# HWUI
+USE_OPENGL_RENDERER := true
+
 # Init
 TARGET_INIT_VENDOR_LIB := //$(DEVICE_PATH):init_sapphire
 TARGET_RECOVERY_DEVICE_MODULES := init_sapphire
