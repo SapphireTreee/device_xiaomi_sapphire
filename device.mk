@@ -422,7 +422,6 @@ PRODUCT_ENFORCE_RRO_TARGETS := *
 PRODUCT_PACKAGES += \
     ApertureResSapphire \
     CarrierConfigResCommon \
-    DeviceAsWebcamOverlay \
     FrameworksResCommon \
     FrameworksResTarget \
     SystemUIResCommon \
