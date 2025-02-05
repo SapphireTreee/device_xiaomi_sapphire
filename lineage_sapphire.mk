@@ -24,6 +24,12 @@ include vendor/gapps/arm64/arm64-vendor.mk
 TARGET_BOOT_ANIMATION_RES = 1080
 TARGET_HAS_UDFPS := true
 
+# Extra Stuffs
+TARGET_SUPPORTS_QUICK_TAP := true
+TARGET_USES_FULL_GAPPS := true
+TARGET_ENABLE_BLUR := true
+EVO_BUILD_TYPE := Unofficial
+
 PRODUCT_NAME := lineage_sapphire
 PRODUCT_DEVICE := sapphire
 PRODUCT_MANUFACTURER := Xiaomi
