@@ -1,7 +1,5 @@
 # Dalvik
 dalvik.vm.dex2oat64.enabled=true
-dalvik.vm.systemuicompilerfilter=speed 
-dalvik.vm.systemservercompilerfilter=speed
 ro.dalvik.vm.enable_uffd_gc=true
 
 # DPM
