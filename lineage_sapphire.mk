@@ -20,8 +20,10 @@ TARGET_HAS_UDFPS := true
 
 # Extra Stuffs
 TARGET_SUPPORTS_QUICK_TAP := true
-TARGET_USES_FULL_GAPPS := true
+WITH_GMS := true
 TARGET_ENABLE_BLUR := true
+BUILD_BCR := false
+TARGET_INCLUDE_ACCORD := false
 EVO_BUILD_TYPE := Unofficial
 
 PRODUCT_NAME := lineage_sapphire
