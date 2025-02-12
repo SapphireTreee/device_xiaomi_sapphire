@@ -11,9 +11,11 @@
 
 #include <poll.h>
 #include <sys/ioctl.h>
+#include <unistd.h>
 #include <fstream>
 #include <thread>
 #include <mutex>
+#include <chrono>
 
 #include "mi_disp.h"
 #include "UdfpsHandler.h"
@@ -126,6 +128,9 @@ class XiaomiSm6225UdfpsHandler : public UdfpsHandler {
                 bool pressed = readBool(fd.get());
                 mDevice->extCmd(mDevice, COMMAND_FOD_PRESS_STATUS,
                                 pressed ? PARAM_FOD_PRESSED : PARAM_FOD_RELEASED);
+
+                // Reduce polling frequency
+                std::this_thread::sleep_for(std::chrono::milliseconds(50));
             }
         }).detach();
 
@@ -174,6 +179,9 @@ class XiaomiSm6225UdfpsHandler : public UdfpsHandler {
 
                 mDevice->extCmd(mDevice, COMMAND_NIT,
                                 localHbmUiReady ? PARAM_NIT_FOD : PARAM_NIT_NONE);
+
+                // Reduce polling frequency
+                std::this_thread::sleep_for(std::chrono::milliseconds(50));
             }
         }).detach();
     }
