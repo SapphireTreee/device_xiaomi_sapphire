@@ -130,7 +130,7 @@ class XiaomiSm6225UdfpsHandler : public UdfpsHandler {
                                 pressed ? PARAM_FOD_PRESSED : PARAM_FOD_RELEASED);
 
                 // Reduce polling frequency
-                std::this_thread::sleep_for(std::chrono::milliseconds(50));
+                std::this_thread::sleep_for(std::chrono::milliseconds(25));
             }
         }).detach();
 
@@ -181,7 +181,7 @@ class XiaomiSm6225UdfpsHandler : public UdfpsHandler {
                                 localHbmUiReady ? PARAM_NIT_FOD : PARAM_NIT_NONE);
 
                 // Reduce polling frequency
-                std::this_thread::sleep_for(std::chrono::milliseconds(50));
+                std::this_thread::sleep_for(std::chrono::milliseconds(25));
             }
         }).detach();
     }
