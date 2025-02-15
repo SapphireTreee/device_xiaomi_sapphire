@@ -2,7 +2,7 @@
 # Copyright (C) 2024 The LineageOS Project
 #
 # SPDX-License-Identifier: Apache-2.0
-
+#
 
 # Inherit from the proprietary version
 include vendor/xiaomi/sapphire/BoardConfigVendor.mk
@@ -156,9 +156,6 @@ TARGET_HEALTH_CHARGING_CONTROL_CHARGING_PATH := /sys/class/qcom-battery/input_su
 TARGET_HEALTH_CHARGING_CONTROL_CHARGING_ENABLED := 0
 TARGET_HEALTH_CHARGING_CONTROL_CHARGING_DISABLED := 1
 TARGET_HEALTH_CHARGING_CONTROL_SUPPORTS_BYPASS := false
-
-# Media
-TARGET_USES_ION := true
 
 # Metadata
 BOARD_USES_METADATA_PARTITION := true
