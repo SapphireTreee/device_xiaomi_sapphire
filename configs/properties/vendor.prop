@@ -268,10 +268,6 @@ ro.incremental.enable=true
 # FM
 vendor.hw.fm.init=0
 
-# Fingerprint
-persist.vendor.fingerprint.type=udfps_optical
-persist.vendor.fingerprint.sensor_location=540|2109|105
-
 # FRP
 ro.frp.pst=/dev/block/bootdevice/by-name/frp
 
