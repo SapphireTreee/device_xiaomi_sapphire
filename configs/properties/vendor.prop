@@ -372,18 +372,18 @@ persist.sys.scrollingcache=3
 windowsmgr.max_event_per_sec=200
 
 # Touch Hax 
-touch.size.scale=1
+touch.size.scale=1.5
 touch.size.bias=0
 touch.size.isSummed=0
-touch.pressure.scale=0.001
+touch.pressure.scale=0.01
 touch.distance.calibration=none
 touch.distance.scale=0
 touch.coverage.calibration=box
 touch.gestureMode=spots
 MovementSpeedRatio=0.8
-MultitouchSettleInterval=0.1ms
+MultitouchSettleInterval=0.05ms
 MultitouchMinDistance=1px
-QuietInterval=0.1ms
+QuietInterval=0.05ms
 SurfaceOrientation=auto
 TapDragInterval=0.1ms
 TapInterval=0.1ms
@@ -397,11 +397,11 @@ persist.sys.usap_pool_enabled=true
 persist.device_config.runtime_native.usap_pool_enabled=true
 
 # Fling
-ro.min.fling_velocity=160
+ro.min.fling_velocity=120
 ro.max.fling_velocity=20000
 ro.vendor.qti.cgroup_follow.enable=true
 persist.vendor.qti.inputopts.enable=true
-persist.vendor.qti.inputopts.movetouchslop=0.6
+persist.vendor.qti.inputopts.movetouchslop=0.4
 ro.qcom.adreno.qgl.ShaderStorageImageExtendedFormats=0
 
 
