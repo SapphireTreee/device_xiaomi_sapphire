@@ -290,7 +290,7 @@ ro.control_privapp_permissions=enforce
 
 # Media
 media.stagefright.thumbnail.prefer_hw_codecs=true
-vendor.mm.enable.qcom_parser=16711663
+vendor.mm.enable.qcom_parser=16777215
 persist.mm.enable.prefetch=true
 
 # Netflix
