@@ -8,7 +8,6 @@ ro.af.client_heap_size_kbyte=7168
 
 # Battery Saving
 persist.radio.add_power_save=1
-pm.sleep_mode=1
 ro.ril.disable.power.collapse=0
 ro.mot.eri.losalert.delay=100
 ro.vold.umsdirtyratio=20
