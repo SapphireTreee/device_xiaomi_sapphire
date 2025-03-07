@@ -17,5 +17,5 @@
 -->
 <resources>
     <!-- Pixel pitch of the device. um/px -->
-    <item name="pixel_pitch" format="float" type="dimen">56.96</item>
+    <item name="pixel_pitch" format="float" type="dimen">64.41</item>
 </resources>
