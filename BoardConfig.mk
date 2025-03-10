@@ -84,7 +84,6 @@ TARGET_FS_CONFIG_GEN := $(DEVICE_PATH)/configs/config.fs
 
 # Init
 $(call soong_config_set,libinit,vendor_init_lib,//$(DEVICE_PATH):init_sapphire)
-TARGET_RECOVERY_DEVICE_MODULES := init_sapphire
 
 # Kernel prebuilt
 BOARD_USES_DT := true
