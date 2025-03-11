@@ -21,7 +21,7 @@ TARGET_HAS_UDFPS := true
 # Extra Stuffs
 TARGET_SUPPORTS_QUICK_TAP := true
 WITH_GMS := true
-TARGET_ENABLE_BLUR := true
+TARGET_ENABLE_BLUR := false
 BUILD_BCR := false
 TARGET_INCLUDE_ACCORD := false
 EVO_BUILD_TYPE := Unofficial
