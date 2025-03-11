@@ -42,10 +42,6 @@ std::vector<std::string> ro_props_default_source_order = {
     "vendor_dlkm.",
 };
 
-bool IsRecoveryMode() {
-    return access("/system/bin/recovery", F_OK) == 0;
-}
-
 void property_override(string prop, string value)
 {
     auto pi = (prop_info*) __system_property_find(prop.c_str());
@@ -88,11 +84,6 @@ void vendor_load_properties() {
     } else if (hwname == "sapphiren") {
         load_redmi_sapphiren();
        }
-    }
-
-    // Override first api level for safetynet
-    if (!IsRecoveryMode()) {
-        property_override("ro.product.first_api_level", "32");
     }
 
     // Set hardware revision
