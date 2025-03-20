@@ -402,6 +402,3 @@ ro.qcom.adreno.qgl.ShaderStorageImageExtendedFormats=0
 
 # Sensors
 ro.vendor.sensors.xiaomi.udfps=true
-
-# Doze
-ro.vendor.batt.doze=1
