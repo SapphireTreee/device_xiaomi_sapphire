@@ -10,5 +10,8 @@ allow hal_graphics_composer_default vendor_sensors_prop:file open;
 # Allow hal_graphics_composer to read vendor sensors property
 allow hal_graphics_composer_default vendor_sensors_prop:file read;
 
+# Allow hal_graphics_composer_default to map files with vendor_sensors_prop type
+allow hal_graphics_composer_default vendor_sensors_prop:file map;
+
 # Allow hal_graphics_composer_default to read vendor_sensors_prop
 allow hal_graphics_composer_default vendor_sensors_prop:file { getattr read };
