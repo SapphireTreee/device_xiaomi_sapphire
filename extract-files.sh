@@ -88,10 +88,6 @@ function blob_fixup() {
             [ "$2" = "" ] && return 0
             grep -q "setsockopt: 1" "${2}" || echo "setsockopt: 1" >> "${2}"
             ;;
-        vendor/etc/thermald-devices.conf)
-            [ "$2" = "" ] && return 0
-            sed -i '/#battery/,/]/s/select_higher: 1/select_higher: 0/' "${2}"
-            ;;
         vendor/lib64/libwvhidl.so)
             [ "$2" = "" ] && return 0
             "${PATCHELF}" --add-needed "libcrypto_shim.so" "${2}"
