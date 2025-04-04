@@ -92,6 +92,9 @@ function blob_fixup() {
             [ "$2" = "" ] && return 0
             "${PATCHELF}" --add-needed "libbase_shim.so" "${2}"
             ;;
+         vendor/etc/init/init.batterysecret.rc|vendor/etc/init/init.mi_thermald.rc)
+            sed -i 's/on charger/on property:init.svc.vendor.charger=running/g' "${2}"
+            ;;
         *)
             return 1
             ;;
