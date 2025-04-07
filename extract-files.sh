@@ -58,7 +58,7 @@ function blob_fixup() {
             [ "$2" = "" ] && return 0
             grep -q "android.hardware.security.rkp-V3-ndk.so" "${2}" || ${PATCHELF} --add-needed "android.hardware.security.rkp-V3-ndk.so" "${2}"
             ;;
-        vendor/lib64/soundfx/libdlbvol.so|vendor/lib64/soundfx/libhwdap.so|vendor/lib64/libdlbdsservice.so | vendor/lib64/libcodec2_soft_ac4dec.so | vendor/lib64/libcodec2_soft_ddpdec.so)
+        vendor/lib*/soundfx/libdlbvol.so|vendor/lib*/soundfx/libhwdap.so|vendor/lib64/libdlbdsservice.so | vendor/lib64/libcodec2_soft_ac4dec.so | vendor/lib64/libcodec2_soft_ddpdec.so)
             [ "$2" = "" ] && return 0
             "${PATCHELF}" --replace-needed "libstagefright_foundation.so" "libstagefright_foundation-v33.so" "${2}"
             ;;    
