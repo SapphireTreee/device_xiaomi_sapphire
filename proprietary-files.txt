@@ -111,8 +111,6 @@ vendor/lib64/libagmmixer.so
 vendor/lib64/vendor.qti.hardware.AGMIPC@1.0.so
 
 # Audio SoundFX
-vendor/lib/soundfx/libasphere.so
-vendor/lib/soundfx/libshoebox.so
 vendor/lib64/soundfx/libasphere.so
 vendor/lib64/soundfx/libshoebox.so
 
@@ -175,11 +173,6 @@ vendor/lib64/vendor.qti.hardware.bttpi-V2-ndk.so
 # CDSP
 vendor/bin/cdsprpcd
 vendor/etc/init/vendor.qti.cdsprpc-service.rc
-vendor/lib/libcdfw.so
-vendor/lib/libcdfw_remote_api.so
-vendor/lib/libcdsp_default_listener.so
-vendor/lib/libcdsprpc.so
-vendor/lib/libmdsprpc.so
 vendor/lib64/libcdfw.so
 vendor/lib64/libcdfw_remote_api.so
 vendor/lib64/libcdsp_default_listener.so
@@ -963,7 +956,6 @@ vendor/lib64/vendor.qti.hardware.fm@1.0.so
 vendor/lib64/libfastcvdsp_stub.so
 
 # Fingerprint
-vendor/lib/vendor.xiaomi.hardware.fx.tunnel@1.0.so
 odm/lib64/hw/fingerprint.fpc_fod.default.so:vendor/lib64/hw/fingerprint.fpc_fod.default.so
 odm/lib64/hw/fingerprint.goodix_fod.default.so:vendor/lib64/hw/fingerprint.goodix_fod.default.so
 odm/lib64/libgf_hal.so:vendor/lib64/libgf_hal.so
@@ -1310,7 +1302,6 @@ vendor/bin/STFlashTool
 vendor/etc/libnfc-hal-st.conf
 vendor/etc/libnfc-nci.conf
 vendor/etc/st21nfc_conf.txt
-vendor/lib/nfc_nci.st21nfc.st.so
 vendor/lib64/nfc_nci.st21nfc.st.so
 
 # Neural
@@ -1359,23 +1350,6 @@ vendor/etc/perf/targetsysnodesconfigs.xml
 vendor/etc/perf/thermalboost.conf
 vendor/etc/vintf/manifest/vendor.qti.hardware.perf.xml
 vendor/etc/vintf/manifest/vendor.qti.memory.pasrmanager@1.0-service.xml
-vendor/lib/hw/vendor.qti.memory.pasrmanager@1.0-impl.so
-vendor/lib/libpasrutils.so
-vendor/lib/libperfconfig.so
-vendor/lib/libperfgluelayer.so
-vendor/lib/libperfioctl.so
-vendor/lib/libqti-iopd-client.so
-vendor/lib/libqti-iopd.so
-vendor/lib/libqti-perfd-client.so
-vendor/lib/libqti-perfd.so
-vendor/lib/libskewknob.so
-vendor/lib/vendor.qti.hardware.iop@1.0.so
-vendor/lib/vendor.qti.hardware.iop@2.0.so
-vendor/lib/vendor.qti.memory.pasrmanager@1.0.so
-vendor/lib/vendor.qti.memory.pasrmanager@1.1.so
-vendor/lib/vendor.qti.power.pasrmanager@1.0.so
-vendor/lib/vendor.qti.qspmhal@1.0-impl.so
-vendor/lib/vendor.qti.qspmhal@1.0.so
 vendor/lib64/hw/vendor.qti.memory.pasrmanager@1.0-impl.so
 vendor/lib64/libadaptlaunch.so
 vendor/lib64/libapengine.so
@@ -1818,7 +1792,6 @@ vendor/etc/sensors/sns_reg_config
 vendor/bin/hw/vendor.qti.hardware.servicetracker@1.2-service
 vendor/etc/init/vendor.qti.hardware.servicetracker@1.2-service.rc
 vendor/etc/vintf/manifest/vendor.qti.hardware.servicetracker@1.2-service.xml
-vendor/lib/hw/vendor.qti.hardware.servicetracker@1.2-impl.so
 vendor/lib64/hw/vendor.qti.hardware.servicetracker@1.2-impl.so
 
 # Soter
