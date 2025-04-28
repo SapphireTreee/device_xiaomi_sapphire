@@ -1,3 +1,6 @@
+# Declare the module
+policy_module(qseecomd_policy, 1.0.0)
+
 # Allow tee domain to read and write to specific character devices
 allow tee device:chr_file { read write };
 
