@@ -1,2 +1,2 @@
-# Allow vold domain to write to vendor_sysfs_memory files
+Allow vold domain to write to vendor_sysfs_memory files
 allow vold vendor_sysfs_memory:file write;
