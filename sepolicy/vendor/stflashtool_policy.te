@@ -1,3 +1,0 @@
-# Allow stflashtool domain to read nfc_prop files
-
-allow stflashtool nfc_prop:file read;
