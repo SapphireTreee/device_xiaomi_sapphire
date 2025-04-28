@@ -1,0 +1,11 @@
+# Declare the module
+policy_module(qseecomd_policy, 1.0.0)
+
+# Allow tee domain to read and write to specific character devices
+allow tee device:chr_file { read write };
+
+# Allow tee domain to open vendor_gpt_block_device block files
+allow tee vendor_gpt_block_device:blk_file open;
+
+# Allow tee domain to open vendor_xbl_block_device block files
+allow tee vendor_xbl_block_device:blk_file open;
