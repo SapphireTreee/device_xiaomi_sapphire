@@ -161,9 +161,6 @@ PRODUCT_PACKAGES += \
     charger_res_images_vendor \
     libsuspend
 
-# DebugFS
-PRODUCT_SET_DEBUGFS_RESTRICTIONS := true
-
 # Display
 PRODUCT_PACKAGES += \
     android.hardware.graphics.composer@2.4.vendor \
