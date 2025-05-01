@@ -1884,3 +1884,6 @@ vendor/lib64/hw/vulkan.adreno.so
 
 # Wi-Fi
 vendor/bin/cnss-daemon
+
+vendor/app/TrustZoneAccessService/TrustZoneAccessService.apk
+vendor/app/TxPwrAdmin/TxPwrAdmin.apk
