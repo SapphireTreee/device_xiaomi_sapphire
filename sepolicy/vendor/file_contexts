@@ -47,7 +47,6 @@
 /sys/devices/platform/soc/soc:qcom,dsi-display-primary/mi_display/disp-DSI-0/dynamic_fps   u:object_r:vendor_sysfs_graphics:s0
 
 # Touchfeature
-/dev/xiaomi-touch u:object_r:touchfeature_device:s0
 /vendor/bin/hw/vendor\.lineage\.touch@1\.0-service\.xiaomi u:object_r:hal_lineage_touch_default_exec:s0
 
 # Process and system statistics files
