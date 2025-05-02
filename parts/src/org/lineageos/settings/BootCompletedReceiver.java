@@ -46,15 +46,6 @@ public class BootCompletedReceiver extends BroadcastReceiver {
             DozeUtils.onBootCompleted(context);
             ThermalUtils.startService(context);
             RefreshUtils.startService(context);
-            overrideHdrTypes(context);
-    }
-
-    private static void overrideHdrTypes(Context context) {
-        // Override HDR types to enable Dolby Vision
-        final DisplayManager dm = context.getSystemService(DisplayManager.class);
-        dm.overrideHdrTypes(Display.DEFAULT_DISPLAY, new int[]{
-                HdrCapabilities.HDR_TYPE_DOLBY_VISION, HdrCapabilities.HDR_TYPE_HDR10,
-                HdrCapabilities.HDR_TYPE_HLG, HdrCapabilities.HDR_TYPE_HDR10_PLUS});
     }
 
     private static void onBootCompleted(Context context) {
