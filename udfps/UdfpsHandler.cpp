@@ -121,7 +121,7 @@ class XiaomiSm6225UdfpsHandler : public UdfpsHandler {
             }
         }).detach();
 
-        // Thread to listen for fod ui changes
+        // Thread to listen for fod and screen-on events
         std::thread([this]() {
             int fd = open(DISP_FEATURE_PATH, O_RDWR);
             if (fd < 0) {
@@ -129,11 +129,11 @@ class XiaomiSm6225UdfpsHandler : public UdfpsHandler {
                 return;
             }
 
-            // Register for FOD events
+            // Register for FOD and power events
             disp_event_req req;
             req.base.flag = 0;
             req.base.disp_id = MI_DISP_PRIMARY;
-            req.type = MI_DISP_EVENT_FOD;
+            req.type = MI_DISP_EVENT_FOD | MI_DISP_EVENT_POWER;
             ioctl(fd, MI_DISP_IOCTL_REGISTER_EVENT, &req);
 
             struct pollfd dispEventPoll = {
@@ -154,18 +154,22 @@ class XiaomiSm6225UdfpsHandler : public UdfpsHandler {
                     continue;
                 }
 
-                if (response->base.type != MI_DISP_EVENT_FOD) {
-                    LOG(ERROR) << "unexpected display event: " << response->base.type;
-                    continue;
+                if (response->base.type == MI_DISP_EVENT_FOD) {
+                    int value = response->data[0];
+                    LOG(DEBUG) << "FOD event, data: " << std::bitset<8>(value);
+                    bool localHbmUiReady = value & LOCAL_HBM_UI_READY;
+                    mDevice->extCmd(mDevice, COMMAND_NIT,
+                                    localHbmUiReady ? PARAM_NIT_FOD : PARAM_NIT_NONE);
+                } else if (response->base.type == MI_DISP_EVENT_POWER) {
+                    int value = response->data[0];
+                    LOG(DEBUG) << "Power event, data: " << value;
+                    if (value == 1) { // Screen on
+                        LOG(DEBUG) << "Screen on, enabling FOD";
+                        setFodStatus(FOD_STATUS_ON);
+                    }
+                } else {
+                    LOG(ERROR) << "Unexpected display event: " << response->base.type;
                 }
-
-                int value = response->data[0];
-                LOG(DEBUG) << "received data: " << std::bitset<8>(value);
-
-                bool localHbmUiReady = value & LOCAL_HBM_UI_READY;
-
-                mDevice->extCmd(mDevice, COMMAND_NIT,
-                                localHbmUiReady ? PARAM_NIT_FOD : PARAM_NIT_NONE);
             }
         }).detach();
     }
@@ -196,7 +200,7 @@ class XiaomiSm6225UdfpsHandler : public UdfpsHandler {
         } else if (static_cast<AcquiredInfo>(result) == AcquiredInfo::TOO_FAST ||
                    static_cast<AcquiredInfo>(result) == AcquiredInfo::INSUFFICIENT) {
             LOG(DEBUG) << "Non-authentication touch detected, delaying FOD disable";
-            std::this_thread::sleep_for(std::chrono::milliseconds(200)); // Allow retries
+            std::this_thread::sleep_for(std::chrono::milliseconds(100)); // Allow retries
             setFingerDown(false);
             setFodStatus(FOD_STATUS_OFF); // Disable FOD for casual touches
             int buf[MAX_BUF_SIZE] = {MI_DISP_PRIMARY, THP_FOD_DOWNUP_CTL, 0};
@@ -225,7 +229,7 @@ class XiaomiSm6225UdfpsHandler : public UdfpsHandler {
         LOG(DEBUG) << __func__;
         isEnrolling = false; // End enrollment
         setFodStatus(FOD_STATUS_OFF); // Disable FOD after enrollment
-        int buf[MAX_BUF_SIZE] = {MI_DISP_PRIMARY, THP_FOD_DOWNUP_CTL, 0};
+        int buf[MAX_BUF_SIZE] = {MI_DISP_PRIMARY, THP_FOD_DOWNUP_CTL, 0];
         ioctl(touch_fd_.get(), TOUCH_IOC_SET_CUR_VALUE, &buf); // Reset touch
     }
 
