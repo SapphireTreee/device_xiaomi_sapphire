@@ -97,7 +97,9 @@ public:
             return;
         }
 
+        // Initialize FOD and touch driver
         setFodStatus(FOD_STATUS_ON);
+        resetTouchDriver();
 
         // Thread to notify fingerprint hwmodule about fod presses
         std::thread([this]() {
@@ -178,8 +180,9 @@ public:
                     int value = response->data[0];
                     LOG(DEBUG) << "Power event, data: " << value;
                     if (value == 1) { // Screen on
-                        LOG(DEBUG) << "Screen on, enabling FOD";
+                        LOG(DEBUG) << "Screen on, enabling FOD and resetting touch driver";
                         setFodStatus(FOD_STATUS_ON);
+                        resetTouchDriver();
                     }
                 } else {
                     LOG(ERROR) << "Unexpected display event: " << response->base.type;
@@ -191,7 +194,7 @@ public:
 
     void onFingerDown(uint32_t /*x*/, uint32_t /*y*/, float /*minor*/, float /*major*/) {
         LOG(INFO) << __func__;
-        setFodStatus(FOD_STATUS_ON); // Enable FOD for touch
+        setFodStatus(FOD_STATUS_ON); // Ensure FOD is on for authentication
         setFingerDown(true);
     }
 
@@ -209,17 +212,19 @@ public:
             if (!isEnrolling) {
                 LOG(DEBUG) << "Not in enrollment, disabling FOD";
                 setFodStatus(FOD_STATUS_OFF); // Disable FOD after successful auth
-                int buf[MAX_BUF_SIZE] = {MI_DISP_PRIMARY, THP_FOD_DOWNUP_CTL, 0};
-                ioctl(touch_fd_.get(), TOUCH_IOC_SET_CUR_VALUE, &buf); // Reset touch
+                resetTouchDriver();
             }
         } else if (static_cast<AcquiredInfo>(result) == AcquiredInfo::TOO_FAST ||
                    static_cast<AcquiredInfo>(result) == AcquiredInfo::INSUFFICIENT) {
-            LOG(DEBUG) << "Non-authentication touch detected, delaying FOD disable";
-            std::this_thread::sleep_for(std::chrono::milliseconds(100)); // Allow retries
-            setFingerDown(false);
-            setFodStatus(FOD_STATUS_OFF); // Disable FOD for casual touches
-            int buf[MAX_BUF_SIZE] = {MI_DISP_PRIMARY, THP_FOD_DOWNUP_CTL, 0};
-            ioctl(touch_fd_.get(), TOUCH_IOC_SET_CUR_VALUE, &buf); // Reset touch
+            if (!isEnrolling) {
+                LOG(DEBUG) << "Non-authentication touch detected, delaying FOD disable";
+                std::this_thread::sleep_for(std::chrono::milliseconds(75)); // Allow retries
+                setFingerDown(false);
+                setFodStatus(FOD_STATUS_OFF); // Disable FOD for casual touches
+                resetTouchDriver();
+            } else {
+                LOG(DEBUG) << "Keeping FOD enabled for enrollment";
+            }
         }
     }
 
@@ -227,8 +232,7 @@ public:
         LOG(INFO) << __func__;
         setFingerDown(false);
         setFodStatus(FOD_STATUS_OFF); // Ensure FOD is disabled on cancel
-        int buf[MAX_BUF_SIZE] = {MI_DISP_PRIMARY, THP_FOD_DOWNUP_CTL, 0};
-        ioctl(touch_fd_.get(), TOUCH_IOC_SET_CUR_VALUE, &buf); // Reset touch
+        resetTouchDriver();
     }
 
     void preEnroll() {
@@ -244,8 +248,7 @@ public:
         LOG(DEBUG) << __func__;
         isEnrolling = false; // End enrollment
         setFodStatus(FOD_STATUS_OFF); // Disable FOD after enrollment
-        int buf[MAX_BUF_SIZE] = {MI_DISP_PRIMARY, THP_FOD_DOWNUP_CTL, 0};
-        ioctl(touch_fd_.get(), TOUCH_IOC_SET_CUR_VALUE, &buf); // Reset touch
+        resetTouchDriver();
     }
 
 private:
@@ -275,6 +278,14 @@ private:
             LOG(ERROR) << "Failed to set finger down: " << pressed;
         }
         LOG(DEBUG) << "setFingerDown: pressed=" << pressed;
+    }
+
+    void resetTouchDriver() {
+        int buf[MAX_BUF_SIZE] = {MI_DISP_PRIMARY, THP_FOD_DOWNUP_CTL, 0};
+        if (ioctl(touch_fd_.get(), TOUCH_IOC_SET_CUR_VALUE, &buf) < 0) {
+            LOG(ERROR) << "Failed to reset touch driver";
+        }
+        LOG(DEBUG) << "resetTouchDriver";
     }
 };
 
