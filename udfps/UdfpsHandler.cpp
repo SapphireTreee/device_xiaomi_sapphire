@@ -7,6 +7,7 @@
 #define LOG_TAG "UdfpsHandler.xiaomi_sm6225"
 
 #include <aidl/android/hardware/biometrics/fingerprint/BnFingerprint.h>
+#include <android-base/highlight.h>
 #include <android-base/logging.h>
 #include <android-base/unique_fd.h>
 
@@ -39,6 +40,8 @@
 #define DISP_FEATURE_PATH "/dev/mi_display/disp_feature"
 
 #define FOD_PRESS_STATUS_PATH "/sys/class/touch/touch_dev/fod_press_status"
+
+#define MAX_RETRIES 3
 
 using ::aidl::android::hardware::biometrics::fingerprint::AcquiredInfo;
 
@@ -101,7 +104,7 @@ public:
         LOG(DEBUG) << "Initializing UDFPS sensor";
         resetTouchDriver();
         setFodStatus(FOD_STATUS_ON);
-        std::this_thread::sleep_for(std::chrono::milliseconds(200));
+        std::this_thread::sleep_for(std::chrono::milliseconds(150));
 
         // Thread to notify fingerprint hwmodule about fod presses
         std::thread([this]() {
@@ -185,7 +188,7 @@ public:
                         LOG(DEBUG) << "Screen on, resetting touch driver and enabling FOD";
                         resetTouchDriver();
                         setFodStatus(FOD_STATUS_ON);
-                        std::this_thread::sleep_for(std::chrono::milliseconds(200));
+                        std::this_thread::sleep_for(std::chrono::milliseconds(150));
                     }
                 } else {
                     LOG(ERROR) << "Unexpected display event: " << response->base.type;
@@ -197,6 +200,11 @@ public:
 
     void onFingerDown(uint32_t /*x*/, uint32_t /*y*/, float /*minor*/, float /*major*/) {
         LOG(INFO) << __func__;
+        if (!isAuthenticating && !isEnrolling) {
+            LOG(DEBUG) << "Ignoring casual touch, not authenticating or enrolling";
+            return;
+        }
+        retry_count_ = 0; // Reset retry counter
         setFodStatus(FOD_STATUS_ON);
         std::this_thread::sleep_for(std::chrono::milliseconds(100)); // Minimal delay for HAL
         setFingerDown(true);
@@ -206,7 +214,13 @@ public:
     void onFingerUp() {
         LOG(INFO) << __func__;
         setFingerDown(false);
-        LOG(DEBUG) << "Finger up processed";
+        setFodStatus(FOD_STATUS_OFF);
+        std::this_thread::sleep_for(std::chrono::milliseconds(50));
+        resetTouchDriver();
+        std::this_thread::sleep_for(std::chrono::milliseconds(50));
+        resetTouchDriver();
+        isAuthenticating = false; // End authentication
+        LOG(DEBUG) << "Finger up processed, sensor disabled";
     }
 
     void onAcquired(int32_t result, int32_t vendorCode) {
@@ -215,27 +229,49 @@ public:
         if (static_cast<AcquiredInfo>(result) == AcquiredInfo::GOOD || result == 1) {
             LOG(DEBUG) << "Fingerprint acquired successfully";
             setFingerDown(false);
+            retry_count_ = 0; // Reset retry counter
             if (!isEnrolling) {
-                LOG(DEBUG) << "Not in enrollment, disabling FOD";
-                setFodStatus(FOD_STATUS_OFF); // Disable FOD after successful auth
+                LOG(DEBUG) << "Not in enrollment, disabling FOD and sensor";
+                setFodStatus(FOD_STATUS_OFF);
+                std::this_thread::sleep_for(std::chrono::milliseconds(50));
+                resetTouchDriver();
+                std::this_thread::sleep_for(std::chrono::milliseconds(50));
+                resetTouchDriver();
+                isAuthenticating = false; // End authentication
             }
-        } else if (static_cast<AcquiredInfo>(result) == AcquiredInfo::TOO_FAST ||
-                   static_cast<AcquiredInfo>(result) == AcquiredInfo::INSUFFICIENT) {
-            LOG(DEBUG) << "Retrying after TOO_FAST/INSUFFICIENT (vendorCode=" << vendorCode << ")";
-            std::this_thread::sleep_for(std::chrono::milliseconds(50)); // Quick retry
+        } else if ((static_cast<AcquiredInfo>(result) == AcquiredInfo::TOO_FAST ||
+                    static_cast<AcquiredInfo>(result) == AcquiredInfo::INSUFFICIENT ||
+                    vendorCode == 20 || vendorCode == 21 || vendorCode == 22) &&
+                   retry_count_ < MAX_RETRIES) {
+            retry_count_++;
+            LOG(DEBUG) << "Retrying after TOO_FAST/INSUFFICIENT or vendorCode:20/21/22 (vendorCode="
+                       << vendorCode << ", retry=" << retry_count_ << "/" << MAX_RETRIES << ")";
+            std::this_thread::sleep_for(std::chrono::milliseconds(20)); // Quick retry
             setFodStatus(FOD_STATUS_ON); // Keep FOD on for retries
         } else {
-            LOG(DEBUG) << "Unexpected acquired result, keeping FOD enabled (vendorCode=" << vendorCode << ")";
-            setFodStatus(FOD_STATUS_ON); // Handle other cases
+            LOG(DEBUG) << "Unexpected acquired result or max retries reached, disabling FOD and sensor (vendorCode="
+                       << vendorCode << ")";
+            setFodStatus(FOD_STATUS_OFF);
+            std::this_thread::sleep_for(std::chrono::milliseconds(50));
+            resetTouchDriver();
+            std::this_thread::sleep_for(std::chrono::milliseconds(50));
+            resetTouchDriver();
+            retry_count_ = 0; // Reset retry counter
+            isAuthenticating = false; // End authentication
         }
     }
 
     void cancel() {
         LOG(INFO) << __func__;
         setFingerDown(false);
-        setFodStatus(FOD_STATUS_OFF); // Ensure FOD is disabled on cancel
+        setFodStatus(FOD_STATUS_OFF);
+        std::this_thread::sleep_for(std::chrono::milliseconds(50));
         resetTouchDriver();
-        LOG(DEBUG) << "Authentication canceled";
+        std::this_thread::sleep_for(std::chrono::milliseconds(50));
+        resetTouchDriver();
+        retry_count_ = 0; // Reset retry counter
+        isAuthenticating = false; // End authentication
+        LOG(DEBUG) << "Authentication canceled, sensor disabled";
     }
 
     void preEnroll() {
@@ -251,9 +287,14 @@ public:
     void postEnroll() {
         LOG(DEBUG) << __func__;
         isEnrolling = false; // End enrollment
-        setFodStatus(FOD_STATUS_OFF); // Disable FOD after enrollment
+        setFodStatus(FOD_STATUS_OFF);
+        std::this_thread::sleep_for(std::chrono::milliseconds(50));
         resetTouchDriver();
-        LOG(DEBUG) << "Enrollment completed";
+        std::this_thread::sleep_for(std::chrono::milliseconds(50));
+        resetTouchDriver();
+        retry_count_ = 0; // Reset retry counter
+        isAuthenticating = false; // End authentication
+        LOG(DEBUG) << "Enrollment completed, sensor disabled";
     }
 
 private:
@@ -261,6 +302,8 @@ private:
     android::base::unique_fd touch_fd_;
     android::base::unique_fd disp_fd_;
     bool isEnrolling = false; // Track enrollment state
+    bool isAuthenticating = false; // Track authentication state
+    int retry_count_ = 0; // Retry counter for TOO_FAST/INSUFFICIENT
 
     void setFodStatus(int value) {
         int buf[MAX_BUF_SIZE] = {MI_DISP_PRIMARY, Touch_Fod_Enable, value};
@@ -283,6 +326,9 @@ private:
             LOG(ERROR) << "Failed to set finger down: " << pressed;
         }
         LOG(DEBUG) << "setFingerDown: pressed=" << pressed;
+        if (pressed) {
+            isAuthenticating = true; // Start authentication
+        }
     }
 
     void resetTouchDriver() {
