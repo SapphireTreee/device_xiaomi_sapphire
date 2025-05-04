@@ -95,7 +95,8 @@ public:
         disp_fd_ = android::base::unique_fd(open(DISP_FEATURE_PATH, O_RDWR));
 
         if (!touch_fd_.ok() || !disp_fd_.ok()) {
-            LOG(ERROR) << "Failed to open touch or display device";
+            LOG(ERROR) << "Failed to open touch or display device: touch_fd=" << touch_fd_.get()
+                       << ", disp_fd=" << disp_fd_.get();
             return;
         }
 
@@ -103,7 +104,8 @@ public:
         LOG(DEBUG) << "Initializing UDFPS sensor";
         resetTouchDriver();
         setFodStatus(FOD_STATUS_ON);
-        std::this_thread::sleep_for(std::chrono::milliseconds(150));
+        std::this_thread::sleep_for(std::chrono::milliseconds(200));
+        isAuthenticating = true; // Allow initial touches on lock screen
 
         // Thread to notify fingerprint hwmodule about fod presses
         std::thread([this]() {
@@ -127,6 +129,7 @@ public:
                 }
 
                 bool pressed = readBool(fd);
+                LOG(DEBUG) << "FOD press status: " << (pressed ? "pressed" : "released");
                 if (mDevice) {
                     mDevice->extCmd(mDevice, COMMAND_FOD_PRESS_STATUS,
                                     pressed ? PARAM_FOD_PRESSED : PARAM_FOD_RELEASED);
@@ -187,7 +190,8 @@ public:
                         LOG(DEBUG) << "Screen on, resetting touch driver and enabling FOD";
                         resetTouchDriver();
                         setFodStatus(FOD_STATUS_ON);
-                        std::this_thread::sleep_for(std::chrono::milliseconds(150));
+                        std::this_thread::sleep_for(std::chrono::milliseconds(200));
+                        isAuthenticating = true; // Allow touches on lock screen
                     }
                 } else {
                     LOG(ERROR) << "Unexpected display event: " << response->base.type;
@@ -198,11 +202,7 @@ public:
     }
 
     void onFingerDown(uint32_t /*x*/, uint32_t /*y*/, float /*minor*/, float /*major*/) {
-        LOG(INFO) << __func__;
-        if (!isAuthenticating && !isEnrolling) {
-            LOG(DEBUG) << "Ignoring casual touch, not authenticating or enrolling";
-            return;
-        }
+        LOG(INFO) << __func__ << " isAuthenticating=" << isAuthenticating << " isEnrolling=" << isEnrolling;
         retry_count_ = 0; // Reset retry counter
         setFodStatus(FOD_STATUS_ON);
         std::this_thread::sleep_for(std::chrono::milliseconds(100)); // Minimal delay for HAL
@@ -214,8 +214,6 @@ public:
         LOG(INFO) << __func__;
         setFingerDown(false);
         setFodStatus(FOD_STATUS_OFF);
-        std::this_thread::sleep_for(std::chrono::milliseconds(50));
-        resetTouchDriver();
         std::this_thread::sleep_for(std::chrono::milliseconds(50));
         resetTouchDriver();
         isAuthenticating = false; // End authentication
@@ -234,8 +232,6 @@ public:
                 setFodStatus(FOD_STATUS_OFF);
                 std::this_thread::sleep_for(std::chrono::milliseconds(50));
                 resetTouchDriver();
-                std::this_thread::sleep_for(std::chrono::milliseconds(50));
-                resetTouchDriver();
                 isAuthenticating = false; // End authentication
             }
         } else if ((static_cast<AcquiredInfo>(result) == AcquiredInfo::TOO_FAST ||
@@ -245,14 +241,12 @@ public:
             retry_count_++;
             LOG(DEBUG) << "Retrying after TOO_FAST/INSUFFICIENT or vendorCode:20/21/22 (vendorCode="
                        << vendorCode << ", retry=" << retry_count_ << "/" << MAX_RETRIES << ")";
-            std::this_thread::sleep_for(std::chrono::milliseconds(20)); // Quick retry
+            std::this_thread::sleep_for(std::chrono::milliseconds(50)); // Longer retry delay
             setFodStatus(FOD_STATUS_ON); // Keep FOD on for retries
         } else {
             LOG(DEBUG) << "Unexpected acquired result or max retries reached, disabling FOD and sensor (vendorCode="
                        << vendorCode << ")";
             setFodStatus(FOD_STATUS_OFF);
-            std::this_thread::sleep_for(std::chrono::milliseconds(50));
-            resetTouchDriver();
             std::this_thread::sleep_for(std::chrono::milliseconds(50));
             resetTouchDriver();
             retry_count_ = 0; // Reset retry counter
@@ -264,8 +258,6 @@ public:
         LOG(INFO) << __func__;
         setFingerDown(false);
         setFodStatus(FOD_STATUS_OFF);
-        std::this_thread::sleep_for(std::chrono::milliseconds(50));
-        resetTouchDriver();
         std::this_thread::sleep_for(std::chrono::milliseconds(50));
         resetTouchDriver();
         retry_count_ = 0; // Reset retry counter
@@ -289,8 +281,6 @@ public:
         setFodStatus(FOD_STATUS_OFF);
         std::this_thread::sleep_for(std::chrono::milliseconds(50));
         resetTouchDriver();
-        std::this_thread::sleep_for(std::chrono::milliseconds(50));
-        resetTouchDriver();
         retry_count_ = 0; // Reset retry counter
         isAuthenticating = false; // End authentication
         LOG(DEBUG) << "Enrollment completed, sensor disabled";
@@ -305,14 +295,23 @@ private:
     int retry_count_ = 0; // Retry counter for TOO_FAST/INSUFFICIENT
 
     void setFodStatus(int value) {
+        if (!touch_fd_.ok()) {
+            LOG(ERROR) << "Invalid touch_fd, cannot set FOD status: " << value;
+            return;
+        }
         int buf[MAX_BUF_SIZE] = {MI_DISP_PRIMARY, Touch_Fod_Enable, value};
         if (ioctl(touch_fd_.get(), TOUCH_IOC_SET_CUR_VALUE, &buf) < 0) {
             LOG(ERROR) << "Failed to set FOD status: " << value;
+        } else {
+            LOG(DEBUG) << "setFodStatus: value=" << value;
         }
-        LOG(DEBUG) << "setFodStatus: value=" << value;
     }
 
     void setFingerDown(bool pressed) {
+        if (!disp_fd_.ok() || !touch_fd_.ok()) {
+            LOG(ERROR) << "Invalid disp_fd or touch_fd, cannot set finger down: " << pressed;
+            return;
+        }
         disp_local_hbm_req req;
         req.base.flag = 0;
         req.base.disp_id = MI_DISP_PRIMARY;
@@ -331,11 +330,16 @@ private:
     }
 
     void resetTouchDriver() {
+        if (!touch_fd_.ok()) {
+            LOG(ERROR) << "Invalid touch_fd, cannot reset touch driver";
+            return;
+        }
         int buf[MAX_BUF_SIZE] = {MI_DISP_PRIMARY, THP_FOD_DOWNUP_CTL, 0};
         if (ioctl(touch_fd_.get(), TOUCH_IOC_SET_CUR_VALUE, &buf) < 0) {
             LOG(ERROR) << "Failed to reset touch driver";
+        } else {
+            LOG(DEBUG) << "resetTouchDriver";
         }
-        LOG(DEBUG) << "resetTouchDriver";
     }
 };
 
