@@ -97,14 +97,15 @@ public:
             return;
         }
 
-        // Initialize FOD with triple enablement for FPC/FocalTech
+        // Initialize FOD with reset and enable-disable-enable for FPC/FocalTech
         LOG(DEBUG) << "Initializing UDFPS sensor";
+        resetTouchDriver();
         setFodStatus(FOD_STATUS_ON);
         std::this_thread::sleep_for(std::chrono::milliseconds(50));
-        setFodStatus(FOD_STATUS_ON);
+        setFodStatus(FOD_STATUS_OFF);
         std::this_thread::sleep_for(std::chrono::milliseconds(50));
         setFodStatus(FOD_STATUS_ON);
-        std::this_thread::sleep_for(std::chrono::milliseconds(300));
+        std::this_thread::sleep_for(std::chrono::milliseconds(500));
 
         // Thread to notify fingerprint hwmodule about fod presses
         std::thread([this]() {
@@ -185,13 +186,14 @@ public:
                     int value = response->data[0];
                     LOG(DEBUG) << "Power event, data: " << value;
                     if (value == 1) { // Screen on
-                        LOG(DEBUG) << "Screen on, enabling FOD";
+                        LOG(DEBUG) << "Screen on, resetting touch driver and enabling FOD";
+                        resetTouchDriver();
                         setFodStatus(FOD_STATUS_ON);
                         std::this_thread::sleep_for(std::chrono::milliseconds(50));
-                        setFodStatus(FOD_STATUS_ON);
+                        setFodStatus(FOD_STATUS_OFF);
                         std::this_thread::sleep_for(std::chrono::milliseconds(50));
                         setFodStatus(FOD_STATUS_ON);
-                        std::this_thread::sleep_for(std::chrono::milliseconds(300));
+                        std::this_thread::sleep_for(std::chrono::milliseconds(500));
                     }
                 } else {
                     LOG(ERROR) << "Unexpected display event: " << response->base.type;
@@ -204,21 +206,26 @@ public:
     void onFingerDown(uint32_t /*x*/, uint32_t /*y*/, float /*minor*/, float /*major*/) {
         LOG(INFO) << __func__;
         setFodStatus(FOD_STATUS_ON);
-        std::this_thread::sleep_for(std::chrono::milliseconds(100)); // Allow HAL processing
-        setFodStatus(FOD_STATUS_ON); // Ensure FOD is active for FPC
+        std::this_thread::sleep_for(std::chrono::milliseconds(50));
+        setFodStatus(FOD_STATUS_OFF);
+        std::this_thread::sleep_for(std::chrono::milliseconds(50));
+        setFodStatus(FOD_STATUS_ON);
+        std::this_thread::sleep_for(std::chrono::milliseconds(200)); // Allow HAL processing
         setFingerDown(true);
+        LOG(DEBUG) << "Finger down processed, FOD enabled";
     }
 
     void onFingerUp() {
         LOG(INFO) << __func__;
         setFingerDown(false);
+        LOG(DEBUG) << "Finger up processed";
     }
 
     void onAcquired(int32_t result, int32_t vendorCode) {
         LOG(INFO) << __func__ << " result: " << result << " vendorCode: " << vendorCode;
         LOG(DEBUG) << "AcquiredInfo: " << result;
         if (static_cast<AcquiredInfo>(result) == AcquiredInfo::GOOD || result == 1) {
-            LOG(DEBUG) << "Fingerprint acquired successfully, resetting sensor";
+            LOG(DEBUG) << "Fingerprint acquired successfully";
             setFingerDown(false);
             if (!isEnrolling) {
                 LOG(DEBUG) << "Not in enrollment, disabling FOD";
@@ -228,6 +235,9 @@ public:
                    static_cast<AcquiredInfo>(result) == AcquiredInfo::INSUFFICIENT) {
             LOG(DEBUG) << "Keeping FOD enabled for retry (vendorCode=" << vendorCode << ")";
             setFodStatus(FOD_STATUS_ON); // Ensure FOD stays on for retries
+        } else {
+            LOG(DEBUG) << "Unexpected acquired result, keeping FOD enabled (vendorCode=" << vendorCode << ")";
+            setFodStatus(FOD_STATUS_ON); // Handle other cases conservatively
         }
     }
 
@@ -236,6 +246,7 @@ public:
         setFingerDown(false);
         setFodStatus(FOD_STATUS_OFF); // Ensure FOD is disabled on cancel
         resetTouchDriver();
+        LOG(DEBUG) << "Authentication canceled";
     }
 
     void preEnroll() {
@@ -245,6 +256,7 @@ public:
     void enroll() {
         LOG(DEBUG) << __func__;
         isEnrolling = true; // Track enrollment
+        LOG(DEBUG) << "Enrollment started";
     }
 
     void postEnroll() {
@@ -252,6 +264,7 @@ public:
         isEnrolling = false; // End enrollment
         setFodStatus(FOD_STATUS_OFF); // Disable FOD after enrollment
         resetTouchDriver();
+        LOG(DEBUG) << "Enrollment completed";
     }
 
 private:
