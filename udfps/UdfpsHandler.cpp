@@ -97,11 +97,15 @@ public:
             return;
         }
 
-        // Initialize FOD with reset and single enablement for FPC/FocalTech
+        // Initialize FOD with reset and enable-disable-enable for FPC/FocalTech
         LOG(DEBUG) << "Initializing UDFPS sensor";
         resetTouchDriver();
         setFodStatus(FOD_STATUS_ON);
-        std::this_thread::sleep_for(std::chrono::milliseconds(200));
+        std::this_thread::sleep_for(std::chrono::milliseconds(50));
+        setFodStatus(FOD_STATUS_OFF);
+        std::this_thread::sleep_for(std::chrono::milliseconds(50));
+        setFodStatus(FOD_STATUS_ON);
+        std::this_thread::sleep_for(std::chrono::milliseconds(500));
 
         // Thread to notify fingerprint hwmodule about fod presses
         std::thread([this]() {
@@ -185,7 +189,11 @@ public:
                         LOG(DEBUG) << "Screen on, resetting touch driver and enabling FOD";
                         resetTouchDriver();
                         setFodStatus(FOD_STATUS_ON);
-                        std::this_thread::sleep_for(std::chrono::milliseconds(200));
+                        std::this_thread::sleep_for(std::chrono::milliseconds(50));
+                        setFodStatus(FOD_STATUS_OFF);
+                        std::this_thread::sleep_for(std::chrono::milliseconds(50));
+                        setFodStatus(FOD_STATUS_ON);
+                        std::this_thread::sleep_for(std::chrono::milliseconds(500));
                     }
                 } else {
                     LOG(ERROR) << "Unexpected display event: " << response->base.type;
@@ -198,7 +206,11 @@ public:
     void onFingerDown(uint32_t /*x*/, uint32_t /*y*/, float /*minor*/, float /*major*/) {
         LOG(INFO) << __func__;
         setFodStatus(FOD_STATUS_ON);
-        std::this_thread::sleep_for(std::chrono::milliseconds(100)); // Minimal delay for HAL
+        std::this_thread::sleep_for(std::chrono::milliseconds(50));
+        setFodStatus(FOD_STATUS_OFF);
+        std::this_thread::sleep_for(std::chrono::milliseconds(50));
+        setFodStatus(FOD_STATUS_ON);
+        std::this_thread::sleep_for(std::chrono::milliseconds(200)); // Allow HAL processing
         setFingerDown(true);
         LOG(DEBUG) << "Finger down processed, FOD enabled";
     }
@@ -221,12 +233,11 @@ public:
             }
         } else if (static_cast<AcquiredInfo>(result) == AcquiredInfo::TOO_FAST ||
                    static_cast<AcquiredInfo>(result) == AcquiredInfo::INSUFFICIENT) {
-            LOG(DEBUG) << "Retrying after TOO_FAST/INSUFFICIENT (vendorCode=" << vendorCode << ")";
-            std::this_thread::sleep_for(std::chrono::milliseconds(50)); // Quick retry
-            setFodStatus(FOD_STATUS_ON); // Keep FOD on for retries
+            LOG(DEBUG) << "Keeping FOD enabled for retry (vendorCode=" << vendorCode << ")";
+            setFodStatus(FOD_STATUS_ON); // Ensure FOD stays on for retries
         } else {
             LOG(DEBUG) << "Unexpected acquired result, keeping FOD enabled (vendorCode=" << vendorCode << ")";
-            setFodStatus(FOD_STATUS_ON); // Handle other cases
+            setFodStatus(FOD_STATUS_ON); // Handle other cases conservatively
         }
     }
 
