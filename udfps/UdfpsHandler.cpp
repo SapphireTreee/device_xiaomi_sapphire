@@ -97,11 +97,9 @@ public:
             return;
         }
 
-        // Initialize FOD with delay for FPC/FocalTech
-        LOG(DEBUG) << "Initializing UDFPS sensor";
-        resetTouchDriver();
+        // Initialize FOD and touch driver
         setFodStatus(FOD_STATUS_ON);
-        std::this_thread::sleep_for(std::chrono::milliseconds(150));
+        resetTouchDriver();
 
         // Thread to notify fingerprint hwmodule about fod presses
         std::thread([this]() {
@@ -183,9 +181,8 @@ public:
                     LOG(DEBUG) << "Power event, data: " << value;
                     if (value == 1) { // Screen on
                         LOG(DEBUG) << "Screen on, enabling FOD and resetting touch driver";
-                        resetTouchDriver();
                         setFodStatus(FOD_STATUS_ON);
-                        std::this_thread::sleep_for(std::chrono::milliseconds(150));
+                        resetTouchDriver();
                     }
                 } else {
                     LOG(ERROR) << "Unexpected display event: " << response->base.type;
@@ -209,7 +206,7 @@ public:
     void onAcquired(int32_t result, int32_t vendorCode) {
         LOG(INFO) << __func__ << " result: " << result << " vendorCode: " << vendorCode;
         LOG(DEBUG) << "AcquiredInfo: " << result;
-        if (static_cast<AcquiredInfo>(result) == AcquiredInfo::GOOD || result == 1) {
+        if (static_cast<AcquiredInfo>(result) == AcquiredInfo::GOOD) {
             LOG(DEBUG) << "Fingerprint acquired successfully, resetting sensor";
             setFingerDown(false);
             if (!isEnrolling) {
@@ -219,14 +216,14 @@ public:
             }
         } else if (static_cast<AcquiredInfo>(result) == AcquiredInfo::TOO_FAST ||
                    static_cast<AcquiredInfo>(result) == AcquiredInfo::INSUFFICIENT) {
-            if (!isEnrolling && vendorCode != 0 && vendorCode != 20 && vendorCode != 21 && vendorCode != 22) {
+            if (!isEnrolling) {
                 LOG(DEBUG) << "Non-authentication touch detected, delaying FOD disable";
                 std::this_thread::sleep_for(std::chrono::milliseconds(75)); // Allow retries
                 setFingerDown(false);
                 setFodStatus(FOD_STATUS_OFF); // Disable FOD for casual touches
+                resetTouchDriver();
             } else {
-                LOG(DEBUG) << "Keeping FOD enabled for enrollment or sensor waiting state (vendorCode=" << vendorCode << ")";
-                setFodStatus(FOD_STATUS_ON); // Ensure FOD stays on for retries
+                LOG(DEBUG) << "Keeping FOD enabled for enrollment";
             }
         }
     }
