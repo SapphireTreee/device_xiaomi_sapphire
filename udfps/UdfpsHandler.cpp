@@ -7,7 +7,6 @@
 #define LOG_TAG "UdfpsHandler.xiaomi_sm6225"
 
 #include <aidl/android/hardware/biometrics/fingerprint/BnFingerprint.h>
-#include <android-base/highlight.h>
 #include <android-base/logging.h>
 #include <android-base/unique_fd.h>
 
