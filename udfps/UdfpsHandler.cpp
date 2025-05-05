@@ -169,58 +169,47 @@ class XiaomiSm6225UdfpsHandler : public UdfpsHandler {
 
     void onFingerDown(uint32_t /*x*/, uint32_t /*y*/, float /*minor*/, float /*major*/) {
         LOG(INFO) << __func__;
+        setFodStatus(FOD_STATUS_ON);
         setFingerDown(true);
     }
 
     void onFingerUp() {
         LOG(INFO) << __func__;
         setFingerDown(false);
+        setFodStatus(FOD_STATUS_OFF);
     }
 
     void onAcquired(int32_t result, int32_t vendorCode) {
         LOG(INFO) << __func__ << " result: " << result << " vendorCode: " << vendorCode;
         if (static_cast<AcquiredInfo>(result) == AcquiredInfo::GOOD) {
             setFingerDown(false);
-             if (!enrolling) {
-                 setFodStatus(FOD_STATUS_OFF);
-             }
-         } else if (vendorCode == 20 || vendorCode == 21 || vendorCode == 23) {
-             /*
-              * vendorCode = 21 waiting for fingerprint authentication
-              * vendorCode = 23 waiting for fingerprint enroll
-              */
-             setFodStatus(FOD_STATUS_ON);
+            setFodStatus(FOD_STATUS_OFF);
         }
 
     }
 
     void cancel() {
         LOG(INFO) << __func__;
-        enrolling = false;
         setFingerDown(false);
         setFodStatus(FOD_STATUS_OFF);
     }
 
     void preEnroll() {
         LOG(DEBUG) << __func__;
-        enrolling = true;
     }
 
     void enroll() {
         LOG(DEBUG) << __func__;
-        enrolling = true;
     }
 
     void postEnroll() {
         LOG(DEBUG) << __func__;
-        enrolling = false;
     }
 
   private:
     fingerprint_device_t* mDevice;
     android::base::unique_fd touch_fd_;
     android::base::unique_fd disp_fd_;
-    bool enrolling = false;
 
     void setFodStatus(int value) {
         int buf[MAX_BUF_SIZE] = {MI_DISP_PRIMARY, Touch_Fod_Enable, value};
