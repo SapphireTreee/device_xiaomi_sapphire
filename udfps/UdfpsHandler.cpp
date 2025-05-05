@@ -214,7 +214,6 @@ class XiaomiSm6225UdfpsHandler : public UdfpsHandler {
     void postEnroll() {
         LOG(DEBUG) << __func__;
         enrolling = false;
-
         setFodStatus(FOD_STATUS_OFF);
     }
 
