@@ -196,7 +196,7 @@ class XiaomiSm6225UdfpsHandler : public UdfpsHandler {
         } else if (static_cast<AcquiredInfo>(result) == AcquiredInfo::TOO_FAST ||
                    static_cast<AcquiredInfo>(result) == AcquiredInfo::INSUFFICIENT) {
             LOG(DEBUG) << "Non-authentication touch detected, delaying FOD disable";
-            std::this_thread::sleep_for(std::chrono::milliseconds(100)); // Allow retries
+            std::this_thread::sleep_for(std::chrono::milliseconds(200)); // Allow retries
             setFingerDown(false);
             setFodStatus(FOD_STATUS_OFF); // Disable FOD for casual touches
             int buf[MAX_BUF_SIZE] = {MI_DISP_PRIMARY, THP_FOD_DOWNUP_CTL, 0};
