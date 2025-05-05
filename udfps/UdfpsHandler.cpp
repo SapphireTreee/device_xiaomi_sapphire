@@ -184,7 +184,7 @@ class XiaomiSm6225UdfpsHandler : public UdfpsHandler {
              if (!enrolling) {
                  setFodStatus(FOD_STATUS_OFF);
              }
-         } else if (vendorCode == 20 || vendorCode == 21 || vendorCode == 23) {
+         } else if (vendorCode == 20 || vendorCode == 21 || vendorCode == 22 || vendorCode == 23) {
              /*
               * vendorCode = 21 waiting for fingerprint authentication
               * vendorCode = 23 waiting for fingerprint enroll
