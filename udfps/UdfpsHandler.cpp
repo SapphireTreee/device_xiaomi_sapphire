@@ -14,6 +14,7 @@
 #include <sys/ioctl.h>
 #include <fstream>
 #include <thread>
+#include <chrono>
 
 #include "mi_disp.h"
 #include "UdfpsHandler.h"
@@ -42,7 +43,6 @@
 using ::aidl::android::hardware::biometrics::fingerprint::AcquiredInfo;
 
 namespace {
-
 
 static bool readBool(int fd) {
     char c;
@@ -92,7 +92,7 @@ class XiaomiSm6225UdfpsHandler : public UdfpsHandler {
         touch_fd_ = android::base::unique_fd(open(TOUCH_DEV_PATH, O_RDWR));
         disp_fd_ = android::base::unique_fd(open(DISP_FEATURE_PATH, O_RDWR));
 
-        // Thread to notify fingeprint hwmodule about fod presses
+        // Thread to notify fingerprint hwmodule about fod presses
         std::thread([this]() {
             int fd = open(FOD_PRESS_STATUS_PATH, O_RDONLY);
             if (fd < 0) {
@@ -117,8 +117,10 @@ class XiaomiSm6225UdfpsHandler : public UdfpsHandler {
                 mDevice->extCmd(mDevice, COMMAND_FOD_PRESS_STATUS,
                                 pressed ? PARAM_FOD_PRESSED : PARAM_FOD_RELEASED);
             }
+            close(fd);
         }).detach();
-         // Thread to listen for fod ui changes
+
+        // Thread to listen for fod ui changes with timeout
         std::thread([this]() {
             int fd = open(DISP_FEATURE_PATH, O_RDWR);
             if (fd < 0) {
@@ -139,10 +141,26 @@ class XiaomiSm6225UdfpsHandler : public UdfpsHandler {
                     .revents = 0,
             };
 
+            auto last_fod_enabled = std::chrono::steady_clock::now();
+            bool fod_enabled = false;
+
             while (true) {
-                int rc = poll(&dispEventPoll, 1, -1);
+                int rc = poll(&dispEventPoll, 1, 5000 /* 5-second timeout */);
                 if (rc < 0) {
                     LOG(ERROR) << "failed to poll " << DISP_FEATURE_PATH << ", err: " << rc;
+                    continue;
+                }
+
+                if (rc == 0) { // Timeout
+                    if (fod_enabled && !enrolling) {
+                        auto now = std::chrono::steady_clock::now();
+                        auto elapsed = std::chrono::duration_cast<std::chrono::seconds>(now - last_fod_enabled).count();
+                        if (elapsed >= 5) {
+                            setFodStatus(FOD_STATUS_OFF);
+                            fod_enabled = false;
+                            LOG(DEBUG) << "FOD disabled due to timeout";
+                        }
+                    }
                     continue;
                 }
 
@@ -160,10 +178,19 @@ class XiaomiSm6225UdfpsHandler : public UdfpsHandler {
                 LOG(DEBUG) << "received data: " << std::bitset<8>(value);
 
                 bool localHbmUiReady = value & LOCAL_HBM_UI_READY;
+                mDevice->extCmd(mDevice, COMMAND_NIT, localHbmUiReady ? PARAM_NIT_FOD : PARAM_NIT_NONE);
 
-                mDevice->extCmd(mDevice, COMMAND_NIT,
-                                localHbmUiReady ? PARAM_NIT_FOD : PARAM_NIT_NONE);
+                // Update FOD state and timestamp
+                if (localHbmUiReady) {
+                    setFodStatus(FOD_STATUS_ON);
+                    fod_enabled = true;
+                    last_fod_enabled = std::chrono::steady_clock::now();
+                } else {
+                    setFodStatus(FOD_STATUS_OFF);
+                    fod_enabled = false;
+                }
             }
+            close(fd);
         }).detach();
     }
 
@@ -179,19 +206,27 @@ class XiaomiSm6225UdfpsHandler : public UdfpsHandler {
 
     void onAcquired(int32_t result, int32_t vendorCode) {
         LOG(INFO) << __func__ << " result: " << result << " vendorCode: " << vendorCode;
+
         if (static_cast<AcquiredInfo>(result) == AcquiredInfo::GOOD) {
             setFingerDown(false);
             if (!enrolling) {
                 setFodStatus(FOD_STATUS_OFF);
+                LOG(DEBUG) << "FOD disabled after successful scan";
             }
         } else if (vendorCode == 20 || vendorCode == 21 || vendorCode == 22 || vendorCode == 23) {
-            /*
-             * vendorCode = 21 waiting for fingerprint authentication
-             * vendorCode = 23 waiting for fingerprint enroll
-             */
             setFodStatus(FOD_STATUS_ON);
+            LOG(DEBUG) << "FOD enabled for vendorCode: " << vendorCode
+                       << (vendorCode == 20 ? " (FPC sensor authentication)"
+                          : vendorCode == 21 ? " (Goodix sensor authentication, e.g., banking apps)"
+                          : vendorCode == 22 ? " (screen-off UDFPS)"
+                          : " (enrollment)");
+        } else {
+            setFingerDown(false);
+            if (!enrolling) {
+                setFodStatus(FOD_STATUS_OFF);
+                LOG(DEBUG) << "FOD disabled for result: " << result << ", vendorCode: " << vendorCode;
+            }
         }
-
     }
 
     void cancel() {
@@ -199,22 +234,34 @@ class XiaomiSm6225UdfpsHandler : public UdfpsHandler {
         enrolling = false;
         setFingerDown(false);
         setFodStatus(FOD_STATUS_OFF);
+        LOG(DEBUG) << "FOD disabled after cancel";
     }
 
     void preEnroll() {
         LOG(DEBUG) << __func__;
         enrolling = true;
+        setFodStatus(FOD_STATUS_ON);
+        LOG(DEBUG) << "FOD enabled for pre-enrollment";
     }
 
     void enroll() {
         LOG(DEBUG) << __func__;
         enrolling = true;
+        setFodStatus(FOD_STATUS_ON);
+        LOG(DEBUG) << "FOD enabled for enrollment";
     }
 
     void postEnroll() {
         LOG(DEBUG) << __func__;
         enrolling = false;
         setFodStatus(FOD_STATUS_OFF);
+        LOG(DEBUG) << "FOD disabled after enrollment";
+    }
+
+    ~XiaomiSm6225UdfpsHandler() {
+        setFodStatus(FOD_STATUS_OFF);
+        setFingerDown(false);
+        LOG(INFO) << "XiaomiSm6225UdfpsHandler destroyed, FOD disabled";
     }
 
   private:
@@ -225,7 +272,12 @@ class XiaomiSm6225UdfpsHandler : public UdfpsHandler {
 
     void setFodStatus(int value) {
         int buf[MAX_BUF_SIZE] = {MI_DISP_PRIMARY, Touch_Fod_Enable, value};
-        ioctl(touch_fd_.get(), TOUCH_IOC_SET_CUR_VALUE, &buf);
+        int ret = ioctl(touch_fd_.get(), TOUCH_IOC_SET_CUR_VALUE, &buf);
+        if (ret < 0) {
+            LOG(ERROR) << "Failed to set FOD status to " << value << ", error: " << ret;
+        } else {
+            LOG(DEBUG) << "FOD status set to " << (value == FOD_STATUS_ON ? "ON" : "OFF");
+        }
     }
 
     void setFingerDown(bool pressed) {
@@ -233,9 +285,20 @@ class XiaomiSm6225UdfpsHandler : public UdfpsHandler {
         req.base.flag = 0;
         req.base.disp_id = MI_DISP_PRIMARY;
         req.local_hbm_value = pressed ? LHBM_TARGET_BRIGHTNESS_WHITE_1000NIT : LHBM_TARGET_BRIGHTNESS_OFF_FINGER_UP;
-        ioctl(disp_fd_.get(), MI_DISP_IOCTL_SET_LOCAL_HBM, &req);
+        int ret = ioctl(disp_fd_.get(), MI_DISP_IOCTL_SET_LOCAL_HBM, &req);
+        if (ret < 0) {
+            LOG(ERROR) << "Failed to set local HBM to " << (pressed ? "ON" : "OFF") << ", error: " << ret;
+        } else {
+            LOG(DEBUG) << "Local HBM set to " << (pressed ? "ON" : "OFF") << " for finger " << (pressed ? "down" : "up");
+        }
+
         int buf[MAX_BUF_SIZE] = {MI_DISP_PRIMARY, THP_FOD_DOWNUP_CTL, pressed ? 1 : 0};
-        ioctl(touch_fd_.get(), TOUCH_IOC_SET_CUR_VALUE, &buf);
+        ret = ioctl(touch_fd_.get(), TOUCH_IOC_SET_CUR_VALUE, &buf);
+        if (ret < 0) {
+            LOG(ERROR) << "Failed to set touch FOD down/up to " << (pressed ? "1" : "0") << ", error: " << ret;
+        } else {
+            LOG(DEBUG) << "Touch FOD down/up set to " << (pressed ? "1" : "0");
+        }
     }
 };
 
