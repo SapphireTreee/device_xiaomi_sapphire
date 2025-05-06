@@ -58,10 +58,6 @@ function blob_fixup() {
             [ "$2" = "" ] && return 0
             grep -q "android.hardware.security.rkp-V3-ndk.so" "${2}" || ${PATCHELF} --add-needed "android.hardware.security.rkp-V3-ndk.so" "${2}"
             ;;
-        vendor/lib64/hw/displayfeature.default.so)
-            [ "$2" = "" ] && return 0
-            "${PATCHELF}" --replace-needed "libstagefright_foundation.so" "libstagefright_foundation-v33.so" "${2}"
-            ;;
         vendor/bin/hw/vendor.qti.media.c2@1.0-service|vendor/bin/hw/vendor.qti.media.c2audio@1.0-service)
             [ "$2" = "" ] && return 0
             "${PATCHELF}" --replace-needed "libcodec2_hidl@1.0.so" "${2}"
