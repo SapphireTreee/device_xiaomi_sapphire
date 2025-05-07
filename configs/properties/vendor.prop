@@ -236,9 +236,6 @@ vendor.display.vds_allow_hwc=1
 vendor.gralloc.disable_ubwc=0
 vendor.gralloc.secure_preview_buffer_format=420_sp
 debug.sdm.support_writeback=0
-ro.hwui.texture_cache_size=72
-ro.hwui.layer_cache_size=48
-ro.hwui.r_buffer_cache_size=8
 
 # Displayfeature
 ro.vendor.all_modes.colorpick_adjust=true
