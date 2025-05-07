@@ -30,6 +30,12 @@ ro.vendor.qti.va_aosp.support=1
 debug.hwui.use_hint_manager=true
 debug.hwui.target_cpu_time_percent=30
 
+# enable tunnel encoding for amrwb
+tunnel.audio.encode=true
+
+#property to latch unsignaled buffer
+debug.sf.latch_unsignaled=1
+
 # HWUI
 ro.hwui.texture_cache_size=72
 ro.hwui.layer_cache_size=48
@@ -43,6 +49,7 @@ ro.hwui.text_small_cache_height=1024
 ro.hwui.text_large_cache_width=2048
 ro.hwui.text_large_cache_height=1024
 debug.hwui.skia_atrace_enabled=false
+config.disable_rtt=true
 
 # LMKD
 ro.config.low_ram=false
@@ -98,3 +105,6 @@ ro.hardware.wlan.dbs=0
 ro.hardware.wlan.mimo=0
 ro.hardware.wlan.vendor=qcom
 ro.hardware.wlan.chip=wcn3988
+
+# Dalvik
+ro.dalvik.vm.native.bridge=0

@@ -181,7 +181,7 @@ drm.service.enabled=true
 
 # Display
 debug.mdpcomp.logs=0
-debug.sf.auto_latch_unsignaled=1
+debug.sf.auto_latch_unsignaled=0
 debug.sf.latch_unsignaled=1
 debug.sf.enable_hwc_vds=1
 vendor.display.enable_hwc_vds=1
