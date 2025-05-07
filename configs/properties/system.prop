@@ -33,7 +33,7 @@ debug.hwui.target_cpu_time_percent=30
 # enable tunnel encoding for amrwb
 tunnel.audio.encode=true
 
-#property to latch unsignaled buffer
+# property to latch unsignaled buffer
 debug.sf.latch_unsignaled=1
 
 # HWUI
