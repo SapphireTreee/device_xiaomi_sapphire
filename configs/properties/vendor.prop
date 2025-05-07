@@ -182,10 +182,12 @@ drm.service.enabled=true
 # Display
 debug.mdpcomp.logs=0
 debug.sf.auto_latch_unsignaled=1
+debug.sf.latch_unsignaled=1
 debug.sf.enable_hwc_vds=1
 vendor.display.enable_hwc_vds=1
 ro.surface_flinger.refresh_rate_switching=true
 ro.surface_flinger.max_frame_buffer_acquired_buffers=3
+debug.sf.max_acquired_buffer_count=3
 vendor.display.disable_client_composition_cache=0
 debug.sf.enable_gl_backpressure=0
 debug.sf.enable_transaction_tracing=false
