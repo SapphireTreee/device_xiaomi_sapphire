@@ -332,6 +332,14 @@ PRODUCT_PACKAGES += \
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/rootdir/etc/fstab.qcom:$(TARGET_COPY_OUT_VENDOR_RAMDISK)/first_stage_ramdisk/fstab.qcom
 
+PRODUCT_PROPERTY_OVERRIDES += \
+    dalvik.vm.dex2oat-max-image-block-size=1048576 \
+    dalvik.vm.minidebuginfo=false \
+    dalvik.vm.dex2oat-minidebuginfo=false \
+    dalvik.vm.madvise.vdexfile.size=209715200 \
+    dalvik.vm.madvise.odexfile.size=209715200 \
+    dalvik.vm.dex2oat-threads=4
+
 # Kernel
 PRODUCT_SET_DEBUGFS_RESTRICTIONS := true
 PRODUCT_ENABLE_UFFD_GC := true
@@ -444,7 +452,7 @@ DEVICE_PACKAGE_OVERLAYS += \
 
 # Device-specific settings
  PRODUCT_PACKAGES += \
-     XiaomiParts
+    XiaomiParts
 
 # Partitions
 PRODUCT_USE_DYNAMIC_PARTITIONS := true
