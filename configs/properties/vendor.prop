@@ -235,6 +235,10 @@ vendor.display.vds_allow_hwc=1
 vendor.gralloc.disable_ubwc=0
 vendor.gralloc.secure_preview_buffer_format=420_sp
 debug.sdm.support_writeback=0
+ro.vendor.display.svi=1
+vendor.display.svi.config=1
+vendor.display.svi.config_path=/vendor/etc/SVIConfig.xml
+ro.vendor.display.sensortype=2
 
 # Displayfeature
 ro.vendor.all_modes.colorpick_adjust=true
