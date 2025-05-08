@@ -582,3 +582,7 @@ subsystem mi_display
 # hdmi cec hal
 /dev/cec*                                            0660    system  system
 /sys/devices/platform/soc/984000.i2c/i2c-0/0-002b    get_hpd_stat    0660   system   system
+
+# Camera torch
+/sys/class/leds/led:torch/brightness 0660 cameraserver camera
+
