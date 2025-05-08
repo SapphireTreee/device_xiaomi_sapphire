@@ -259,7 +259,7 @@ vendor.hw.fm.init=0
 
 # Fingerprint
 persist.vendor.fingerprint.type=udfps_optical
-persist.vendor.fingerprint.sensor_location=540|2109|105|0
+persist.vendor.fingerprint.sensor_location=540|2109|105
 persist.vendor.fingerprint.sensor_modules=fpc,goodix
 persist.vendor.fingerprint.detect_interaction=false
 persist.vendor.fingerprint.navigation_gesture=false
