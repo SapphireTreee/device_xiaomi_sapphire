@@ -59,9 +59,6 @@ AUDIO_FEATURE_ENABLED_PROXY_DEVICE := true
 
 TARGET_USES_QCOM_MM_AUDIO := true
 
-# Boot control
-$(call soong_config_set, ufsbsg, ufsframework, bsg)
-
 # Bootloader
 TARGET_BOOTLOADER_BOARD_NAME := bengal
 
