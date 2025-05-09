@@ -180,6 +180,8 @@ persist.vendor.dpm.vndr.idletimer.mode=default
 drm.service.enabled=true
 
 # Display
+debug.sf.hw=1
+debug.egl.hw=1
 debug.mdpcomp.logs=0
 debug.sf.auto_latch_unsignaled=0
 debug.sf.latch_unsignaled=1
