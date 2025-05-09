@@ -332,7 +332,6 @@ PRODUCT_PACKAGES += \
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/rootdir/etc/fstab.qcom:$(TARGET_COPY_OUT_VENDOR_RAMDISK)/first_stage_ramdisk/fstab.qcom
 
-
 # Dalvik
 PRODUCT_PROPERTY_OVERRIDES += \
     dalvik.vm.dex2oat-max-image-block-size=1048576 \
@@ -514,8 +513,8 @@ PRODUCT_PACKAGES += \
 
 # Suspend properties
 PRODUCT_PROPERTY_OVERRIDES += \
-    suspend.short_suspend_threshold_millis=2000 \
-    suspend.max_sleep_time_millis=40000 \
+    suspend.short_suspend_threshold_millis=3000 \
+    suspend.max_sleep_time_millis=30000 \
     suspend.short_suspend_backoff_enabled=true
 
 # Sensors
