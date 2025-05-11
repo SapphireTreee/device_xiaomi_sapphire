@@ -66,7 +66,7 @@ $(call soong_config_set, ufsbsg, ufsframework, bsg)
 TARGET_BOOTLOADER_BOARD_NAME := bengal
 
 # Camera
-TARGET_CAMERA_OVERRIDE_FORMAT_FROM_RESERVED := true
+$(soong_config_set camera override_format_from_reserved, true)
 
 # Display
 SOONG_CONFIG_NAMESPACES += qcomDisplayVars
