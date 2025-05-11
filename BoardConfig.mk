@@ -66,7 +66,7 @@ $(call soong_config_set, ufsbsg, ufsframework, bsg)
 TARGET_BOOTLOADER_BOARD_NAME := bengal
 
 # Camera
-$(soong_config_set camera override_format_from_reserved, true)
+$(call soong_config_set, camera, override_format_from_reserved, true)
 
 # Display
 SOONG_CONFIG_NAMESPACES += qcomDisplayVars
@@ -133,10 +133,10 @@ TARGET_KERNEL_HEADER_ARCH := arm64
 TARGET_KERNEL_VERSION := 5.15
 
 # Lineage Health
-TARGET_HEALTH_CHARGING_CONTROL_CHARGING_PATH := /sys/class/qcom-battery/input_suspend
-TARGET_HEALTH_CHARGING_CONTROL_CHARGING_ENABLED := 0
-TARGET_HEALTH_CHARGING_CONTROL_CHARGING_DISABLED := 1
-TARGET_HEALTH_CHARGING_CONTROL_SUPPORTS_BYPASS := false
+$(call soong_config_set, lineage_health, charging_control_charging_path, /sys/class/qcom-battery/input_suspend)
+$(call soong_config_set, lineage_health, charging_control_charging_enabled, 0)
+$(call soong_config_set, lineage_health, charging_control_charging_disabled, 1)
+$(call soong_config_set, lineage_health, charging_control_supports_bypass, false)
 
 # Metadata
 BOARD_USES_METADATA_PARTITION := true
