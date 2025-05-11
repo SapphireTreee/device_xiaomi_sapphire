@@ -14,15 +14,17 @@ $(call inherit-product, device/xiaomi/sapphire/device.mk)
 # Inherit some common Lineage stuff.
 $(call inherit-product, vendor/lineage/config/common_full_phone.mk)
 
-# Include our private certificate
--include vendor/lineage-priv/keys/keys.mk
-
-# Gapps
--include vendor/gapps/arm64/arm64-vendor.mk
-
 # Device configs
 TARGET_BOOT_ANIMATION_RES = 1080
 TARGET_HAS_UDFPS := true
+
+# Extra Stuffs
+TARGET_SUPPORTS_QUICK_TAP := true
+WITH_GMS := true
+TARGET_ENABLE_BLUR := false
+BUILD_BCR := false
+TARGET_INCLUDE_ACCORD := false
+EVO_BUILD_TYPE := Unofficial
 
 PRODUCT_NAME := lineage_sapphire
 PRODUCT_DEVICE := sapphire
