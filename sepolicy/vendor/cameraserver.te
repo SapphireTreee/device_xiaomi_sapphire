@@ -1,5 +1,4 @@
 type cameraserver_vendor_prop, file_type;
 allow cameraserver cameraserver_vendor_prop:file read;
-get_prop(cameraserver, vendor_default_prop)
 allow cameraserver sysfs_torch:file rw_file_perms;
 allow cameraserver sysfs_leds:dir r_dir_perms;
