@@ -81,6 +81,7 @@ ro.vendor.perf.scroll_opt=true
 
 # Radio
 DEVICE_PROVISIONED=1
+persist.rcs.supported=1
 persist.vendor.radio.atfwd.start=true
 ril.subscription.types=NV,RUIM
 rild.libpath=/vendor/lib64/libril-qc-hal-qmi.so
