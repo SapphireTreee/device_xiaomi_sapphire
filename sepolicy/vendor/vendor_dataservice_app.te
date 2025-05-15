@@ -1,1 +1,2 @@
-allow vendor_dataservice_app default_android_service:service_manager find;
+type vendor_dpmaidlservice, service_manager_type;
+allow vendor_dataservice_app vendor_dpmaidlservice:service_manager { find };
