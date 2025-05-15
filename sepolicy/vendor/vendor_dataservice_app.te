@@ -1,2 +1,0 @@
-type vendor_dpmaidlservice, service_manager_type;
-allow vendor_dataservice_app vendor_dpmaidlservice:service_manager { find };
