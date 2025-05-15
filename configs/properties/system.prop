@@ -40,6 +40,7 @@ debug.sf.latch_unsignaled=1
 ro.hwui.texture_cache_size=72
 ro.hwui.layer_cache_size=48
 ro.hwui.r_buffer_cache_size=8
+ro.hwui.max_texture_allocation_size=209715200
 ro.hwui.path_cache_size=32
 ro.hwui.gradient_cache_size=1
 ro.hwui.drop_shadow_cache_size=6
