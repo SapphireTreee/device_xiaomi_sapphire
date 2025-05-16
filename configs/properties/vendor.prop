@@ -1,4 +1,5 @@
 # Audio
+ro.vendor.audio.stereo_master_volume=1
 aaudio.hw_burst_min_usec=2000
 aaudio.mmap_exclusive_policy=2
 aaudio.mmap_policy=2
