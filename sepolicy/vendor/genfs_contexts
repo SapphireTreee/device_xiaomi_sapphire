@@ -75,7 +75,3 @@ genfscon sysfs /devices/platform/soc/4ac0000.qcom,qupv3_0_geni_se/4a84000.i2c/i2
 genfscon sysfs /devices/platform/soc/4ac0000.qcom,qupv3_0_geni_se/4a84000.i2c/i2c-0/0-004e/tcpc/type_c_port0/dual-role-type_c_port0/wakeup18 u:object_r:sysfs_wakeup:s0
 genfscon sysfs /devices/platform/soc/4ac0000.qcom,qupv3_0_geni_se/4a84000.i2c/i2c-0/0-004e/tcpc/type_c_port0/wakeup15 u:object_r:sysfs_wakeup:s0
 genfscon sysfs /devices/platform/soc/4ac0000.qcom,qupv3_0_geni_se/4a84000.i2c/i2c-0/0-0051/wakeup/wakeup19 u:object_r:sysfs_wakeup:s0
-
-# Camera Torch for sapphire
-genfscon sysfs /class/leds/led:torch/brightness      u:object_r:sysfs_torch:s0
-genfscon sysfs /class/leds/led:torch/max_brightness  u:object_r:sysfs_torch:s0
