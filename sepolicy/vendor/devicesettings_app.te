@@ -1,6 +1,3 @@
-type devicesettings_app, domain;
-app_domain(devicesettings_app)
-
 allow devicesettings_app vendor_sysfs_battery_supply:dir search;
 allow devicesettings_app vendor_sysfs_battery_supply:file r_file_perms;
 
