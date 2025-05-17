@@ -224,7 +224,7 @@ class XiaomiSm6225UdfpsHandler : public UdfpsHandler {
          * The finger down message is only reliably sent when the screen is turned off, so enable
          * fod_status better late than never.
          */
-        if (!isFpcFod && vendorCode == 21) {
+        if (!isFpcFod && vendorCode == 20 && vendorCode == 21) {
             setFodStatus(FOD_STATUS_ON);
         } else if (isFpcFod && vendorCode == 22) {
             setFodStatus(FOD_STATUS_ON);
