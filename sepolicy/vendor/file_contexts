@@ -51,4 +51,4 @@
 /vendor/bin/hw/vendor\.lineage\.touch@1\.0-service\.xiaomi u:object_r:hal_lineage_touch_default_exec:s0
 
 # Process and system statistics files
-/proc/stat u:object_r:proc_stat:s0
+/proc/stat u:object_r:proc_stat:s0                                u:object_r:vendor_sysfs_graphics:s0
