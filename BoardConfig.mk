@@ -67,7 +67,6 @@ TARGET_BOOTLOADER_BOARD_NAME := bengal
 
 # Camera
 $(call soong_config_set, camera, override_format_from_reserved, true)
-TARGET_CAMERA_SERVICE_EXT_LIB := //$(DEVICE_PATH):libcameraservice_extension.sapphire
 
 # Display
 SOONG_CONFIG_NAMESPACES += qcomDisplayVars
