@@ -23,6 +23,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.ContentObserver;
+import android.hardware.display.DisplayManager;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.UserHandle;
