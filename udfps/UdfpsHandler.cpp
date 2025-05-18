@@ -43,7 +43,6 @@ using ::aidl::android::hardware::biometrics::fingerprint::AcquiredInfo;
 
 namespace {
 
-
 static bool readBool(int fd) {
     char c;
     int rc;
@@ -94,7 +93,7 @@ class XiaomiSm6225UdfpsHandler : public UdfpsHandler {
 
         setFodStatus(FOD_STATUS_ON);
 
-        // Thread to notify fingeprint hwmodule about fod presses
+        // Thread to notify fingerprint hwmodule about fod presses
         std::thread([this]() {
             int fd = open(FOD_PRESS_STATUS_PATH, O_RDONLY);
             if (fd < 0) {
