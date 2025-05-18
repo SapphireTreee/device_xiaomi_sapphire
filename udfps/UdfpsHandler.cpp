@@ -1,3 +1,4 @@
+
 /*
  * Copyright (C) 2022-2024 The LineageOS Project
  *
@@ -14,7 +15,6 @@
 #include <sys/ioctl.h>
 #include <fstream>
 #include <thread>
-#include <chrono>
 
 #include "mi_disp.h"
 #include "UdfpsHandler.h"
@@ -43,6 +43,7 @@
 using ::aidl::android::hardware::biometrics::fingerprint::AcquiredInfo;
 
 namespace {
+
 
 static bool readBool(int fd) {
     char c;
@@ -94,7 +95,7 @@ class XiaomiSm6225UdfpsHandler : public UdfpsHandler {
 
         setFodStatus(FOD_STATUS_ON);
 
-        // Thread to notify fingerprint hwmodule about fod presses
+        // Thread to notify fingeprint hwmodule about fod presses
         std::thread([this]() {
             int fd = open(FOD_PRESS_STATUS_PATH, O_RDONLY);
             if (fd < 0) {
@@ -120,8 +121,7 @@ class XiaomiSm6225UdfpsHandler : public UdfpsHandler {
                                 pressed ? PARAM_FOD_PRESSED : PARAM_FOD_RELEASED);
             }
         }).detach();
-
-        // Thread to listen for fod ui changes
+         // Thread to listen for fod ui changes
         std::thread([this]() {
             int fd = open(DISP_FEATURE_PATH, O_RDWR);
             if (fd < 0) {
@@ -172,7 +172,6 @@ class XiaomiSm6225UdfpsHandler : public UdfpsHandler {
 
     void onFingerDown(uint32_t /*x*/, uint32_t /*y*/, float /*minor*/, float /*major*/) {
         LOG(INFO) << __func__;
-        setFodStatus(FOD_STATUS_ON); // Enable FOD for touch
         setFingerDown(true);
     }
 
@@ -183,64 +182,37 @@ class XiaomiSm6225UdfpsHandler : public UdfpsHandler {
 
     void onAcquired(int32_t result, int32_t vendorCode) {
         LOG(INFO) << __func__ << " result: " << result << " vendorCode: " << vendorCode;
-        LOG(DEBUG) << "AcquiredInfo: " << result;
         if (static_cast<AcquiredInfo>(result) == AcquiredInfo::GOOD) {
-            LOG(DEBUG) << "Fingerprint acquired successfully, resetting sensor";
             setFingerDown(false);
-            if (!isEnrolling) {
-                LOG(DEBUG) << "Not in enrollment, disabling FOD";
-                setFodStatus(FOD_STATUS_OFF); // Disable FOD after successful auth
-                int buf[MAX_BUF_SIZE] = {MI_DISP_PRIMARY, THP_FOD_DOWNUP_CTL, 0};
-                ioctl(touch_fd_.get(), TOUCH_IOC_SET_CUR_VALUE, &buf); // Reset touch
-            }
-        } else if (static_cast<AcquiredInfo>(result) == AcquiredInfo::TOO_FAST ||
-                   static_cast<AcquiredInfo>(result) == AcquiredInfo::INSUFFICIENT) {
-            LOG(DEBUG) << "Non-authentication touch detected, delaying FOD disable";
-            std::this_thread::sleep_for(std::chrono::milliseconds(100)); // Allow retries
-            setFingerDown(false);
-            setFodStatus(FOD_STATUS_OFF); // Disable FOD for casual touches
-            int buf[MAX_BUF_SIZE] = {MI_DISP_PRIMARY, THP_FOD_DOWNUP_CTL, 0};
-            ioctl(touch_fd_.get(), TOUCH_IOC_SET_CUR_VALUE, &buf); // Reset touch
         }
+
     }
 
     void cancel() {
         LOG(INFO) << __func__;
-        isEnrolling = false;
         setFingerDown(false);
-        setFodStatus(FOD_STATUS_OFF); // Ensure FOD is disabled on cancel
-        int buf[MAX_BUF_SIZE] = {MI_DISP_PRIMARY, THP_FOD_DOWNUP_CTL, 0};
-        ioctl(touch_fd_.get(), TOUCH_IOC_SET_CUR_VALUE, &buf); // Reset touch
     }
 
     void preEnroll() {
         LOG(DEBUG) << __func__;
-        isEnrolling = true;
     }
 
     void enroll() {
         LOG(DEBUG) << __func__;
-        isEnrolling = true; // Track enrollment
     }
 
     void postEnroll() {
         LOG(DEBUG) << __func__;
-        isEnrolling = false; // End enrollment
-        setFodStatus(FOD_STATUS_OFF); // Disable FOD after enrollment
-        int buf[MAX_BUF_SIZE] = {MI_DISP_PRIMARY, THP_FOD_DOWNUP_CTL, 0};
-        ioctl(touch_fd_.get(), TOUCH_IOC_SET_CUR_VALUE, &buf); // Reset touch
     }
 
   private:
     fingerprint_device_t* mDevice;
     android::base::unique_fd touch_fd_;
     android::base::unique_fd disp_fd_;
-    bool isEnrolling = false; // Track enrollment state
 
     void setFodStatus(int value) {
         int buf[MAX_BUF_SIZE] = {MI_DISP_PRIMARY, Touch_Fod_Enable, value};
         ioctl(touch_fd_.get(), TOUCH_IOC_SET_CUR_VALUE, &buf);
-        LOG(DEBUG) << "setFodStatus: value=" << value;
     }
 
     void setFingerDown(bool pressed) {
@@ -251,7 +223,6 @@ class XiaomiSm6225UdfpsHandler : public UdfpsHandler {
         ioctl(disp_fd_.get(), MI_DISP_IOCTL_SET_LOCAL_HBM, &req);
         int buf[MAX_BUF_SIZE] = {MI_DISP_PRIMARY, THP_FOD_DOWNUP_CTL, pressed ? 1 : 0};
         ioctl(touch_fd_.get(), TOUCH_IOC_SET_CUR_VALUE, &buf);
-        LOG(DEBUG) << "setFingerDown: pressed=" << pressed;
     }
 };
 
