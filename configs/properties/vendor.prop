@@ -263,6 +263,7 @@ persist.vendor.fingerprint.navigation_gesture=false
 persist.vendor.fingerprint.udfps.display_touch=false
 persist.vendor.fingerprint.udfps.control_illumination=true
 persist.vendor.fingerprint.sensor_strength=2
+persist.vendor.fingerprint.sensor_id=0
 
 # FRP
 ro.frp.pst=/dev/block/bootdevice/by-name/frp
