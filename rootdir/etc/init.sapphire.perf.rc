@@ -1,81 +1,39 @@
 on init
     copy_per_line /dev/cpuctl/tasks /dev/cpuctl/system/tasks
 
-# Migrate tasks again in case kernel threads are created during boot
+    Boot time uclamp tuning
+    write /dev/cpuctl/top-app/cpu.uclamp.min 15.90
+    write /dev/cpuctl/foreground/cpu.uclamp.min 15.90
+    write /dev/cpuctl/system/cpu.uclamp.min 15.90
+    write /dev/cpuctl/nnapi-hal/cpu.uclamp_min 51.20
+    write /proc/sys/kernel/sched_util_clamp_min_rt_default 0
+
 on property:sys.boot_completed=1
     copy_per_line /dev/cpuctl/tasks /dev/cpuctl/system/tasks
 
 on property:vendor.post_boot.parsed=1
     exec u:r:vendor_qti_init_shell:s0 -- /vendor/bin/init.sapphire_perf.sh
-
-    # Disable native stats collection service
     stop statsd
 
-    # cpuset parameters
-    write /dev/cpuset/background/cpus 2-3
-    write /dev/cpuset/system-background/cpus 0-3
-    write /dev/cpuset/foreground/cpus 0-2,5-7
-    write /dev/cpuset/foreground/boost/cpus 4-7
-    write /dev/cpuset/top-app/cpus 0-7
-
-    # configure input boost settings
-    write /proc/sys/walt/input_boost/input_boost_ms 200
-    write /proc/sys/walt/input_boost/powerkey_input_boost_ms 500
-
-    # CPUFreq
-    write /sys/devices/system/cpu/cpufreq/policy0/walt/up_rate_limit_us 500
-    write /sys/devices/system/cpu/cpufreq/policy0/walt/down_rate_limit_us 20000
-    write /sys/devices/system/cpu/cpufreq/policy4/walt/up_rate_limit_us 500
-    write /sys/devices/system/cpu/cpufreq/policy4/walt/down_rate_limit_us 10000
-
-    # Configure uclamp
+    Uclamp and CPU shares
     write /dev/cpuctl/top-app/cpu.uclamp.min 1.00
     write /dev/cpuctl/foreground/cpu.uclamp.min 0.00
     write /dev/cpuctl/top-app/cpu.uclamp.latency_sensitive 1
     write /dev/cpuctl/background/cpu.uclamp.max 512
     write /dev/cpuctl/system-background/cpu.uclamp.max 512
     write /dev/cpuctl/dex2oat/cpu.uclamp.max 615
-    # Setup cpu.shares to throttle background groups (bg ~ 5% sysbg ~ 5% dex2oat ~2.5%)
     write /dev/cpuctl/background/cpu.shares 1024
     write /dev/cpuctl/system-background/cpu.shares 1024
     write /dev/cpuctl/dex2oat/cpu.shares 512
     write /dev/cpuctl/system/cpu.shares 20480
-    # We only have system and background groups holding tasks and the groups below are empty
     write /dev/cpuctl/camera-daemon/cpu.shares 20480
     write /dev/cpuctl/foreground/cpu.shares 20480
     write /dev/cpuctl/nnapi-hal/cpu.shares 20480
     write /dev/cpuctl/rt/cpu.shares 20480
     write /dev/cpuctl/top-app/cpu.shares 20480
 
-    # Disable vblank IRQ immediately after turning off
+    Miscellaneous
     write /sys/module/drm/parameters/vblankoffdelay -1
-
-    # Disable multiple kswapd threads
     write /proc/sys/vm/kswapd_threads 1
-
-    # IRQ Tuning
-    # IRQ 218: msm_drm0 -> CPU 6
-    # IRQ 209: kgsl_3d0_irq -> CPU 7
     write /proc/irq/209/smp_affinity_list 7
     write /proc/irq/218/smp_affinity_list 6
-
-on init
-    # Boot time uclamp tuning
-    write /dev/cpuctl/top-app/cpu.uclamp.min 15.90
-    write /dev/cpuctl/foreground/cpu.uclamp.min 15.90
-    write /dev/cpuctl/system/cpu.uclamp.min 15.90
-    write /dev/cpuctl/nnapi-hal/cpu.uclamp_min 51.20
-
-    # RT uclamp setting
-    write /proc/sys/kernel/sched_util_clamp_min_rt_default 0
-
-# ZRAM
-on property:sys.boot_completed=1
-    # Set swappiness to 60
-    write /proc/sys/vm/swappiness 60
-    # Set zRAM compression algorithm to lzo-rle
-    write /sys/block/zram0/comp_algorithm lzo-rle
-    # Enable zRAM data deduplication feature
-    write /sys/block/zram0/use_dedup 0
-    # Mount swap partitions specified in fstab
-    swapon_all /vendor/etc/fstab.zram
