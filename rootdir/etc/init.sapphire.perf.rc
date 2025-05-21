@@ -1,7 +1,7 @@
 on init
     copy_per_line /dev/cpuctl/tasks /dev/cpuctl/system/tasks
 
-    Boot time uclamp tuning
+    # Boot time uclamp tuning
     write /dev/cpuctl/top-app/cpu.uclamp.min 15.90
     write /dev/cpuctl/foreground/cpu.uclamp.min 15.90
     write /dev/cpuctl/system/cpu.uclamp.min 15.90
@@ -17,7 +17,7 @@ on property:vendor.post_boot.parsed=1
     # Disable native stats collection servic
     stop statsd
 
-    Uclamp and CPU shares
+    # Uclamp and CPU shares
     write /dev/cpuctl/top-app/cpu.uclamp.min 1.00
     write /dev/cpuctl/foreground/cpu.uclamp.min 0.00
     write /dev/cpuctl/top-app/cpu.uclamp.latency_sensitive 1
@@ -34,7 +34,7 @@ on property:vendor.post_boot.parsed=1
     write /dev/cpuctl/rt/cpu.shares 20480
     write /dev/cpuctl/top-app/cpu.shares 20480
 
-    Miscellaneous
+    # Miscellaneous
     write /sys/module/drm/parameters/vblankoffdelay -1
     write /proc/sys/vm/kswapd_threads 1
     write /proc/irq/209/smp_affinity_list 7
