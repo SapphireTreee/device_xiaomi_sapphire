@@ -184,6 +184,21 @@ function configure_memory_parameters() {
     else
 		echo 4096 > /proc/sys/vm/min_free_kbytes
     fi
+  extra_free_kbytes_backup_enable=`getprop persist.vendor.spc.mi_extra_free_enable`
+  MIN_PERCPU_PAGELIST_HIGH_FRACTION=8
+
+  if [ "true" = ${extra_free_kbytes_backup_enable} ]; then
+          echo `cat /proc/sys/vm/min_free_kbytes` " " `cat /proc/sys/vm/watermark_scale_factor` " -1" > /sys/kernel/mi_wmark/extra_free_kbytes
+          cat /proc/sys/vm/lowmem_reserve_ratio > /proc/sys/vm/lowmem_reserve_ratio
+
+          percpu_pagelist_high_fraction=`cat /proc/sys/vm/percpu_pagelist_high_fraction`
+          new_percpu_pagelist_high_fraction=${percpu_pagelist_high_fraction}
+          [ ${percpu_pagelist_high_fraction} -lt ${MIN_PERCPU_PAGELIST_HIGH_FRACTION} ] && new_percpu_pagelist_high_fraction=${MIN_PERCPU_PAGELIST_HIGH_FRACTION}
+          let new_percpu_pagelist_high_fraction++
+          echo ${new_percpu_pagelist_high_fraction} > /proc/sys/vm/percpu_pagelist_high_fraction
+          echo ${percpu_pagelist_high_fraction} > /proc/sys/vm/percpu_pagelist_high_fraction
+
+  fi
 }
 
 function start_hbtp()
@@ -290,6 +305,13 @@ echo 1516800 > /sys/devices/system/cpu/cpufreq/policy0/walt/hispeed_freq
 echo 691200 > /sys/devices/system/cpu/cpufreq/policy0/scaling_min_freq
 echo 1 > /sys/devices/system/cpu/cpufreq/policy0/walt/pl
 echo 0 > /sys/devices/system/cpu/cpufreq/policy0/walt/rtg_boost_freq
+
+# configure input boost settings
+echo 1190000 0 0 0 0 0 0 0 > /proc/sys/walt/input_boost/input_boost_freq
+echo 120 > /proc/sys/walt/input_boost/input_boost_ms
+
+echo 1516800 0 0 0 2208000 0 0 0 > /proc/sys/walt/input_boost/powerkey_input_boost_freq
+echo 400 > /proc/sys/walt/input_boost/powerkey_input_boost_ms
 
 # configure governor settings for gold cluster
 echo "walt" > /sys/devices/system/cpu/cpufreq/policy4/scaling_governor
