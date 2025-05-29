@@ -403,6 +403,3 @@ ro.vendor.qti.cgroup_follow.enable=true
 persist.vendor.qti.inputopts.enable=true
 persist.vendor.qti.inputopts.movetouchslop=0.55
 ro.qcom.adreno.qgl.ShaderStorageImageExtendedFormats=0
-
-# Sensors
-ro.vendor.sensors.xiaomi.udfps=true
