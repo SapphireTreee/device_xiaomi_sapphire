@@ -121,4 +121,3 @@ dalvik.vm.useartservice=true
 dalvik.vm.enable_pr_dexopt=true
 dalvik.vm.isolatedprocesses=true
 dalvik.vm.lockssuppression=true
-dalvik.vm.dex2oat-flags=--inline-max-code-units=0
