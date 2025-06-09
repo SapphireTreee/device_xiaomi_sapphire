@@ -366,8 +366,6 @@ zygote.critical_window.minute=10
 ro.hwui.disable_scissor_opt=false
 ro.min_pointer_dur=6
 sys.use_fifo_ui=1
-persist.sys.lgospd.enable=0
-persist.sys.pcsync.enable=0
 persist.sys.scrollingcache=3
 windowsmgr.max_event_per_sec=240
 
