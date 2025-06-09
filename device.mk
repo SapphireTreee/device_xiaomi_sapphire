@@ -342,8 +342,7 @@ PRODUCT_PROPERTY_OVERRIDES += \
     dalvik.vm.minidebuginfo=false \
     dalvik.vm.dex2oat-minidebuginfo=false \
     dalvik.vm.madvise.vdexfile.size=209715200 \
-    dalvik.vm.madvise.odexfile.size=209715200 \
-    dalvik.vm.dex2oat-threads=4
+    dalvik.vm.madvise.odexfile.size=209715200
 
 # Kernel
 PRODUCT_SET_DEBUGFS_RESTRICTIONS := true
