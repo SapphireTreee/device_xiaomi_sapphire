@@ -96,7 +96,6 @@ ro.soc.manufacturer=QTI
 persist.vendor.sensors.enable.mag_filter=true
 
 # SSR
-persist.vendor.ssr.enable_ramdumps=1
 persist.vendor.ssr.restart_level=ALL_ENABLE
 
 # WLAN
