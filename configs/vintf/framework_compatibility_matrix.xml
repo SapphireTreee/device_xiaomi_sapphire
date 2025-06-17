@@ -71,13 +71,6 @@
         </interface>
     </hal>
     <hal format="hidl" optional="true">
-        <name>android.hardware.graphics.allocator</name>
-        <interface>
-            <name>IComposer</name>
-            <instance>default</instance>
-        </interface>
-    </hal>
-    <hal format="hidl" optional="true">
         <name>android.hardware.graphics.composer</name>
         <version>2.1</version>
         <interface>
@@ -86,13 +79,13 @@
         </interface>
     </hal>
     <hal format="hidl" optional="true">
-    <name>android.hardware.dumpstate</name>
-    <version>1.0-1.1</version>
-    <interface>
-        <name>IDumpstateDevice</name>
-        <instance>default</instance>
-    </interface>
-</hal>
+       <name>android.hardware.dumpstate</name>
+       <version>1.0-1.1</version>
+       <interface>
+           <name>IDumpstateDevice</name>
+           <instance>default</instance>
+        </interface>
+    </hal>
     <hal format="hidl" optional="true">
         <name>android.hardware.radio</name>
         <version>1.0-4</version>
