@@ -102,7 +102,7 @@
     <integer-array name="config_availableColorModes">
         <item>258</item> <!-- vivid -->
         <item>256</item> <!-- saturated -->
-        <item>257</item> <!-- NATURAL -->
+        <item>257</item> <!-- Natural -->
     </integer-array>
 
     <!-- Is the device capable of hot swapping an UICC Card -->
