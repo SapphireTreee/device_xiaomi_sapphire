@@ -14,3 +14,4 @@ allow vendor_hal_perf_default surfaceflinger:process setsched;
 allow vendor_hal_perf_default hal_audio_default:dir { search read write };
 allow vendor_hal_perf_default hal_audio_default:file { open read write };
 allow vendor_hal_perf_default sysfs:file { open read getattr };
+allow vendor_hal_perf_default su:dir { search };
