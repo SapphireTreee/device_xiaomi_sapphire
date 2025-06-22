@@ -258,7 +258,7 @@ vendor/lib64/vendor.qti.hardware.mwqemadapter@1.0.so
 vendor/lib64/vendor.qti.hardware.slmadapter@1.0.so
 
 # Camera
-system/lib64/libpiex.so:vendor/lib64/libpiex.so
+system/lib64/libpiex.so
 vendor/lib64/camera/com.qti.sensor.n7_aac_gc16b3c_front_iii.so
 vendor/lib64/camera/com.qti.sensor.n7_aac_ov16a1q_front_i.so
 vendor/lib64/camera/com.qti.sensor.n7_aac_s5k4h7_ultra_i.so
