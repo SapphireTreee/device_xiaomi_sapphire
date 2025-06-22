@@ -10,7 +10,7 @@ Redmi Note 13 4G was announced and released in January 2024.
 ## Device specifications
 
 | Device                  | Xiaomi Redmi Note 13 4G                             |
-| ----------------------: | --------------------------------------------------: |
+| :---------------------- | :-------------------------------------------------- |
 | SoC                     | Qualcomm SM6225 Snapdragon 685 (6 nm)               |
 | CPU                     | 4x2.8 GHz Cortex-A73 & 4x1.9 GHz Cortex-A53         |
 | GPU                     | Adreno 610                                          |
