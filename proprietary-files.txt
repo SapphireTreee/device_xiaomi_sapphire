@@ -97,7 +97,7 @@ vendor/bin/agmhostless
 vendor/bin/agmplay
 vendor/bin/cplay
 vendor/lib64/libagmclient.so
- vendor/lib64/libagmmixer.so
+vendor/lib64/libagmmixer.so
 vendor/lib64/libagm_compress_plugin.so
 vendor/lib64/libagm_mixer_plugin.so
 vendor/lib64/libagm_pcm_plugin.so
@@ -105,6 +105,7 @@ vendor/lib64/libagmclient.so
 vendor/lib64/libagmmixer.so
 -vendor/lib64/vendor.qti.hardware.AGMIPC@1.0-impl.so
 vendor/lib64/vendor.qti.hardware.AGMIPC@1.0.so
+vendor/lib64/libkaraokepal.so
 
 # Audio SoundFX
 vendor/lib64/soundfx/libasphere.so
