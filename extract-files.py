@@ -37,17 +37,6 @@ def lib_fixup_vendor_suffix(lib: str, partition: str, *args, **kwargs): # fmt: s
 
 lib_fixups: lib_fixups_user_type = {
     **lib_fixups,
-    (
-        'com.qualcomm.qti.dpm.api@1.0',
-        'vendor.qti.diaghal@1.0',
-        'vendor.qti.hardware.fm@1.0',
-        'vendor.qti.hardware.qccsyshal@1.0',
-        'vendor.qti.hardware.qccsyshal@1.1',
-        'vendor.qti.hardware.qccsyshal@1.2',
-        'vendor.qti.hardware.qccvndhal@1.0',
-        'vendor.qti.imsrtpservice@3.0',
-        'vendor.qti.imsrtpservice@3.1',
-    ): lib_fixup_vendor_suffix,
 }
 
 blob_fixups: blob_fixups_user_type = {
