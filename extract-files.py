@@ -79,10 +79,25 @@ blob_fixups: blob_fixups_user_type = {
         .add_needed('libprocessgroup_shim.so'),
     'vendor/etc/init/android.hardware.gnss-aidl-service-qti.rc': blob_fixup()
         .regex_replace('group system gps radio vendor_qti_diag vendor_ssgtzd', 'group system gps radio vendor_qti_diag'),
-    'vendor/bin/STFlashTool': blob_fixup()
+    ('vendor/bin/STFlashTool', 'vendor/lib64/libstfactory-vendor.so'): blob_fixup()
         .add_needed('libbase_shim.so'),
     'vendor/lib64/libwvhidl.so': blob_fixup()
-        .add_needed('libcrypto_shim.so')
+        .add_needed('libcrypto_shim.so'),
+    (
+        'vendor/lib64/libalLDC.so',
+        'vendor/lib64/libalhLDC.so',
+        'vendor/lib64/libmorpho_ldc.so',
+        'vendor/lib64/libmorpho_Ldc.so',
+        'vendor/lib64/libmorpho_ubwc.so',
+        'vendor/lib64/libTrueSight.so',
+    ): blob_fixup()
+        .clear_symbol_version('AHardwareBuffer_acquire')
+        .clear_symbol_version('AHardwareBuffer_allocate')
+        .clear_symbol_version('AHardwareBuffer_describe')
+        .clear_symbol_version('AHardwareBuffer_lock')
+        .clear_symbol_version('AHardwareBuffer_lockPlanes')
+        .clear_symbol_version('AHardwareBuffer_release')
+        .clear_symbol_version('AHardwareBuffer_unlock')
 }  # fmt: skip
 
 module = ExtractUtilsModule(
