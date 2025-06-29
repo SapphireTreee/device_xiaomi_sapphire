@@ -236,17 +236,6 @@ vendor.display.svi.config=1
 vendor.display.svi.config_path=/vendor/etc/SVIConfig.xml
 ro.vendor.display.sensortype=2
 
-# Displayfeature
-ro.vendor.all_modes.colorpick_adjust=true
-ro.vendor.bcbc.enable=true
-ro.vendor.cabc.enable=false
-ro.vendor.colorpick_adjust=true
-ro.vendor.histogram.enable=true
-ro.vendor.mi_sf.aosp_vrr_support=false
-ro.vendor.whitepoint_calibration_enable=true
-ro.vendor.xiaomi.bl.poll=true
-sys.displayfeature_hidl=true
-
 # Enable Incremental
 ro.incremental.enable=true
 
