@@ -64,8 +64,6 @@ lib_fixups: lib_fixups_user_type = {
 blob_fixups: blob_fixups_user_type = {
     ('vendor/bin/hw/android.hardware.security.keymint-service-qti', 'vendor/lib64/libqtikeymint.so'): blob_fixup()
         .add_needed('android.hardware.security.rkp-V3-ndk.so'),
-    ('vendor/lib64/hw/displayfeature.default.so'): blob_fixup()
-        .replace_needed('libstagefright_foundation.so', 'libstagefright_foundation-v33.so'),
     'libcodec2_hidl@1.0.so': blob_fixup()
         .add_needed('libshim.so'),
     'vendor/lib64/vendor.libdpmframework.so': blob_fixup()
