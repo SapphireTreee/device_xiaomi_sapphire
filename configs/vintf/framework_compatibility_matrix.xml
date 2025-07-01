@@ -73,7 +73,7 @@
     <hal format="hidl" optional="true">
         <name>android.hardware.graphics.allocator</name>
         <interface>
-            <name>IComposer</name>Add commentMore actions
+            <name>IComposer</name>
             <instance>default</instance>
         </interface>
     </hal>
