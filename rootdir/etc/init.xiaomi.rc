@@ -13,15 +13,20 @@ on post-fs-data
     mkdir /data/vendor/fingerprint 0770 system system
     mkdir /mnt/vendor/persist/goodix 0770 system system
     mkdir /mnt/vendor/persist/fpc 0770 system system
-    mkdir /data/vendor/nfc 0770 nfc nfc
 
 # For the NFC variant (sapphiren)
 on post-fs && property:ro.boot.hwname=sapphiren
     start stflashtool
     setprop ro.vendor.se.type HCE,UICC
     setprop ro.nfc.port I2C
-    # No 'start nfc_hal_service' here, as we assume it auto-starts via its class.
-    # We just ensure it's NOT stopped for this variant.
+    # The main NFC HAL service (vendor.st_nfc_hal_service) auto-starts via its 'hal' class.
+    # This section ensures all other necessary NFC components are initialized and that
+    # the HAL service is not stopped for the NFC-enabled variant
+
+# For the NFC variant (sapphiren) - data directory setup
+# This must be on post-fs-data as it creates a directory in /data
+on post-fs-data && property:ro.boot.hwname=sapphiren
+    mkdir /data/vendor/nfc 0770 nfc nfc
 
 # For the non-NFC variant (sapphire)
 # It's crucial to stop nfc_hal_service as early as possible if it auto-starts.
@@ -30,7 +35,6 @@ on boot && property:ro.boot.hwname=sapphire
     # Explicitly stop the NFC HAL service for the non-NFC variant.
     # This prevents it from running if it auto-starts due to its source definition.
     stop vendor.st_nfc_hal_service
-    stop nfc_hal_service
     # Optionally, explicitly clear the SE type property for non-NFC variants.
     setprop ro.vendor.se.type ""
 
