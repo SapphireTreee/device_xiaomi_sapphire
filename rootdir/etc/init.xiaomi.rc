@@ -28,6 +28,7 @@ on post-fs && property:ro.boot.hwname=sapphiren
 on boot && property:ro.boot.hwname=sapphire
     # Explicitly stop the NFC HAL service for the non-NFC variant.
     # This prevents it from running if it auto-starts due to its source definition.
+    stop vendor.st_nfc_hal_service
     stop nfc_hal_service
     # Optionally, explicitly clear the SE type property for non-NFC variants.
     setprop ro.vendor.se.type ""
