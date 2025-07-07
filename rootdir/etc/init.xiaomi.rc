@@ -19,6 +19,7 @@ on post-fs-data
 on post-fs && property:ro.boot.hwname=sapphiren
     start stflashtool
     setprop ro.vendor.se.type HCE,UICC
+    setprop ro.nfc.port I2C
     # No 'start nfc_hal_service' here, as we assume it auto-starts via its class.
     # We just ensure it's NOT stopped for this variant.
 

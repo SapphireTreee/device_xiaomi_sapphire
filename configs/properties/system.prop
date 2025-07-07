@@ -68,9 +68,6 @@ media.stagefright.enable-qcp=true
 media.stagefright.enable-scan=true
 media.stagefright.thumbnail.prefer_hw_codecs=true
 
-# NFC
-ro.nfc.port=I2C
-
 # NTP
 persist.backup.ntpServer="0.pool.ntp.org"
 
