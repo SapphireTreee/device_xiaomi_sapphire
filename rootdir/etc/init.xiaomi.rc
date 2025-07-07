@@ -19,9 +19,6 @@ on post-fs && property:ro.boot.hwname=sapphiren
     start stflashtool
     setprop ro.vendor.se.type HCE,UICC
     setprop ro.nfc.port I2C
-    # The main NFC HAL service (vendor.st_nfc_hal_service) auto-starts via its 'hal' class.
-    # This section ensures all other necessary NFC components are initialized and that
-    # the HAL service is not stopped for the NFC-enabled variant
 
 # For the NFC variant (sapphiren) - data directory setup
 # This must be on post-fs-data as it creates a directory in /data
