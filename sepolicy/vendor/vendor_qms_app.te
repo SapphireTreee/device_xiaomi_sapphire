@@ -1,2 +1,0 @@
-type vendor_qms_prop, property_type;
-allow vendor_qms_app vendor_qms_prop:file read;
