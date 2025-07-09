@@ -1,0 +1,1 @@
+allow vendor_qms_app default_prop:file read;
