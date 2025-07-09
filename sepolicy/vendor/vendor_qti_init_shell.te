@@ -4,7 +4,6 @@ allow vendor_qti_init_shell configfs:dir { add_name create write };
 # NECESSARY?
 allow vendor_qti_init_shell configfs:dir setattr;
 # END
-type sysfs_mem_sleep, sysfs_type, file_type;
 allow vendor_qti_init_shell device:dir r_dir_perms;
 allow vendor_qti_init_shell sysfs:file { write };
 allow vendor_qti_init_shell vendor_sysfs_msm_perf:file w_file_perms;
