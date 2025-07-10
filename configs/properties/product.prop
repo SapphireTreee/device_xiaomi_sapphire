@@ -29,3 +29,5 @@ ro.netflix.signup=1
 persist.vendor.radio.enable_temp_dds=true
 ro.vendor.radio.fastdormancy=true
 ro.vendor.radio.features_common=3
+
+ro.lmk.psi_complete_stall_ms=70
