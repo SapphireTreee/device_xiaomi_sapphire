@@ -20,9 +20,6 @@ $(call inherit-product, vendor/lineage/config/common_full_phone.mk)
 # Gapps
 -include vendor/gapps/arm64/arm64-vendor.mk
 
-# disable omx
-TARGET_SUPPORTS_OMX_SERVICE := false
-
 # Device configs
 TARGET_BOOT_ANIMATION_RES = 1080
 TARGET_HAS_UDFPS := true
