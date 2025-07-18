@@ -96,7 +96,6 @@ ro.hardware.wlan.chip=wcn3988
 # Dalvik
 ro.dalvik.vm.native.bridge=0
 dalvik.vm.dex2oat-resolve-startup-strings=true
-dalvik.vm.usap_pool_enabled=true
 dalvik.vm.madvise.artfile.size=4294967295
 dalvik.vm.usap_refill_threshold=1
 dalvik.vm.usap_pool_size_max=4
