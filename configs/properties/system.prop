@@ -31,7 +31,7 @@ debug.hwui.target_cpu_time_percent=30
 tunnel.audio.encode=true
 
 # property to latch unsignaled buffer
-debug.sf.latch_unsignaled=1
+debug.sf.latch_unsignaled=0
 
 # HWUI
 ro.hwui.texture_cache_size=72
