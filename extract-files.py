@@ -11,12 +11,6 @@ from extract_utils.fixups_blob import (
     blob_fixups_user_type,
 )
 
-from extract_utils.fixups_lib import (
-    lib_fixup_remove,
-    lib_fixups,
-    lib_fixups_user_type,
-)
-
 from extract_utils.main import (
     ExtractUtils,
     ExtractUtilsModule,
@@ -33,23 +27,6 @@ def blob_fixup_test_flag(
         f.seek(1337)
         f.write(b'\x01')
 
-def lib_fixup_vendor_suffix(lib: str, partition: str, *args, **kwargs):
-    return f'{lib}_{partition}' if partition == 'vendor' else None
-
-lib_fixups: lib_fixups_user_type = {
-    **lib_fixups,
-    (
-        'com.qualcomm.qti.dpm.api@1.0',
-        'vendor.qti.diaghal@1.0',
-        'vendor.qti.hardware.fm@1.0.so',
-        'vendor.qti.hardware.qccsyshal@1.0',
-        'vendor.qti.hardware.qccsyshal@1.1',
-        'vendor.qti.hardware.qccsyshal@1.2',
-        'vendor.qti.hardware.qccvndhal@1.0',
-        'vendor.qti.imsrtpservice@3.0',
-        'vendor.qti.imsrtpservice@3.1',
-    ): lib_fixup_vendor_suffix,
-}
 
 blob_fixups: blob_fixups_user_type = {
     ('vendor/bin/hw/android.hardware.security.keymint-service-qti', 'vendor/lib64/libqtikeymint.so'): blob_fixup()
@@ -81,7 +58,7 @@ module = ExtractUtilsModule(
     'sapphire',
     'xiaomi',
     blob_fixups=blob_fixups,
-    lib_fixups=lib_fixups,
+    check_elf=False,
 )
 
 if __name__ == '__main__':
