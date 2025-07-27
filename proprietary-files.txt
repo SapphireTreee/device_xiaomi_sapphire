@@ -880,6 +880,7 @@ vendor/lib64/libsdedrm.so
 vendor/lib64/libsdm-color.so
 vendor/lib64/libsdm-colormgr-algo.so
 vendor/lib64/libsdm-disp-vndapis.so
+vendor/lib64/libsdmcore.so
 vendor/lib64/libsdmextension.so
 vendor/lib64/libsdmutils.so
 vendor/lib64/libtinyxml.so
@@ -1273,6 +1274,8 @@ vendor/etc/init/vendor.qti.media.c2audio@1.0-service.rc
 vendor/etc/media_khaje_v0/video_system_specs.json
 vendor/etc/vintf/manifest/c2_manifest_vendor_audio.xml
 vendor/etc/vintf/manifest/c2_manifest_vendor_sapphire.xml:vendor/etc/vintf/manifest/c2_manifest_vendor.xml
+vendor/lib64/android.hardware.media.c2@1.0.so
+vendor/lib64/libmediautils_vendor.so
 vendor/lib64/libmmosal_vendor.so
 vendor/lib64/libmmrtpdecoder_vendor.so
 vendor/lib64/libmmrtpencoder_vendor.so
@@ -1367,6 +1370,7 @@ vendor/lib64/liblearningmodule.so
 vendor/lib64/liblightninglaunches.so
 vendor/lib64/liblmutils-ns.so
 vendor/lib64/libmemperfd.so
+vendor/lib64/libmemunreachable.so
 vendor/lib64/libmeters-ns.so
 vendor/lib64/libmeters.so
 vendor/lib64/libpasrutils.so
@@ -1557,6 +1561,7 @@ vendor/lib64/libconfigdb.so
 vendor/lib64/libdsi_netctrl.so
 vendor/lib64/libembmsservice.so
 vendor/lib64/libmdmdetect.so
+vendor/lib64/libnetfilter_conntrack.so
 vendor/lib64/libnetmgr.so
 vendor/lib64/libnetmgr_common.so
 vendor/lib64/libnetmgr_datapath_proxy.so
@@ -1569,6 +1574,7 @@ vendor/lib64/libnetmgrext_interface_server.so
 vendor/lib64/libnetmgrmodemproxy.so
 vendor/lib64/libnetmgrportutils.so
 vendor/lib64/libnetmgrxfrmutils.so
+vendor/lib64/libnfnetlink.so
 vendor/lib64/libnlnetmgr.so
 vendor/lib64/liboemaids_vendor.so
 vendor/lib64/libqcmaputils.so
