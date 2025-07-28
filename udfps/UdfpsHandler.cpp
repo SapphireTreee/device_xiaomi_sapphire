@@ -49,8 +49,10 @@
 #define TOUCH_IOC_SET_CUR_VALUE _IO(TOUCH_MAGIC, SET_CUR_VALUE) // IOCTL to set current value
 #define TOUCH_IOC_GET_CUR_VALUE _IO(TOUCH_MAGIC, GET_CUR_VALUE) // IOCTL to get current value
 
+// Define path for display feature driver
 #define DISP_FEATURE_PATH "/dev/mi_display/disp_feature"
 
+// Define path for FOD press status sysfs entry
 #define FOD_PRESS_STATUS_PATH "/sys/class/touch/touch_dev/fod_press_status"
 
 // MAX_BUF_SIZE is now correctly taken from xiaomi_touch.h
@@ -247,15 +249,9 @@ class XiaomiSm6225UdfpsHandler : public UdfpsHandler {
         });
     }
 
-    // New method: Called by the framework when an authentication operation is started.
-    void authenticate(uint64_t /*operationId*/, int32_t /*groupId*/) {
-        LOG(INFO) << __func__ << ": Authentication started. Enabling touch reporting.";
-        mIsFingerprintOperationActive.store(true); // Proactively enable reporting
-    }
-
     void onFingerDown(uint32_t /*x*/, uint32_t /*y*/, float /*minor*/, float /*major*/) {
-        LOG(INFO) << __func__ << ": Finger DOWN detected. Activating HBM.";
-        // mIsFingerprintOperationActive is now set in authenticate/preEnroll
+        LOG(INFO) << __func__ << ": Finger DOWN detected. Activating HBM and enabling touch reporting.";
+        mIsFingerprintOperationActive.store(true); // Enable reporting of FOD touches
         setFingerDown(true);
     }
 
@@ -272,9 +268,9 @@ class XiaomiSm6225UdfpsHandler : public UdfpsHandler {
             mIsFingerprintOperationActive.store(false); // Disable reporting of FOD touches
             setFingerDown(false);
         } else {
-            LOG(INFO) << __func__ << ": AcquiredInfo NOT GOOD. Keeping touch reporting active for retry.";
-            // If result is not GOOD, the operation is likely still ongoing (e.g., retry needed).
-            // Keep mIsFingerprintOperationActive true. It will be disabled on onFingerUp or cancel.
+            LOG(INFO) << __func__ << ": AcquiredInfo NOT GOOD. HBM state unchanged, touch reporting might remain active if finger still down.";
+            // If result is not GOOD, and finger might still be down, we don't necessarily disable
+            // touch reporting here. It will be disabled on onFingerUp or cancel.
         }
     }
 
@@ -285,17 +281,18 @@ class XiaomiSm6225UdfpsHandler : public UdfpsHandler {
     }
 
     void preEnroll() {
-        LOG(DEBUG) << __func__ << ": Pre-enrollment started. Enabling touch reporting.";
-        mIsFingerprintOperationActive.store(true); // Proactively enable reporting for enrollment
+        LOG(DEBUG) << __func__;
+        // No change to mIsFingerprintOperationActive here; it's managed by onFingerDown/Up/Acquired
     }
 
     void enroll() {
-        LOG(DEBUG) << __func__ << ": Enrollment in progress.";
-        // mIsFingerprintOperationActive is already set by preEnroll
+        LOG(DEBUG) << __func__;
+        // No change to mIsFingerprintOperationActive here
     }
 
     void postEnroll() {
-        LOG(DEBUG) << __func__ << ": Post-enrollment. Disabling touch reporting.";
+        LOG(DEBUG) << __func__;
+        LOG(INFO) << __func__ << ": Post-enrollment. Disabling touch reporting.";
         mIsFingerprintOperationActive.store(false); // Ensure touch reporting is off after enrollment session
     }
 
