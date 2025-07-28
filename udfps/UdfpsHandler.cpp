@@ -16,6 +16,7 @@
 #include <thread> // For creating new threads
 #include <atomic> // For atomic flags to control thread termination
 #include <vector> // To store std::thread objects for joining
+#include <chrono> // For std::chrono::milliseconds
 
 #include <display/drm/mi_disp.h> // Xiaomi display driver definitions
 
@@ -54,9 +55,7 @@
 // Define path for FOD press status sysfs entry
 #define FOD_PRESS_STATUS_PATH "/sys/class/touch/touch_dev/fod_press_status"
 
-// Define MAX_BUF_SIZE based on usage in setFodStatus and setFingerDown
-// Assuming the buffer needs to hold 3 integers: MI_DISP_PRIMARY, command, value
-#define MAX_BUF_SIZE 3
+// REMOVED: #define MAX_BUF_SIZE 3 // This macro is already defined in xiaomi_touch.h
 
 using ::aidl::android::hardware::biometrics::fingerprint::AcquiredInfo; // Alias for AcquiredInfo enum
 
@@ -144,12 +143,13 @@ class XiaomiSm6225UdfpsHandler : public UdfpsHandler {
         disp_fd_ = android::base::unique_fd(open(DISP_FEATURE_PATH, O_RDWR));
 
         // Check if file descriptors were opened successfully
-        if (!touch_fd_.is_valid()) {
+        // FIX: Replaced .is_valid() with .get() < 0 for compatibility
+        if (touch_fd_.get() < 0) {
             LOG(ERROR) << "Failed to open " << TOUCH_DEV_PATH << ", errno: " << errno;
             // Handle error: perhaps throw an exception or return an error status
             return;
         }
-        if (!disp_fd_.is_valid()) {
+        if (disp_fd_.get() < 0) {
             LOG(ERROR) << "Failed to open " << DISP_FEATURE_PATH << ", errno: " << errno;
             // Handle error
             return;
@@ -313,6 +313,7 @@ class XiaomiSm6225UdfpsHandler : public UdfpsHandler {
     // Helper function to set the FOD status (enable/disable)
     void setFodStatus(int value) {
         // Prepare buffer for IOCTL command: primary display, Touch_Fod_Enable command, value
+        // MAX_BUF_SIZE is now used from xiaomi_touch.h (likely 256), which is sufficient for 3 ints.
         int buf[MAX_BUF_SIZE] = {MI_DISP_PRIMARY, Touch_Fod_Enable, value};
         // Execute IOCTL to set the current value on the touch device
         ioctl(touch_fd_.get(), TOUCH_IOC_SET_CUR_VALUE, &buf);
@@ -329,6 +330,7 @@ class XiaomiSm6225UdfpsHandler : public UdfpsHandler {
         ioctl(disp_fd_.get(), MI_DISP_IOCTL_SET_LOCAL_HBM, &req);
 
         // Prepare buffer for IOCTL command: primary display, THP_FOD_DOWNUP_CTL command, 1 for pressed, 0 for released
+        // MAX_BUF_SIZE is now used from xiaomi_touch.h (likely 256), which is sufficient for 3 ints.
         int buf[MAX_BUF_SIZE] = {MI_DISP_PRIMARY, THP_FOD_DOWNUP_CTL, pressed ? 1 : 0};
         // Execute IOCTL to set the current value on the touch device
         ioctl(touch_fd_.get(), TOUCH_IOC_SET_CUR_VALUE, &buf);
