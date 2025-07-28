@@ -21,7 +21,7 @@
 #include <display/drm/mi_disp.h> // Xiaomi display driver definitions
 
 #include "UdfpsHandler.h" // Custom UdfpsHandler base class
-#include "xiaomi_touch.h" // Xiaomi touch driver definitions
+#include "xiaomi_touch.h" // Xiaomi touch driver definitions (provides MAX_BUF_SIZE, MODE_CMD, MODE_TYPE)
 
 // Define commands and parameters for display NIT (brightness) control
 #define COMMAND_NIT 10
@@ -40,12 +40,23 @@
 // Define paths and IOCTL commands for Xiaomi touch driver
 #define TOUCH_DEV_PATH "/dev/xiaomi-touch"
 #define TOUCH_MAGIC 'T' // Magic number for touch IOCTLs
-// NOTE: The _IO macro for TOUCH_IOC_SET_CUR_VALUE is highly suspicious if it's
-// intended to pass an array pointer. Typically, _IOW or _IOWR macros are used
-// when passing data structures. This might be a critical bug/vulnerability
-// if the kernel driver expects a different IOCTL type or argument.
-// This fix assumes the underlying driver expects an int array, but the IOCTL
-// definition itself might be incorrect for this usage.
+
+// !!! CRITICAL POTENTIAL BUG/VULNERABILITY WARNING !!!
+// The macro TOUCH_IOC_SET_CUR_VALUE is defined as _IO(TOUCH_MAGIC, SET_CUR_VALUE)
+// in the build system (or elsewhere not provided).
+// The _IO macro is for IOCTLs that take NO ARGUMENT or a simple integer argument.
+// However, the code passes a POINTER TO AN INT ARRAY (&buf) as the third argument.
+// This is a MISMATCH. The kernel driver will likely interpret the *address* of 'buf'
+// as the IOCTL argument, not the data within 'buf'.
+// This can lead to:
+// 1. Kernel crashes (most likely)
+// 2. Incorrect functionality (IOCTL does nothing or wrong thing)
+// 3. Potential security vulnerabilities (if the kernel misinterprets the address)
+//
+// To fix this, you MUST verify the actual kernel driver's definition for
+// TOUCH_IOC_SET_CUR_VALUE. It should almost certainly be defined using _IOW
+// (e.g., _IOW(TOUCH_MAGIC, SET_CUR_VALUE, int[MAX_BUF_SIZE])) or a specific struct.
+// Without the kernel driver source, this cannot be definitively fixed here.
 #define TOUCH_IOC_SET_CUR_VALUE _IO(TOUCH_MAGIC, SET_CUR_VALUE) // IOCTL to set current value
 #define TOUCH_IOC_GET_CUR_VALUE _IO(TOUCH_MAGIC, GET_CUR_VALUE) // IOCTL to get current value
 
@@ -55,7 +66,7 @@
 // Define path for FOD press status sysfs entry
 #define FOD_PRESS_STATUS_PATH "/sys/class/touch/touch_dev/fod_press_status"
 
-// REMOVED: #define MAX_BUF_SIZE 3 // This macro is already defined in xiaomi_touch.h
+// MAX_BUF_SIZE is now correctly taken from xiaomi_touch.h
 
 using ::aidl::android::hardware::biometrics::fingerprint::AcquiredInfo; // Alias for AcquiredInfo enum
 
@@ -313,9 +324,10 @@ class XiaomiSm6225UdfpsHandler : public UdfpsHandler {
     // Helper function to set the FOD status (enable/disable)
     void setFodStatus(int value) {
         // Prepare buffer for IOCTL command: primary display, Touch_Fod_Enable command, value
-        // MAX_BUF_SIZE is now used from xiaomi_touch.h (likely 256), which is sufficient for 3 ints.
+        // MAX_BUF_SIZE is used from xiaomi_touch.h (256), which is sufficient for 3 ints.
         int buf[MAX_BUF_SIZE] = {MI_DISP_PRIMARY, Touch_Fod_Enable, value};
         // Execute IOCTL to set the current value on the touch device
+        // !!! WARNING: See the critical warning at the top of the file regarding _IO macro usage.
         ioctl(touch_fd_.get(), TOUCH_IOC_SET_CUR_VALUE, &buf);
     }
 
@@ -330,9 +342,10 @@ class XiaomiSm6225UdfpsHandler : public UdfpsHandler {
         ioctl(disp_fd_.get(), MI_DISP_IOCTL_SET_LOCAL_HBM, &req);
 
         // Prepare buffer for IOCTL command: primary display, THP_FOD_DOWNUP_CTL command, 1 for pressed, 0 for released
-        // MAX_BUF_SIZE is now used from xiaomi_touch.h (likely 256), which is sufficient for 3 ints.
+        // MAX_BUF_SIZE is used from xiaomi_touch.h (256), which is sufficient for 3 ints.
         int buf[MAX_BUF_SIZE] = {MI_DISP_PRIMARY, THP_FOD_DOWNUP_CTL, pressed ? 1 : 0};
         // Execute IOCTL to set the current value on the touch device
+        // !!! WARNING: See the critical warning at the top of the file regarding _IO macro usage.
         ioctl(touch_fd_.get(), TOUCH_IOC_SET_CUR_VALUE, &buf);
     }
 };
