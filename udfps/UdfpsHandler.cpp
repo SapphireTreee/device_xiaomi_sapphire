@@ -44,8 +44,9 @@
 
 // Reverting to original definition as per user request.
 // NOTE: As discussed previously, using _IO for an IOCTL that passes a pointer to data
-// (like 'buf' in setFodStatus and setFingerDown) is often incorrect and true behavior
-// depends on kernel implementation. If issues arise, verify kernel's IOCTL definition.
+// (like 'buf' in setFodStatus and setFingerDown) is often incorrect and can lead to
+// undefined behavior or crashes if the kernel driver expects a data transfer (_IOW/_IOWR).
+// Please ensure this matches your kernel's actual IOCTL definition to avoid issues.
 #define TOUCH_IOC_SET_CUR_VALUE _IO(TOUCH_MAGIC, SET_CUR_VALUE) // IOCTL to set current value
 #define TOUCH_IOC_GET_CUR_VALUE _IO(TOUCH_MAGIC, GET_CUR_VALUE) // IOCTL to get current value
 
@@ -175,19 +176,9 @@ class XiaomiSm6225UdfpsHandler : public UdfpsHandler {
 
                 bool pressed = readBool(fd);
                 LOG(INFO) << "FOD_PRESS_STATUS_PATH reports: " << (pressed ? "PRESSED" : "RELEASED");
-
-                // Only report fingerprint touch events if a fingerprint operation is active
-                if (mIsFingerprintOperationActive.load()) {
-                    if (mDevice) {
-                        mDevice->extCmd(mDevice, COMMAND_FOD_PRESS_STATUS,
-                                        pressed ? PARAM_FOD_PRESSED : PARAM_FOD_RELEASED);
-                        LOG(INFO) << "Sent COMMAND_FOD_PRESS_STATUS with param: " << (pressed ? "PARAM_FOD_PRESSED" : "PARAM_FOD_RELEASED");
-                    }
-                } else {
-                    // Log if a touch is detected but not reported due to inactive operation
-                    if (pressed) {
-                        LOG(DEBUG) << "FOD touch detected but ignored (operation not active).";
-                    }
+                if (mDevice) {
+                    mDevice->extCmd(mDevice, COMMAND_FOD_PRESS_STATUS,
+                                    pressed ? PARAM_FOD_PRESSED : PARAM_FOD_RELEASED);
                 }
             }
             close(fd);
@@ -250,50 +241,40 @@ class XiaomiSm6225UdfpsHandler : public UdfpsHandler {
     }
 
     void onFingerDown(uint32_t /*x*/, uint32_t /*y*/, float /*minor*/, float /*major*/) {
-        LOG(INFO) << __func__ << ": Finger DOWN detected. Activating HBM and enabling touch reporting.";
-        mIsFingerprintOperationActive.store(true); // Enable reporting of FOD touches
+        LOG(INFO) << __func__ << ": Finger DOWN detected. Activating HBM.";
         setFingerDown(true);
     }
 
     void onFingerUp() {
-        LOG(INFO) << __func__ << ": Finger UP detected. Deactivating HBM and disabling touch reporting.";
-        mIsFingerprintOperationActive.store(false); // Disable reporting of FOD touches
+        LOG(INFO) << __func__ << ": Finger UP detected. Deactivating HBM.";
         setFingerDown(false);
     }
 
     void onAcquired(int32_t result, int32_t vendorCode) {
         LOG(INFO) << __func__ << " result: " << result << " vendorCode: " << vendorCode;
         if (static_cast<AcquiredInfo>(result) == AcquiredInfo::GOOD) {
-            LOG(INFO) << __func__ << ": AcquiredInfo::GOOD. Deactivating HBM and disabling touch reporting.";
-            mIsFingerprintOperationActive.store(false); // Disable reporting of FOD touches
+            LOG(INFO) << __func__ << ": AcquiredInfo::GOOD. Deactivating HBM.";
             setFingerDown(false);
         } else {
-            LOG(INFO) << __func__ << ": AcquiredInfo NOT GOOD. HBM state unchanged, touch reporting might remain active if finger still down.";
-            // If result is not GOOD, and finger might still be down, we don't necessarily disable
-            // touch reporting here. It will be disabled on onFingerUp or cancel.
+            LOG(INFO) << __func__ << ": AcquiredInfo NOT GOOD. HBM state unchanged.";
         }
     }
 
     void cancel() {
-        LOG(INFO) << __func__ << ": Operation cancelled. Deactivating HBM and disabling touch reporting.";
-        mIsFingerprintOperationActive.store(false); // Disable reporting of FOD touches
+        LOG(INFO) << __func__ << ": Operation cancelled. Deactivating HBM.";
         setFingerDown(false);
     }
 
     void preEnroll() {
         LOG(DEBUG) << __func__;
-        // No change to mIsFingerprintOperationActive here; it's managed by onFingerDown/Up/Acquired
     }
 
     void enroll() {
         LOG(DEBUG) << __func__;
-        // No change to mIsFingerprintOperationActive here
     }
 
     void postEnroll() {
         LOG(DEBUG) << __func__;
-        LOG(INFO) << __func__ << ": Post-enrollment. Disabling touch reporting.";
-        mIsFingerprintOperationActive.store(false); // Ensure touch reporting is off after enrollment session
     }
 
   private:
@@ -303,7 +284,6 @@ class XiaomiSm6225UdfpsHandler : public UdfpsHandler {
 
     std::atomic<bool> mExitThreads{false};
     std::vector<std::thread> mWorkerThreads;
-    std::atomic<bool> mIsFingerprintOperationActive{false}; // New flag to control touch reporting
 
     void setFodStatus(int value) {
         int buf[MAX_BUF_SIZE] = {MI_DISP_PRIMARY, Touch_Fod_Enable, value};
