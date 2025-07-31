@@ -14,9 +14,6 @@ on property:sys.boot_completed=1
 on property:vendor.post_boot.parsed=1
     exec u:r:vendor_qti_init_shell:s0 -- /vendor/bin/init.sapphire_perf.sh
 
-    # Disable native stats collection servic
-    stop statsd
-
     # Uclamp and CPU shares
     write /dev/cpuctl/top-app/cpu.uclamp.min 1.00
     write /dev/cpuctl/foreground/cpu.uclamp.min 0.00
