@@ -586,6 +586,8 @@ PRODUCT_PACKAGES += \
     android.hardware.thermal-service.qti \
     libpsi.vendor
 
+$(call soong_config_set,qti_thermal,netlink,false)
+
 # Trusted User Interface
 PRODUCT_PACKAGES += \
     android.hidl.memory.block@1.0.vendor \
