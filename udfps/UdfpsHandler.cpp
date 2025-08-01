@@ -298,21 +298,6 @@ class XiaomiSm6225UdfpsHandler : public UdfpsHandler {
         setFingerDown(false); // Set finger down status to false
     }
 
-    // Callback before enrollment starts
-    void preEnroll() {
-        LOG(DEBUG) << __func__; // Log the function call
-    }
-
-    // Callback during enrollment
-    void enroll() {
-        LOG(DEBUG) << __func__; // Log the function call
-    }
-
-    // Callback after enrollment completes
-    void postEnroll() {
-        LOG(DEBUG) << __func__; // Log the function call
-    }
-
   private:
     fingerprint_device_t* mDevice; // Pointer to the fingerprint device structure
     android::base::unique_fd touch_fd_; // File descriptor for the touch device
