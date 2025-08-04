@@ -150,7 +150,9 @@ persist.vendor.qcom.bluetooth.soc=cherokee
 ro.bluetooth.a2dp_offload.supported=true
 
 # Camera
+camera.disable_zsl_mode=1
 sys.haptic.ignoreWhenCamera=true
+sys.haptic.unblockWhenCamera=true
 
 # Charger
 persist.vendor.quick.charge=1
