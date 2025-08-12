@@ -92,3 +92,16 @@ ro.hardware.wlan.dbs=0
 ro.hardware.wlan.mimo=0
 ro.hardware.wlan.vendor=qcom
 ro.hardware.wlan.chip=wcn3988
+
+# Dalvik
+ro.dalvik.vm.native.bridge=0
+dalvik.vm.dex2oat-resolve-startup-strings=true
+dalvik.vm.madvise.artfile.size=4294967295
+dalvik.vm.usap_refill_threshold=1
+dalvik.vm.usap_pool_size_max=4
+dalvik.vm.usap_pool_size_min=1
+dalvik.vm.usap_pool_refill_delay_ms=1000
+dalvik.vm.useartservice=true
+dalvik.vm.enable_pr_dexopt=true
+dalvik.vm.isolatedprocesses=true
+dalvik.vm.lockssuppression=true
