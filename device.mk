@@ -314,6 +314,7 @@ PRODUCT_PACKAGES += \
     init.qcom.rc \
     init.qti.kernel.rc \
     init.recovery.qcom.rc \
+    init.sapphire.perf.rc \
     init.target.rc \
     init.xiaomi.rc \
     ueventd.qcom.rc
@@ -331,6 +332,7 @@ PRODUCT_PACKAGES += \
     init.qti.early_init.sh \
     init.qti.kernel.sh \
     init.qti.write.sh \
+    init.sapphire_perf.sh \
     system_dlkm_modprobe.sh \
     vendor_modprobe.sh
 

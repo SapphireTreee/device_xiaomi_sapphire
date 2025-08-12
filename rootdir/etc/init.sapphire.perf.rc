@@ -1,0 +1,38 @@
+on init
+    copy_per_line /dev/cpuctl/tasks /dev/cpuctl/system/tasks
+
+    # Boot time uclamp tuning
+    write /dev/cpuctl/top-app/cpu.uclamp.min 15.90
+    write /dev/cpuctl/foreground/cpu.uclamp.min 15.90
+    write /dev/cpuctl/system/cpu.uclamp.min 15.90
+    write /dev/cpuctl/nnapi-hal/cpu.uclamp_min 51.20
+    write /proc/sys/kernel/sched_util_clamp_min_rt_default 0
+
+on property:sys.boot_completed=1
+    copy_per_line /dev/cpuctl/tasks /dev/cpuctl/system/tasks
+
+on property:vendor.post_boot.parsed=1
+    exec u:r:vendor_qti_init_shell:s0 -- /vendor/bin/init.sapphire_perf.sh
+
+    # Uclamp and CPU shares
+    write /dev/cpuctl/top-app/cpu.uclamp.min 1.00
+    write /dev/cpuctl/foreground/cpu.uclamp.min 0.00
+    write /dev/cpuctl/top-app/cpu.uclamp.latency_sensitive 1
+    write /dev/cpuctl/background/cpu.uclamp.max 512
+    write /dev/cpuctl/system-background/cpu.uclamp.max 512
+    write /dev/cpuctl/dex2oat/cpu.uclamp.max 615
+    write /dev/cpuctl/background/cpu.shares 1024
+    write /dev/cpuctl/system-background/cpu.shares 1024
+    write /dev/cpuctl/dex2oat/cpu.shares 512
+    write /dev/cpuctl/system/cpu.shares 20480
+    write /dev/cpuctl/camera-daemon/cpu.shares 20480
+    write /dev/cpuctl/foreground/cpu.shares 20480
+    write /dev/cpuctl/nnapi-hal/cpu.shares 20480
+    write /dev/cpuctl/rt/cpu.shares 20480
+    write /dev/cpuctl/top-app/cpu.shares 20480
+
+    # Miscellaneous
+    write /sys/module/drm/parameters/vblankoffdelay -1
+    write /proc/sys/vm/kswapd_threads 1
+    write /proc/irq/209/smp_affinity_list 7
+    write /proc/irq/218/smp_affinity_list 6
