@@ -214,7 +214,6 @@ class XiaomiSm6225UdfpsHandler : public UdfpsHandler {
         }
 
         /* vendorCode for goodix_fod devices:
-         * 20: waiting for finger from fpc
          * 21: waiting for finger
          * 22: finger down
          * 23: finger up
@@ -222,7 +221,7 @@ class XiaomiSm6225UdfpsHandler : public UdfpsHandler {
          * The finger down message is only reliably sent when the screen is turned off, so enable
          * fod_status better late than never.
          */
-        if (vendorCode == 20 ||vendorCode == 21 || vendorCode == 22) {
+        if (vendorCode == 21 || vendorCode == 22) {
             setFodStatus(FOD_STATUS_ON);
         }
     }
