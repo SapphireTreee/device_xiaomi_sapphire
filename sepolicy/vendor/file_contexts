@@ -45,3 +45,5 @@
 # Access to qcom-battery
 /sys/class/qcom-battery/input_suspend  u:object_r:sysfs_battery:s0
 
+/sys/class/power_supply/battery(/.*)? u:object_r:sysfs_battery:s0
+
