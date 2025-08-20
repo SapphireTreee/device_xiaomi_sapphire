@@ -213,6 +213,11 @@ on boot
 #Start mi_thermald
     start mi_thermald
 
+#qcom-battery input_suspend sysfs node
+    chown system system /sys/class/qcom-battery/input_suspend
+    chmod 0660 /sys/class/qcom-battery/input_suspend
+    restorecon /sys/class/qcom-battery/input_suspend
+
 on boot && property:persist.vendor.usb.controller.default=*
     setprop vendor.usb.controller ${persist.vendor.usb.controller.default}
 
