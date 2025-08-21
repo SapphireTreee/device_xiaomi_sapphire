@@ -42,6 +42,11 @@
         <item>"/vendor/lib64/libllvm-glnext.so"</item>
         <item>"/vendor/lib64/libllvm-qcom.so"</item>
         <item>"/vendor/lib64/libllvm-qgl.so"</item>
+        <item>"/system/lib64/libblas.so"</item>
+        <item>"/system/lib64/libRS.so"</item>
+        <item>"/system/lib64/libRS_internal.so"</item>
+        <item>"/system/lib64/libRSCpuRef.so"</item>
+        <item>"/system/lib64/libRSDriver.so"</item>
     </string-array>
 
     <!-- True if home app should be pinned via Pinner Service -->
