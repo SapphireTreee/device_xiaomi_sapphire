@@ -18,7 +18,7 @@ persist.vendor.radio.enable_temp_dds=true
 ro.vendor.radio.fastdormancy=true
 ro.vendor.radio.features_common=3
 
-lmkd
+# lmkd
 ro.lmk.psi_complete_stall_ms=70
 persist.em.high_flush_level=4
 persist.em.low_flush_level=8
