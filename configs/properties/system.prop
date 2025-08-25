@@ -99,5 +99,4 @@ dalvik.vm.usap_pool_size_min=1
 dalvik.vm.usap_pool_refill_delay_ms=1000
 dalvik.vm.useartservice=true
 dalvik.vm.enable_pr_dexopt=true
-dalvik.vm.isolatedprocesses=true
 dalvik.vm.lockssuppression=true
