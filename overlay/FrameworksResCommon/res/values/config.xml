@@ -82,9 +82,9 @@
 
     <!-- List supported color modes. -->
     <integer-array name="config_availableColorModes">
-        <item>258</item> <!-- vivid -->
-        <item>256</item> <!-- saturated -->
-        <item>257</item> <!-- Natural -->
+        <item>0</item> <!-- vivid -->
+        <item>7</item> <!-- SRGB  -->
+        <item>9</item> <!-- DISPLAY_P3 -->
     </integer-array>
 
     <!-- Is the device capable of hot swapping an UICC Card -->
