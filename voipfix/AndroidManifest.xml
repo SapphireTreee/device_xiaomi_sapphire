@@ -17,31 +17,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="org.pixelexperience.xiaomi.voipfix"
     android:versionCode="1"
-    android:versionName="1.0">
+    android:versionName="1.0"
+    android:sharedUserId="android.uid.system">
 
-    <!--
-         Required permissions for the app.
-         For a user buildtype, these permissions must be explicitly
-         granted to the app by a privileged permissions whitelist.
-         The Android.bp file's `privileged: true` and the
-         `xiaomi_voipfix_permissions.xml` file handle this.
-    -->
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
-
-    <!--
-        Define a custom permission to protect the service.
-        This ensures that only the system can start this service.
-        The protection level "signature" ensures that only apps signed
-        with the same key (the platform key) can use this permission.
-        This is a common practice for privileged system apps.
-    -->
-    <permission
-        android:name="org.pixelexperience.xiaomi.voipfix.permission.VOIP_FIX"
-        android:label="VoIP Fix Service Permission"
-        android:protectionLevel="signature" />
 
     <application
         android:label="XiaomiVoIPFix"
@@ -49,15 +31,9 @@
         android:defaultToDeviceProtectedStorage="true"
         android:directBootAware="true">
 
-        <!--
-             The BootCompletedReceiver starts our service.
-             android:exported="false" is crucial for security to ensure
-             that only the system can send broadcasts to this receiver.
-             It does not require a specific permission as it's a component
-             within a system-privileged app.
-        -->
         <receiver android:name=".BootCompletedReceiver"
-                  android:exported="false">
+                  android:exported="true"
+                  android:permission="android.permission.RECEIVE_BOOT_COMPLETED">
             <intent-filter android:priority="1000">
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="android.intent.action.LOCKED_BOOT_COMPLETED" />
@@ -65,13 +41,8 @@
             </intent-filter>
         </receiver>
 
-        <!--
-             Our main service. It is protected by the custom permission
-             defined above, further restricting who can interact with it.
-        -->
         <service android:name=".VoIPFixService"
-                 android:permission="org.pixelexperience.xiaomi.voipfix.permission.VOIP_FIX"
-                 android:exported="false" />
-
+                 android:permission="org.pixelexperience.xiaomi.voipfix.VoIPFixService"
+                 android:exported="false"/>
     </application>
 </manifest>

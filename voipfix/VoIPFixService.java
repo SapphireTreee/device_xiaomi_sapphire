@@ -54,7 +54,6 @@ public class VoIPFixService extends Service {
     // Listeners and Receivers
     private CallStateCallback callStateCallback;
     private AudioDeviceReceiver audioDeviceReceiver;
-    private SpeakerphoneReceiver speakerphoneReceiver;
     private ProximitySensorListener proximitySensorListener;
 
     // Wake lock to keep the screen off when near the ear
@@ -78,20 +77,14 @@ public class VoIPFixService extends Service {
         // Initialize and register callbacks/receivers
         callStateCallback = new CallStateCallback();
         audioDeviceReceiver = new AudioDeviceReceiver();
-        speakerphoneReceiver = new SpeakerphoneReceiver();
         proximitySensorListener = new ProximitySensorListener();
 
         if (telephonyManager != null) {
             telephonyManager.registerTelephonyCallback(handler.getMainLooper(), callStateCallback);
         }
 
-        // Register receiver for Bluetooth SCO audio state changes
-        IntentFilter scoFilter = new IntentFilter(AudioManager.ACTION_SCO_AUDIO_STATE_UPDATED);
-        registerReceiver(audioDeviceReceiver, scoFilter);
-
-        // Register receiver for speakerphone state changes
-        IntentFilter speakerphoneFilter = new IntentFilter(AudioManager.ACTION_SPEAKERPHONE_STATE_CHANGED);
-        registerReceiver(speakerphoneReceiver, speakerphoneFilter);
+        IntentFilter filter = new IntentFilter(AudioManager.ACTION_SCO_AUDIO_STATE_UPDATED);
+        registerReceiver(audioDeviceReceiver, filter);
 
         if (proximitySensor != null) {
             sensorManager.registerListener(proximitySensorListener, proximitySensor, SensorManager.SENSOR_DELAY_NORMAL);
@@ -114,9 +107,6 @@ public class VoIPFixService extends Service {
         }
         if (audioDeviceReceiver != null) {
             unregisterReceiver(audioDeviceReceiver);
-        }
-        if (speakerphoneReceiver != null) {
-            unregisterReceiver(speakerphoneReceiver);
         }
         if (proximitySensorListener != null) {
             sensorManager.unregisterListener(proximitySensorListener);
@@ -183,42 +173,13 @@ public class VoIPFixService extends Service {
     }
 
     /**
-     * Handles speakerphone state changes to apply the volume fix.
-     */
-    private class SpeakerphoneReceiver extends BroadcastReceiver {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            if (AudioManager.ACTION_SPEAKERPHONE_STATE_CHANGED.equals(action)) {
-                boolean isSpeakerphoneOn = audioManager.isSpeakerphoneOn();
-                Log.d(TAG, "Speakerphone state changed: " + isSpeakerphoneOn);
-
-                if (isSpeakerphoneOn) {
-                    // Apply the volume fix when the speakerphone is turned on
-                    handler.postDelayed(() -> {
-                        int currentVolume = audioManager.getStreamVolume(AudioManager.STREAM_VOICE_CALL);
-                        Log.d(TAG, "Applying volume fix: current volume is " + currentVolume);
-
-                        // Temporarily decrease and then restore the volume
-                        audioManager.adjustStreamVolume(AudioManager.STREAM_VOICE_CALL, AudioManager.ADJUST_LOWER, 0);
-                        handler.postDelayed(() -> {
-                            audioManager.setStreamVolume(AudioManager.STREAM_VOICE_CALL, currentVolume, 0);
-                            Log.d(TAG, "Volume fix applied.");
-                        }, 50); // Small delay to allow the adjustment to take effect
-                    }, 200); // Delay to ensure the system has fully switched to speakerphone
-                }
-            }
-        }
-    }
-
-    /**
      * Handles proximity sensor events to manage the screen's wake lock.
      */
     private class ProximitySensorListener implements SensorEventListener {
         @Override
         public void onSensorChanged(SensorEvent event) {
-            // Only act if a call is active and the speakerphone is not on
-            if (telephonyManager.getCallState() != TelephonyManager.CALL_STATE_OFFHOOK || audioManager.isSpeakerphoneOn()) {
+            // Only act if a call is active
+            if (telephonyManager.getCallState() != TelephonyManager.CALL_STATE_OFFHOOK) {
                 return;
             }
 
