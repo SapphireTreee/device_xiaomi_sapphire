@@ -138,7 +138,7 @@ public class VoIPFixService extends Service implements SensorEventListener {
 
             // Trigger the volume fix when the proximity sensor detects an object nearby (e.g., face to ear)
             // and an audio stream is active.
-            if (distance < mProximitySensor.getMaximumRange() && AudioSystem.isVoIPStreamActive()) {
+            if (distance < mProximitySensor.getMaximumRange() && mAudioManager != null && mAudioManager.getMode() == AudioManager.MODE_IN_COMMUNICATION) {
                 log("Proximity sensor triggered and VoIP stream is active. Applying volume fix.");
                 applyVolumeFix();
             }
@@ -212,7 +212,7 @@ public class VoIPFixService extends Service implements SensorEventListener {
             if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) {
                 log("Screen is off, applying volume fix if needed.");
                 // This is an additional check for cases where the screen turns off during a VoIP call
-                if (AudioSystem.isVoIPStreamActive()) {
+                if (mAudioManager != null && mAudioManager.getMode() == AudioManager.MODE_IN_COMMUNICATION) {
                     applyVolumeFix();
                 }
             }
