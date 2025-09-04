@@ -23,7 +23,6 @@ android_app {
     system_ext_specific: true,
     
     required: ["xiaomi_voipfix_permissions.xml"],
-    static_libs: ["androidx.annotation_annotation"],
 }
 
 prebuilt_etc {
