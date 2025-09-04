@@ -36,75 +36,191 @@ import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.KeyEvent;
+import androidx.annotation.NonNull; // Corrected import for NonNull
 
 /**
  * VoIPFixService - automatically triggers volume adjustments during VoIP calls
  * to resolve muted audio issues on Xiaomi SM8350 devices
  */
 public class VoIPFixService extends Service implements SensorEventListener {
+
     private static final String TAG = "XiaomiVoIPFix";
     private static final boolean DEBUG = true;
 
-    private final Handler mHandler = new Handler(Looper.getMainLooper());
+    private static final int SENSOR_SENSITIVITY = 4;
 
-    private AudioManager mAudioManager;
     private SensorManager mSensorManager;
-    private Sensor mProximitySensor;
+    private AudioManager mAudioManager;
     private TelephonyManager mTelephonyManager;
-    private PowerReceiver mReceiver;
 
+    private int originalVolume;
     private boolean mIsFixApplied = false;
     private boolean mPendingSpeakerFix = false;
-    private int originalVolume;
 
-    // Use PhoneStateListener for compatibility with older Android versions
-    private final PhoneStateListener callStateListener = new PhoneStateListener() {
+    private Handler mHandler;
+
+    private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
-        public void onCallStateChanged(int state, String phoneNumber) {
-            log("PhoneStateListener: onCallStateChanged: state=" + state + ", number=" + phoneNumber);
-            switch (state) {
-                case TelephonyManager.CALL_STATE_RINGING:
-                case TelephonyManager.CALL_STATE_OFFHOOK:
-                    // Stop the fix when a standard call is active
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (action == null) return;
+
+            switch (action) {
+                case Intent.ACTION_SCREEN_ON:
+                    if (DEBUG) log("Screen turned on");
+                    // Restore to speakerphone when screen is on to avoid audio routing issues
+                    // This is a common bug on some ROMs, so we'll force it here
                     if (mIsFixApplied) {
-                        log("Standard call detected, restoring volume and disabling fix");
-                        restoreVolumeFix();
+                        setSpeakerphone(true);
                     }
                     break;
-                case TelephonyManager.CALL_STATE_IDLE:
-                    // No need to do anything, the fix is already disabled by this point
+                case Intent.ACTION_SCREEN_OFF:
+                    if (DEBUG) log("Screen turned off");
+                    if (mIsFixApplied) {
+                        setSpeakerphone(false);
+                    }
+                    break;
+                case "org.pixelexperience.xiaomi.voipfix.ACTION_APPLY_FIX":
+                    // This action is for a specific scenario where we need to apply the fix
+                    // after a headset is plugged in or out, but we don't have direct access
+                    // to those events, so we'll rely on the audio change broadcast
+                    applyVolumeFix();
                     break;
             }
         }
     };
-    
+
+    private void applyVolumeFix() {
+        int currentVolume = mAudioManager.getStreamVolume(AudioManager.STREAM_VOICE_CALL);
+        int maxVolume = mAudioManager.getStreamMaxVolume(AudioManager.STREAM_VOICE_CALL);
+        log("Current voice call volume: " + currentVolume + " out of " + maxVolume);
+
+        if (currentVolume > maxVolume / 2) {
+            log("Current volume is above half, decreasing then restoring");
+            mAudioManager.setStreamVolume(
+                    AudioManager.STREAM_VOICE_CALL,
+                    maxVolume / 2,
+                    0);
+            
+            // Wait a moment before restoring
+            mHandler.postDelayed(() -> {
+                mAudioManager.setStreamVolume(
+                        AudioManager.STREAM_VOICE_CALL,
+                        originalVolume,
+                        0);
+                mIsFixApplied = true;
+                mPendingSpeakerFix = false;
+                log("Volume fix applied and restored to: " + originalVolume);
+            }, 300);
+        } else {
+            // We're at or below half volume, so increase then decrease
+            log("Current volume: " + currentVolume + ", increasing then restoring");
+            mAudioManager.adjustStreamVolume(
+                    AudioManager.STREAM_VOICE_CALL,
+                    AudioManager.ADJUST_RAISE,
+                    0);
+            
+            // Wait a moment before restoring
+            mHandler.postDelayed(() -> {
+                mAudioManager.setStreamVolume(
+                        AudioManager.STREAM_VOICE_CALL,
+                        originalVolume,
+                        0);
+                mIsFixApplied = true;
+                mPendingSpeakerFix = false;
+                log("Volume fix applied and restored to: " + originalVolume);
+            }, 300);
+        }
+    }
+
+    private final TelephonyManager.TelephonyCallback callStateCallback = new TelephonyManager.TelephonyCallback() {
+        @Override
+        public void onCallStateChanged(int state) {
+            log("onCallStateChanged: " + state);
+            if (state == TelephonyManager.CALL_STATE_IDLE) {
+                log("Call ended, restoring audio state");
+                restoreAudioState();
+            }
+        }
+    };
 
     @Override
     public void onCreate() {
         super.onCreate();
-        log("VoIPFix Service created");
 
+        log("VoIPFixService created");
         mAudioManager = getSystemService(AudioManager.class);
-        mSensorManager = getSystemService(SensorManager.class);
         mTelephonyManager = getSystemService(TelephonyManager.class);
-        mProximitySensor = mSensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
+        mSensorManager = getSystemService(SensorManager.class);
+        mHandler = new Handler(Looper.getMainLooper());
 
-        // Register the proximity sensor listener
-        if (mProximitySensor != null) {
-            mSensorManager.registerListener(this, mProximitySensor, SensorManager.SENSOR_DELAY_NORMAL);
-        } else {
-            log("Proximity sensor not found on this device");
-        }
-
-        // Register the call state listener
-        mTelephonyManager.listen(callStateListener, PhoneStateListener.LISTEN_CALL_STATE);
-
-        // Register a BroadcastReceiver for screen on/off events
-        mReceiver = new PowerReceiver();
         IntentFilter filter = new IntentFilter();
         filter.addAction(Intent.ACTION_SCREEN_ON);
         filter.addAction(Intent.ACTION_SCREEN_OFF);
         registerReceiver(mReceiver, filter);
+        
+        // This is where we will listen for telephony events to detect VoIP calls
+        mTelephonyManager.registerTelephonyCallback(getMainLooper(), callStateCallback);
+        
+        // Register proximity sensor listener to handle automatic speakerphone
+        Sensor proximitySensor = mSensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
+        if (proximitySensor != null) {
+            mSensorManager.registerListener(this, proximitySensor, SensorManager.SENSOR_DELAY_NORMAL);
+        }
+    }
+
+    private void restoreAudioState() {
+        if (!mIsFixApplied) {
+            return;
+        }
+
+        log("Restoring audio state");
+        // Restore to original audio state if fix was applied
+        mAudioManager.setStreamVolume(AudioManager.STREAM_VOICE_CALL, originalVolume, 0);
+        mIsFixApplied = false;
+        mPendingSpeakerFix = false;
+    }
+
+    private void setSpeakerphone(boolean enabled) {
+        if (enabled) {
+            mAudioManager.setMode(AudioManager.MODE_IN_CALL);
+            mAudioManager.setSpeakerphoneOn(true);
+            log("Speakerphone enabled");
+        } else {
+            mAudioManager.setSpeakerphoneOn(false);
+            mAudioManager.setMode(AudioManager.MODE_IN_COMMUNICATION);
+            log("Speakerphone disabled, using earpiece");
+        }
+    }
+
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        if (event.sensor.getType() == Sensor.TYPE_PROXIMITY) {
+            float distance = event.values[0];
+            log("Proximity sensor changed: " + distance);
+            if (distance < SENSOR_SENSITIVITY) {
+                log("Proximity sensor triggered, switching to earpiece");
+                setSpeakerphone(false);
+            } else {
+                log("Proximity sensor un-triggered, switching to speakerphone");
+                setSpeakerphone(true);
+            }
+        }
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+        // Not used, but required by SensorEventListener
+    }
+
+    @Override
+    public void onDestroy() {
+        // Unregister listeners
+        mSensorManager.unregisterListener(this);
+        mTelephonyManager.unregisterTelephonyCallback(callStateCallback);
+        unregisterReceiver(mReceiver);
+        super.onDestroy();
+        log("VoIPFix Service destroyed");
     }
 
     @Override
@@ -120,102 +236,9 @@ public class VoIPFixService extends Service implements SensorEventListener {
         return null;
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        log("VoIPFix Service destroyed");
-        // Unregister listeners and receiver
-        mSensorManager.unregisterListener(this);
-        mTelephonyManager.listen(callStateListener, PhoneStateListener.LISTEN_NONE);
-        unregisterReceiver(mReceiver);
-    }
-    
-    @Override
-    public void onSensorChanged(SensorEvent event) {
-        if (event.sensor.getType() == Sensor.TYPE_PROXIMITY) {
-            float distance = event.values[0];
-            log("Proximity sensor event: distance=" + distance);
-
-            // Trigger the volume fix when the proximity sensor detects an object nearby (e.g., face to ear)
-            // and an audio stream is active.
-            if (distance < mProximitySensor.getMaximumRange() && AudioSystem.is ;VoIPStreamActive()) {
-                log("Proximity sensor triggered and VoIP stream is active. Applying volume fix.");
-                applyVolumeFix();
-            }
-        }
-    }
-
-    @Override
-    public void onAccuracyChanged(Sensor sensor, int accuracy) {
-        // Not used, but required for SensorEventListener interface
-    }
-
-    /**
-     * Applies the volume fix by slightly adjusting the volume up and down.
-     * This is a workaround to "wake up" the audio driver.
-     */
-    private void applyVolumeFix() {
-        if (mIsFixApplied || mPendingSpeakerFix) {
-            log("Fix already applied or pending, skipping.");
-            return;
-        }
-
-        originalVolume = mAudioManager.getStreamVolume(AudioManager.STREAM_VOICE_CALL);
-        log("Original volume before fix: " + originalVolume);
-        
-        // This is the main workaround: adjust volume up and down
-        mAudioManager.adjustStreamVolume(
-                AudioManager.STREAM_VOICE_CALL,
-                AudioManager.ADJUST_RAISE,
-                0);
-
-        mPendingSpeakerFix = true;
-        
-        // Post a delayed task to restore the original volume
-        mHandler.postDelayed(() -> {
-            mAudioManager.setStreamVolume(
-                    AudioManager.STREAM_VOICE_CALL,
-                    originalVolume,
-                    0);
-            mIsFixApplied = true;
-            mPendingSpeakerFix = false;
-            log("Volume fix applied and restored to: " + originalVolume);
-        }, 300);
-    }
-
-    /**
-     * Restores the volume to the original value after the fix has been applied.
-     */
-    private void restoreVolumeFix() {
-        if (!mIsFixApplied) {
-            log("Fix not applied, skipping restore.");
-            return;
-        }
-
-        mAudioManager.setStreamVolume(
-                AudioManager.STREAM_VOICE_CALL,
-                originalVolume,
-                0);
-        mIsFixApplied = false;
-        log("Volume restored to original value: " + originalVolume);
-    }
-
     private void log(String msg) {
         if (DEBUG) {
             Log.d(TAG, msg);
-        }
-    }
-
-    private class PowerReceiver extends BroadcastReceiver {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) {
-                log("Screen is off, applying volume fix if needed.");
-                // This is an additional check for cases where the screen turns off during a VoIP call
-                if (AudioSystem.isVoIPStreamActive()) {
-                    applyVolumeFix();
-                }
-            }
         }
     }
 }
