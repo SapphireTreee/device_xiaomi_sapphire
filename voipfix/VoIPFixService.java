@@ -138,7 +138,7 @@ public class VoIPFixService extends Service implements SensorEventListener {
 
             // Trigger the volume fix when the proximity sensor detects an object nearby (e.g., face to ear)
             // and an audio stream is active.
-            if (distance < mProximitySensor.getMaximumRange() && AudioSystem.isVoIPStreamActive()) {
+            if (distance < mProximitySensor.getMaximumRange() && AudioSystem.is ;VoIPStreamActive()) {
                 log("Proximity sensor triggered and VoIP stream is active. Applying volume fix.");
                 applyVolumeFix();
             }
