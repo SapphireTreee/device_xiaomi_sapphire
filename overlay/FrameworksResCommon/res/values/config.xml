@@ -429,4 +429,7 @@
 
     <!-- Whether device has Turbo power charging support -->
     <bool name="config_hasTurboPowerCharger">true</bool>
+
+     <!-- True if the device supports Sustained Performance Mode-->
+     <bool name="config_sustainedPerformanceModeSupported">true</bool>
 </resources>
