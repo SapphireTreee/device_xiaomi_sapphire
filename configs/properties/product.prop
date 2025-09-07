@@ -20,11 +20,4 @@ ro.vendor.radio.features_common=3
 
 # lmkd
 ro.lmk.psi_complete_stall_ms=70
-persist.em.high_flush_level=4
-persist.em.low_flush_level=8
-persist.em.medium_flush_level=6
-persist.lm.em.flush_zram_usedrate=30
-persist.lm.em.per_flush_quota_high=8000
-persist.lm.em.per_flush_quota_low=20000
-persist.lm.em.per_flush_quota_medium=12000
 
