@@ -400,6 +400,9 @@
             </routes>
         </module>
 
+        <!-- A2dp Input Audio HAL -->
+        <xi:include href="/vendor/etc/a2dp_in_audio_policy_configuration_7_0.xml"/>
+
         <!-- Remote Submix Audio HAL -->
         <xi:include href="/vendor/etc/r_submix_audio_policy_configuration.xml"/>
 
