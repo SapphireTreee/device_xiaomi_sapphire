@@ -70,7 +70,7 @@
          Example: <item>/sys/class/power_supply/battery/fastchg_status;1</item>
      -->
      <string-array name="config_oemFastChargerStatusPaths" translatable="false">
-          <item>/sys/class/qcom-battery/quick_charge_type;3</item>
+          <item>/sys/class/qcom-battery/quick_charge_type;1</item>
      </string-array>
 
     <!-- Whether the new Auto Selection Network UI should be shown -->
