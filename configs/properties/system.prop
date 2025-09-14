@@ -58,6 +58,7 @@ media.stagefright.enable-player=true
 media.stagefright.enable-qcp=true
 media.stagefright.enable-scan=true
 media.stagefright.thumbnail.prefer_hw_codecs=true
+ro.config.safe_media_volume_index=10
 
 # NTP
 persist.backup.ntpServer="0.pool.ntp.org"
@@ -88,3 +89,12 @@ ro.hardware.wlan.dbs=0
 ro.hardware.wlan.mimo=0
 ro.hardware.wlan.vendor=qcom
 ro.hardware.wlan.chip=wcn3988
+
+# Netflix
+ro.netflix.channel=004ee050-1a17-11e9-bb61-6f1da27fb55b
+ro.netflix.signup=1
+
+# Spotify
+ro.csc.spotify.music.partnerid=xiaomi_mobile
+ro.csc.spotify.music.referrerid=xiaomi_mobile
+
