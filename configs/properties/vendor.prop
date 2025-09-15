@@ -186,7 +186,6 @@ debug.sf.auto_latch_unsignaled=0
 debug.sf.latch_unsignaled=0
 ro.surface_flinger.max_frame_buffer_acquired_buffers=3
 debug.sf.enable_hwc_vds=0
-debug.sf.enable_gl_backpressure=1
 debug.sf.enable_transaction_tracing=false
 debug.sf.enable_advanced_sf_phase_offset=1
 debug.sf.disable_client_composition_cache=0
@@ -232,6 +231,7 @@ ro.vendor.display.svi=1
 vendor.display.svi.config=1
 vendor.display.svi.config_path=/vendor/etc/SVIConfig.xml
 ro.vendor.display.sensortype=2
+debug.hwui.use_triple_buffering=true
 
 # Displayfeature
 ro.vendor.all_modes.colorpick_adjust=true
