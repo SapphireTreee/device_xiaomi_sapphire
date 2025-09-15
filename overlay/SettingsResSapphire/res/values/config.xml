@@ -11,8 +11,8 @@
     <integer name="config_udfpsEnrollProgressBar" translatable="false">90</integer>
 
     <string-array name="config_color_mode_options_strings" translatable="false">
-        <item>NATURAL</item>
-        <item>BOOSTED</item>
+        <item>Natural</item>
+        <item>Boosted</item>
     </string-array>
     <!-- Display settings screen, Color mode options. Must be the same length and order as
          config_color_mode_options_strings above. Only the values that also appear in
