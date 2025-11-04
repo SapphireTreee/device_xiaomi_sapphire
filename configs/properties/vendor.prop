@@ -284,6 +284,9 @@ vendor.mm.enable.qcom_parser=16777215
 persist.mm.enable.prefetch=true
 ro.mediaserver.64b.enable=true
 
+# Multi-gen LRU
+persist.device_config.mglru_native.lru_gen_config=all
+
 # Netflix
 vendor.netflix.bsp_rev=Q6115-31409-1
 
