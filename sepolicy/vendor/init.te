@@ -2,3 +2,4 @@ allow init debugfs_tracing_debug:dir mounton;
 allow init proc:file { setattr };
 allow init hal_fingerprint_default:process ptrace;
 allow init vendor_sysfs_memory:file write;
+allow init sysfs_lru_gen_enabled:file { open write getattr };

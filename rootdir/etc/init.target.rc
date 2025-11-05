@@ -381,11 +381,7 @@ service vendor.power /vendor/bin/hw/android.hardware.power-service-qti
     group system input    
 
 on late-init
-    # === Multi-Gen LRU (MGLRU) Optimization (Forced Activation) ===
-    # Fixes the issue where the property trigger fails on user builds.
-    
-    # 1. Force FULL MGLRU Activation (Value 7 = all features)
-    write /sys/kernel/mm/lru_gen/enabled 7
-    
-    # 2. Add Thrashing Prevention (Min Time To Live = 1000ms/1 second)
-    write /sys/kernel/mm/lru_gen/min_ttl_ms 1000
+    # Use 'exec' with shell to write the value, which bypasses common
+    # init script limitations compared to the direct 'write' command.
+    exec u:r:su:s0 -- /system/bin/sh -c "echo 7 > /sys/kernel/mm/lru_gen/enabled"
+    exec u:r:su:s0 -- /system/bin/sh -c "echo 1000 > /sys/kernel/mm/lru_gen/min_ttl_ms"
