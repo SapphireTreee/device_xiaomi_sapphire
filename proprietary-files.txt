@@ -895,8 +895,6 @@ vendor/lib64/vendor.qti.hardware.qdutils_disp@1.0.so
 vendor/etc/SVIConfig.xml
 
 # Display configs
-product/etc/displayconfig/display_id_4630946359590559105.xml
-product/etc/displayconfig/display_id_4630946444529356673.xml
 vendor/etc/mdss_dsi_panel_m7_38_0c_0b_fhdp_video_mi.xml
 vendor/etc/mdss_dsi_panel_n7_38_0c_0a_fhdp_video_mi.xml
 vendor/etc/qdcm_calib_data_m7_38_0c_0b_video_mode_fhdp_dsi_panel.xml
