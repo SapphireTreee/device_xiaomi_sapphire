@@ -1,3 +1,6 @@
+# Blur
+ro.launcher.blur.appLaunch=1
+
 # Brightness Curve
 persist.sys.brightness.low.gamma=true
 
