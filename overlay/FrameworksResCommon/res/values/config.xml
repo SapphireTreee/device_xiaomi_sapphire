@@ -327,7 +327,7 @@
 
     <!-- Determines whether the shell features all run on another thread. This is to be overrided
          by the resources of the app using the Shell library. -->
-    <bool name="config_enableShellMainThread">false</bool>
+    <bool name="config_enableShellMainThread">true</bool>
 
      <!-- Flag indicating whether the surfaceflinger has limited
          alpha compositing functionality in hardware.  If set, the window
