@@ -41,7 +41,6 @@ TARGET_CPU_ABI := arm64-v8a
 TARGET_CPU_VARIANT := cortex-a73
 
 # Audio
-$(call soong_config_set, android_hardware_audio, run_64bit, true)
 
 AUDIO_FEATURE_ENABLED_DLKM := true
 AUDIO_FEATURE_ENABLED_DTS_EAGLE := false
