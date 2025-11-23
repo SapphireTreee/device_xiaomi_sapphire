@@ -26,6 +26,10 @@ persist.device_config.runtime_native_boot.iorap_perfetto_enable=true
 # Fwk-Detect
 ro.vendor.qti.va_aosp.support=1
 
+# Hint Manager
+debug.hwui.use_hint_manager=true
+debug.hwui.target_cpu_time_percent=30
+
 # enable tunnel encoding for amrwb
 tunnel.audio.encode=true
 
