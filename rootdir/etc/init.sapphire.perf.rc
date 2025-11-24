@@ -1,10 +1,10 @@
 on init
     copy_per_line /dev/cpuctl/tasks /dev/cpuctl/system/tasks
 
-    # Boot time uclamp tuning - moderate values for smooth boot
-    write /dev/cpuctl/top-app/cpu.uclamp.min 20.00
-    write /dev/cpuctl/foreground/cpu.uclamp.min 15.00
-    write /dev/cpuctl/system/cpu.uclamp.min 10.00
+    # Boot time uclamp - HIGH values to ensure CPU scales up
+    write /dev/cpuctl/top-app/cpu.uclamp.min 40.00
+    write /dev/cpuctl/foreground/cpu.uclamp.min 30.00
+    write /dev/cpuctl/system/cpu.uclamp.min 25.00
     write /dev/cpuctl/nnapi-hal/cpu.uclamp_min 51.20
     write /proc/sys/kernel/sched_util_clamp_min_rt_default 0
 
@@ -12,26 +12,20 @@ on property:sys.boot_completed=1
     copy_per_line /dev/cpuctl/tasks /dev/cpuctl/system/tasks
     exec u:r:vendor_qti_init_shell:s0 -- /vendor/bin/init.sapphire_perf.sh
 
-    # Uclamp settings - optimized for 6GB RAM with memory pressure
-    # Top app gets good CPU access for responsive UI
-    write /dev/cpuctl/top-app/cpu.uclamp.min 15.00
+    # CRITICAL: High enough values to make CPU actually scale up!
+    write /dev/cpuctl/top-app/cpu.uclamp.min 35.00
+    write /dev/cpuctl/foreground/cpu.uclamp.min 25.00
+    write /dev/cpuctl/system/cpu.uclamp.min 20.00
     write /dev/cpuctl/top-app/cpu.uclamp.latency_sensitive 1
     
-    # Foreground apps get reasonable CPU to prevent jank
-    write /dev/cpuctl/foreground/cpu.uclamp.min 8.00
+    # NO MAX CAPS - let CPU use full performance
+    # Remove these lines entirely or set very high values
+    write /dev/cpuctl/background/cpu.uclamp.max 1024
+    write /dev/cpuctl/system-background/cpu.uclamp.max 1024
+    write /dev/cpuctl/dex2oat/cpu.uclamp.max 1024
     
-    # System needs decent CPU to handle memory management
-    write /dev/cpuctl/system/cpu.uclamp.min 10.00
-    
-    # Background tasks - less restrictive to allow better swap/compression
-    write /dev/cpuctl/background/cpu.uclamp.max 768
-    write /dev/cpuctl/system-background/cpu.uclamp.max 768
-    
-    # Dex2oat can use more CPU for faster compilation
-    write /dev/cpuctl/dex2oat/cpu.uclamp.max 768
-    
-    # CPU shares - prioritize active tasks
-    write /dev/cpuctl/background/cpu.shares 512
+    # CPU shares
+    write /dev/cpuctl/background/cpu.shares 1024
     write /dev/cpuctl/system-background/cpu.shares 1024
     write /dev/cpuctl/dex2oat/cpu.shares 512
     write /dev/cpuctl/system/cpu.shares 20480
@@ -40,3 +34,4 @@ on property:sys.boot_completed=1
     write /dev/cpuctl/nnapi-hal/cpu.shares 20480
     write /dev/cpuctl/rt/cpu.shares 20480
     write /dev/cpuctl/top-app/cpu.shares 20480
+    
