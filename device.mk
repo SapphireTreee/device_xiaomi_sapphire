@@ -138,8 +138,6 @@ PRODUCT_PACKAGES += \
     android.hardware.boot@1.2-impl-qti.recovery \
     android.hardware.boot@1.2-service
 
-$(call soong_config_set, ufsbsg, ufsframework, bsg)
-
 # Camera
 PRODUCT_PACKAGES += \
     libutilscallstack.vendor \
