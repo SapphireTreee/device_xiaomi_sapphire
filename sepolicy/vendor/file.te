@@ -8,3 +8,6 @@ type sysfs_tp_fodstatus, fs_type, sysfs_type;
 # Mac Address
 type vendor_mac_vendor_data_file, data_file_type, file_type, mlstrustedobject;
 
+# Walt scheduler proc files
+type proc_walt, fs_type, proc_type;
+
