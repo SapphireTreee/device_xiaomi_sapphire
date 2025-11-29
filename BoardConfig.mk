@@ -255,8 +255,8 @@ DEVICE_MANIFEST_FILE += \
     $(DEVICE_PATH)/configs/vintf/network_manifest.xml
 DEVICE_MATRIX_FILE := hardware/qcom-caf/common/compatibility_matrix.xml
 ODM_MANIFEST_SKUS += n7n n7n_ss
-ODM_MANIFEST_M7N_FILES := $(DEVICE_PATH)/configs/vintf/manifest_nfc.xml
-ODM_MANIFEST_M7N_SS_FILES := $(DEVICE_PATH)/configs/vintf/manifest_nfc.xml
+ODM_MANIFEST_N7N_FILES := $(DEVICE_PATH)/configs/vintf/manifest_nfc.xml
+ODM_MANIFEST_N7N_SS_FILES := $(DEVICE_PATH)/configs/vintf/manifest_nfc.xml
 
 # WiFi
 BOARD_WLAN_DEVICE := qcwcn
