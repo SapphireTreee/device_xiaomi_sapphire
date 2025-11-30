@@ -582,3 +582,6 @@ subsystem mi_display
 # hdmi cec hal
 /dev/cec*                                            0660    system  system
 /sys/devices/platform/soc/984000.i2c/i2c-0/0-002b    get_hpd_stat    0660   system   system
+
+# CPU DMA latency device for Power HAL boost
+/dev/cpu_dma_latency    0660    system    system
