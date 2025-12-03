@@ -1,4 +1,4 @@
--# Declare the process type/domain
+# Declare the process type/domain
 type vendor_qti_media_c2, domain; 
 vendor_on_platform_domain(vendor_qti_media_c2)
 
