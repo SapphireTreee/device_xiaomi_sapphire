@@ -1,0 +1,2 @@
+allow vendor_qti_media_c2 hal_allocator_default:fd use;
+allow vendor_qti_media_c2 ion_device:chr_file r_file_perms;
