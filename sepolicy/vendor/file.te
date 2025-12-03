@@ -14,3 +14,5 @@ type proc_walt, fs_type, proc_type;
 # CPU DMA latency device type
 type device_latency, dev_type;
 
+type system_adbd_prop, property_type;
+
