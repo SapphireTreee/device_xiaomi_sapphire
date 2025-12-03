@@ -1,3 +1,7 @@
+# Sysfs wakeup nodes
+genfscon sysfs /devices/virtual/wakeup u:object_r:sysfs_wakeup:s0
+genfscon sysfs /class/wakeup u:object_r:sysfs_wakeup:s0
+
 # ANT
 genfscon sysfs /devices/platform/soc/soc:ant_check/wakeup u:object_r:sysfs_wakeup:s0
 genfscon sysfs /devices/platform/soc/soc:ant_check_div/wakeup u:object_r:sysfs_wakeup:s0

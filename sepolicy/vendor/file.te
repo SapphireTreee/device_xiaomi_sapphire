@@ -14,3 +14,5 @@ type proc_walt, fs_type, proc_type;
 # CPU DMA latency device type
 type device_latency, dev_type;
 
+type sysfs_wakeup, fs_type, sysfs_type;
+
