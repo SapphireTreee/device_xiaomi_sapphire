@@ -12,5 +12,3 @@ vendor_public_prop(vendor_fp_prop)
 
 # WiFi
 vendor_public_prop(vendor_wifimac_prop)
-
-type system_adbd_prop, property_type;
