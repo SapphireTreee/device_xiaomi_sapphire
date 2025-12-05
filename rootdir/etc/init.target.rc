@@ -235,7 +235,6 @@ on charger
     mkdir /data/vendor/charge_logger 0771 system system
     start charger
     class_start charger
-    setprop sys.usb.config mass_storage
 
 #Start mi_thermald
     start mi_thermald
