@@ -366,9 +366,6 @@
          strictly needed. -->
     <bool name="config_sf_limitedAlpha">true</bool>
 
-    <!-- Whether device has Turbo power charging support -->
-    <bool name="config_hasTurboPowerCharger">true</bool>
-
     <!-- media controls -->
     <bool name="config_mediaControlsTurbulenceByDefault">false</bool>
 </resources>
