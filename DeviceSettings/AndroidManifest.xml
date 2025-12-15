@@ -43,17 +43,6 @@
                 android:resource="@drawable/ic_main_settings" />
         </activity>
 
-        <activity
-            android:name=".dirac.DiracActivity"
-            android:label="@string/dirac_title"
-            android:exported="true"
-            android:theme="@style/Theme.SubSettingsBase">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-         </activity>
-
         <service
             android:name=".RefreshRateTileService"
             android:icon="@drawable/ic_qs_refresh_rate"

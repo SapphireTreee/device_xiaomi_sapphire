@@ -28,7 +28,6 @@ import android.os.Handler;
 import androidx.preference.PreferenceManager;
 
 import org.lineageos.settings.device.Constants;
-import org.lineageos.settings.device.dirac.DiracUtils;
 import org.lineageos.settings.device.utils.DisplayUtils;
 
 public class BootCompletedReceiver extends BroadcastReceiver {
@@ -38,6 +37,5 @@ public class BootCompletedReceiver extends BroadcastReceiver {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
 
         DisplayUtils.updateRefreshRateSettings(context);
-        DiracUtils.initialize(context);
     }
 }
