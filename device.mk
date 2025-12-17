@@ -64,6 +64,10 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     com.dsi.ant@1.0.vendor
 
+# Memory Configuration
+PRODUCT_PROPERTY_OVERRIDES += \
+    ro.config.low_ram=false
+
 # Audio
 PRODUCT_PACKAGES += \
     android.hardware.audio@7.1-impl \
