@@ -177,11 +177,13 @@ persist.vendor.dpm.vndr.idletimer.mode=default
 drm.service.enabled=true
 
 # Display
+debug.egl.hw=0
 debug.mdpcomp.logs=0
 debug.sf.auto_latch_unsignaled=0
 debug.sf.latch_unsignaled=0
 debug.sf.enable_hwc_vds=1
 debug.sf.enable_transaction_tracing=false
+debug.sf.hw=0
 debug.sf.use_phase_offsets_as_durations=1
 debug.sf.late.sf.duration=10500000
 debug.sf.late.app.duration=16600000
