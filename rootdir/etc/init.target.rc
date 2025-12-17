@@ -396,3 +396,8 @@ on late-init
     
     # 2. Add Thrashing Prevention (Min Time To Live = 1000ms/1 second)
     write /sys/kernel/mm/lru_gen/min_ttl_ms 1000
+    
+    # === FTS Gesture Mode ===
+    # Enable touchscreen gesture mode for wake gestures
+    write /sys/devices/platform/soc/4ac0000.qcom,qupv3_0_geni_se/4a88000.i2c/i2c-1/1-0038/fts_gesture_mode 1
+    chmod 0666 /sys/devices/platform/soc/4ac0000.qcom,qupv3_0_geni_se/4a88000.i2c/i2c-1/1-0038/fts_gesture_mode
