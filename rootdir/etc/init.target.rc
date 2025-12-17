@@ -189,9 +189,12 @@ on boot
     chmod 0664 /sys/class/thermal/thermal_message/boost
     chown system system /sys/class/thermal/thermal_message/balance_mode
 
-#touch funtions permissions setting
+    #touch funtions permissions setting
 	chown system system /sys/class/touch/touch_dev/palm_sensor
 	chmod 0664 /sys/class/touch/touch_dev/palm_sensor
+
+    # Enable modernized tap to wake
+    write /sys/devices/platform/soc/4ac0000.qcom,qupv3_0_geni_se/4a88000.i2c/i2c-1/1-0038/fts_gesture_mode 1
 
     # Xiaomi touch
     chown system system /dev/xiaomi-touch
@@ -396,8 +399,4 @@ on late-init
     
     # 2. Add Thrashing Prevention (Min Time To Live = 1000ms/1 second)
     write /sys/kernel/mm/lru_gen/min_ttl_ms 1000
-    
-    # === FTS Gesture Mode ===
-    # Enable touchscreen gesture mode for wake gestures
-    write /sys/devices/platform/soc/4ac0000.qcom,qupv3_0_geni_se/4a88000.i2c/i2c-1/1-0038/fts_gesture_mode 1
-    chmod 0666 /sys/devices/platform/soc/4ac0000.qcom,qupv3_0_geni_se/4a88000.i2c/i2c-1/1-0038/fts_gesture_mode
+
