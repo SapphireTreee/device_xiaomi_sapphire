@@ -13,9 +13,6 @@
     <!-- Whether the device supports dialing emergency RTT calls when there's no SIM card installed -->
     <bool name="config_support_simless_emergency_rtt">true</bool>
 
-    <!-- DEPRECATED: Use CarrierConfigManager#KEY_CSP_ENABLED_BOOL -->
-    <bool name="csp_enabled">true</bool>
-
     <!-- DEPRECATED: Use CarrierConfigManager#KEY_DTMF_TYPE_ENABLED_BOOL -->
     <bool name="dtmf_type_enabled">true</bool>
 
