@@ -274,10 +274,10 @@ PRODUCT_COPY_FILES += \
 
 # Health
 PRODUCT_PACKAGES += \
+    android.hardware.health-service.qti \
+    android.hardware.health-service.qti_recovery \
     android.hardware.health-V1-ndk.vendor \
     android.hardware.health@2.1.vendor
-
-$(call inherit-product, vendor/qcom/opensource/healthd-ext/health-vendor-product.mk)
 
 # HIDL
 PRODUCT_PACKAGES += \

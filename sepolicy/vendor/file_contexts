@@ -22,6 +22,9 @@
 # Fix Goodix events
 /vendor/bin/init.goodix.events.sh                                       u:object_r:vendor_goodix_events_exec:s0
 
+# Health
+/vendor/bin/hw/android\.hardware\.health-service\.xiaomi                              u:object_r:hal_health_default_exec:s0
+
 # Init
 /(vendor|system/vendor)/bin/init\.sapphire_perf\.sh u:object_r:vendor_qti_init_shell_exec:s0
 
