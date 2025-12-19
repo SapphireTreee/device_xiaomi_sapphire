@@ -743,7 +743,8 @@ service profiler_daemon /system/bin/profiler_daemon
     disabled
 
 service charger /system/bin/charger
-    class charger
+    override
+    class chargerr
     user system
     group system graphics wakelock input
     capabilities SYS_BOOT
@@ -791,6 +792,7 @@ service vendor.msm_irqbalance /vendor/bin/msm_irqbalance -f /system/vendor/etc/m
 on charger
     setprop persist.sys.usb.config mass_storage
     start qcom-post-boot
+    class_start chargerr
 
 service time_daemon /vendor/bin/time_daemon
     class main
