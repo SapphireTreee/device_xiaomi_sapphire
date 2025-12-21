@@ -347,3 +347,8 @@ zygote.critical_window.minute=10
 
 # Sensors
 ro.vendor.sensors.xiaomi.udfps=true
+
+# Optimized RIL
+persist.vendor.radio.add_power_save=1
+ro.ril.fast.dormancy.rule=1
+ro.vendor.use_data_netmgrd=true
