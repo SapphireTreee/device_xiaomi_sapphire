@@ -2,6 +2,8 @@
 allow hal_power_default input_device:dir r_dir_perms;
 allow hal_power_default input_device:chr_file rw_file_perms;
 allow hal_power_default touchfeature_device:chr_file rw_file_perms;
+allow hal_power_default proc_walt:file rw_file_perms;
+allow hal_power_default proc_walt:dir search;
 
 # Power HAL needs access to CPU DMA latency
 allow hal_power_default vendor_latency_device:chr_file rw_file_perms;

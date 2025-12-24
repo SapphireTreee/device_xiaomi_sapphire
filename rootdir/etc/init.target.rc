@@ -189,9 +189,16 @@ on boot
     chmod 0664 /sys/class/thermal/thermal_message/boost
     chown system system /sys/class/thermal/thermal_message/balance_mode
 
-#touch funtions permissions setting
+    #touch funtions permissions setting
 	chown system system /sys/class/touch/touch_dev/palm_sensor
 	chmod 0664 /sys/class/touch/touch_dev/palm_sensor
+
+    # Enable modernized tap to wake
+    write /sys/devices/platform/soc/4ac0000.qcom,qupv3_0_geni_se/4a88000.i2c/i2c-1/1-0038/fts_gesture_mode 1
+
+    # Grant physical access to the Power HAL
+    chown system system /proc/sys/walt/sched_per_task_boost
+    chmod 0664 /proc/sys/walt/sched_per_task_boost
 
     # Xiaomi touch
     chown system system /dev/xiaomi-touch
@@ -345,9 +352,6 @@ on property:persist.sys.cota.carrier=OR
 #add for btmac property
 on property:persist.ro.ril.oem.btmac=*
   setprop ro.ril.oem.btmac ${persist.ro.ril.oem.btmac}
-  
-on property:sys.boot_completed=1
-    write /sys/devices/virtual/thermal/thermal_message/sconfig 20
 
 # Sync attribute volume between system and vendor
 on property:sys.volume.stream.music.device.speaker=*
@@ -385,7 +389,11 @@ service vendor.power /vendor/bin/hw/android.hardware.power-service-qti
     override
     class hal
     user system
-    group system input    
+    group system input 
+   
+on property:sys.boot_completed=1
+    # Enable s2idle
+    write /sys/power/mem_sleep "s2idle"
 
 on late-init
     # === Multi-Gen LRU (MGLRU) Optimization (Forced Activation) ===
@@ -396,3 +404,4 @@ on late-init
     
     # 2. Add Thrashing Prevention (Min Time To Live = 1000ms/1 second)
     write /sys/kernel/mm/lru_gen/min_ttl_ms 1000
+

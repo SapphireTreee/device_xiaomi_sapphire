@@ -64,7 +64,14 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     com.dsi.ant@1.0.vendor
 
+# Memory Configuration
+PRODUCT_PROPERTY_OVERRIDES += \
+    ro.config.low_ram=false
+
 # Audio
+$(call soong_config_set, android_hardware_audio, run_64bit, true)
+$(call soong_config_set, android_hardware_audio, skip_speaker_layout_channel_mask_field, true)
+
 PRODUCT_PACKAGES += \
     android.hardware.audio@7.1-impl \
     android.hardware.audio.effect@7.0-impl \
@@ -171,11 +178,6 @@ PRODUCT_COPY_FILES += \
 PRODUCT_PACKAGES += \
     vendor.qti.hardware.capabilityconfigstore@1.0.vendor
 
-# Charger
-PRODUCT_PACKAGES += \
-    charger_res_images \
-    libsuspend
-
 # Display
 PRODUCT_PACKAGES += \
     android.hardware.graphics.composer@2.4.vendor \
@@ -275,10 +277,10 @@ PRODUCT_COPY_FILES += \
 
 # Health
 PRODUCT_PACKAGES += \
+    android.hardware.health-service.qti \
+    android.hardware.health-service.qti_recovery \
     android.hardware.health-V1-ndk.vendor \
     android.hardware.health@2.1.vendor
-
-$(call inherit-product, vendor/qcom/opensource/healthd-ext/health-vendor-product.mk)
 
 # HIDL
 PRODUCT_PACKAGES += \
@@ -320,6 +322,7 @@ PRODUCT_PACKAGES += \
     init.qcom.rc \
     init.qti.kernel.rc \
     init.recovery.qcom.rc \
+    init.sapphire.perf.rc \
     init.target.rc \
     init.xiaomi.rc \
     ueventd.qcom.rc
@@ -338,6 +341,7 @@ PRODUCT_PACKAGES += \
     init.qti.early_init.sh \
     init.qti.kernel.sh \
     init.qti.write.sh \
+    init.sapphire_perf.sh \
     system_dlkm_modprobe.sh \
     vendor_modprobe.sh
 
@@ -612,11 +616,6 @@ PRODUCT_PACKAGES_DEBUG += \
 # USB
 PRODUCT_PACKAGES += \
     android.hardware.usb-service.qti
-
-ifneq ($(TARGET_BUILD_VARIANT),user)
-PRODUCT_VENDOR_PROPERTIES += \
-    persist.vendor.usb.config=mtp,adb
-endif
 
 PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.hardware.usb.accessory.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.usb.accessory.xml \
