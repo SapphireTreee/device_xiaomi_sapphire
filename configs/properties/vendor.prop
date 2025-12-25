@@ -16,7 +16,7 @@ persist.vendor.audio.ras.enabled=true
 persist.vendor.audio.spv3.enable=true
 persist.vendor.audio.voicecall.speaker.stereo=true
 ro.vendor.audio.spk.stereo=true
-ro.audio.monitorRotation=false
+ro.audio.monitorRotation=true
 ro.config.media_vol_default=10
 ro.config.media_vol_steps=15
 ro.config.vc_call_vol_steps=11
@@ -61,6 +61,7 @@ vendor.audio_hal.in_period_size=144
 vendor.audio_hal.period_multiplier=3
 vendor.audio_hal.period_size=192
 vendor.voice.path.for.pcm.voip=true
+ro.vendor.audio.identify_low_end_device=false
 
 # Audio CPU
 vendor.audio.cpu.sched=31
@@ -117,6 +118,8 @@ vendor.audio.feature.usb_offload_burst_mode.enable=true
 vendor.audio.feature.usb_offload_sidetone_volume.enable=false
 vendor.audio.feature.vbat.enable=true
 vendor.audio.feature.wsa.enable=false
+ro.vendor.audio.feature.fade=true
+ro.vendor.audio.game.mode=true
 
 # Bluetooth
 bluetooth.device.class_of_device=90,2,12
