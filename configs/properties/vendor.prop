@@ -242,6 +242,11 @@ ro.vendor.whitepoint_calibration_enable=true
 ro.vendor.xiaomi.bl.poll=true
 sys.displayfeature_hidl=true
 
+# Graphics
+debug.hwui.renderer=skiagl
+debug.renderengine.backend=skiaglthreaded
+renderthread.skia.reduceopstasksplitting=true
+
 # Enable Incremental
 ro.incremental.enable=true
 
