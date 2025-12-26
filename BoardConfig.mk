@@ -83,6 +83,12 @@ TARGET_GLOBAL_LTO := thin
 TARGET_GLOBAL_OPTIMIZATION := O3
 TARGET_GLOBAL_THINLTO := true
 
+#Enable PD locater/notifier
+TARGET_PD_SERVICE_ENABLED := true
+
+#Enable peripheral manager
+TARGET_PER_MGR_ENABLED := true
+
 # Init
 $(call soong_config_set,libinit,vendor_init_lib,//$(DEVICE_PATH):init_sapphire)
 
