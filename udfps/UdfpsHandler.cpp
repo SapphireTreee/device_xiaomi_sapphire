@@ -87,7 +87,7 @@ static disp_event_resp* parseDispEvent(int fd) {
 
 }  // anonymous namespace
 
-class XiaomiSm6225UdfpsHander : public UdfpsHandler {
+class XiaomiSm6225UdfpsHandler : public UdfpsHandler {
   public:
     void init(fingerprint_device_t* device) {
         mDevice = device;
@@ -98,7 +98,7 @@ class XiaomiSm6225UdfpsHander : public UdfpsHandler {
         LOG(DEBUG) << __func__ << "fingerprint vendor is: " << fpVendor;
         isFpcFod = fpVendor == "fpc_fod";
 
-        // Thread to notify fingeprint hwmodule about fod presses
+        // Thread to notify fingerprint hwmodule about fod presses
         std::thread([this]() {
             int fd = open(FOD_PRESS_STATUS_PATH, O_RDONLY);
             if (fd < 0) {
