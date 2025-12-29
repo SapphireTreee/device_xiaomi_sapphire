@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022-2024 The LineageOS Project
+ * Copyright (C) 2022 The LineageOS Project
  *
  * SPDX-License-Identifier: Apache-2.0
  */
@@ -45,6 +45,7 @@ using ::aidl::android::hardware::biometrics::fingerprint::AcquiredInfo;
 
 namespace {
 
+
 static bool readBool(int fd) {
     char c;
     int rc;
@@ -86,7 +87,7 @@ static disp_event_resp* parseDispEvent(int fd) {
 
 }  // anonymous namespace
 
-class XiaomiSm6225UdfpsHandler : public UdfpsHandler {
+class XiaomiSm6225UdfpsHander : public UdfpsHandler {
   public:
     void init(fingerprint_device_t* device) {
         mDevice = device;
@@ -94,10 +95,10 @@ class XiaomiSm6225UdfpsHandler : public UdfpsHandler {
         disp_fd_ = android::base::unique_fd(open(DISP_FEATURE_PATH, O_RDWR));
 
         std::string fpVendor = android::base::GetProperty("persist.vendor.sys.fp.vendor", "none");
-        LOG(DEBUG) << __func__ << " fingerprint vendor is: " << fpVendor;
+        LOG(DEBUG) << __func__ << "fingerprint vendor is: " << fpVendor;
         isFpcFod = fpVendor == "fpc_fod";
 
-        // Thread to notify fingerprint hwmodule about fod presses
+        // Thread to notify fingeprint hwmodule about fod presses
         std::thread([this]() {
             int fd = open(FOD_PRESS_STATUS_PATH, O_RDONLY);
             if (fd < 0) {
@@ -118,17 +119,20 @@ class XiaomiSm6225UdfpsHandler : public UdfpsHandler {
                     continue;
                 }
 
-                const bool pressed = readBool(fd);
-                LOG(DEBUG) << "fod_press_status changed: " << (pressed ? "pressed" : "released");
-                
-                // Only process if FOD is actually enabled
-                if (fodEnabled) {
-                    setFingerDown(pressed);
-                }
+                bool pressed = readBool(fd);
+                mDevice->extCmd(mDevice, COMMAND_FOD_PRESS_STATUS,
+                                pressed ? PARAM_FOD_PRESSED : PARAM_FOD_RELEASED);
+
+                // Request HBM
+                disp_local_hbm_req req;
+                req.base.flag = 0;
+                req.base.disp_id = MI_DISP_PRIMARY;
+                req.local_hbm_value = pressed ? LHBM_TARGET_BRIGHTNESS_WHITE_1000NIT
+                                              : LHBM_TARGET_BRIGHTNESS_OFF_FINGER_UP;
+                ioctl(disp_fd_.get(), MI_DISP_IOCTL_SET_LOCAL_HBM, &req);
             }
         }).detach();
-
-        // Thread to listen for fod ui changes
+         // Thread to listen for fod ui changes
         std::thread([this]() {
             int fd = open(DISP_FEATURE_PATH, O_RDWR);
             if (fd < 0) {
@@ -152,7 +156,7 @@ class XiaomiSm6225UdfpsHandler : public UdfpsHandler {
             while (true) {
                 int rc = poll(&dispEventPoll, 1, -1);
                 if (rc < 0) {
-                    LOG(ERROR) << "failed to poll " << DISP_FEATURE_PATH << ", err: " << rc;
+                    LOG(ERROR) << "failed to poll " << FOD_PRESS_STATUS_PATH << ", err: " << rc;
                     continue;
                 }
 
@@ -180,7 +184,7 @@ class XiaomiSm6225UdfpsHandler : public UdfpsHandler {
     void onFingerDown(uint32_t /*x*/, uint32_t /*y*/, float /*minor*/, float /*major*/) {
         LOG(INFO) << __func__;
 
-        /*
+         /*
          * On fpc_fod devices, the waiting for finger message is not reliably sent...
          * The finger down message is only reliably sent when the screen is turned off, so enable
          * fod_status better late than never.
@@ -245,6 +249,7 @@ class XiaomiSm6225UdfpsHandler : public UdfpsHandler {
     void postEnroll() {
         LOG(INFO) << __func__;
         enrolling = false;
+
         setFodStatus(FOD_STATUS_OFF);
     }
 
@@ -254,43 +259,15 @@ class XiaomiSm6225UdfpsHandler : public UdfpsHandler {
     android::base::unique_fd disp_fd_;
     bool enrolling = false;
     bool isFpcFod;
-    bool fodEnabled = false;
 
     void setFodStatus(int value) {
-        fodEnabled = (value == FOD_STATUS_ON);
-        LOG(DEBUG) << __func__ << " value: " << value;
-        
-        // Set FOD enable
         int buf[MAX_BUF_SIZE] = {MI_DISP_PRIMARY, Touch_Fod_Enable, value};
         ioctl(touch_fd_.get(), TOUCH_IOC_SET_CUR_VALUE, &buf);
-        
-        // Enable doubletap mode to keep touch active during AOD/screen off
-        int dt_buf[MAX_BUF_SIZE] = {MI_DISP_PRIMARY, Touch_Doubletap_Mode, value};
-        ioctl(touch_fd_.get(), TOUCH_IOC_SET_CUR_VALUE, &dt_buf);
-        
-        // Enable AOD touch
-        int aod_buf[MAX_BUF_SIZE] = {MI_DISP_PRIMARY, Touch_Aod_Enable, value};
-        ioctl(touch_fd_.get(), TOUCH_IOC_SET_CUR_VALUE, &aod_buf);
     }
 
     void setFingerDown(bool pressed) {
-        LOG(DEBUG) << __func__ << " pressed: " << pressed;
-        
-        // Notify touch controller about finger down/up
         int buf[MAX_BUF_SIZE] = {MI_DISP_PRIMARY, THP_FOD_DOWNUP_CTL, pressed ? 1 : 0};
         ioctl(touch_fd_.get(), TOUCH_IOC_SET_CUR_VALUE, &buf);
-        
-        // Request HBM
-        disp_local_hbm_req req;
-        req.base.flag = 0;
-        req.base.disp_id = MI_DISP_PRIMARY;
-        req.local_hbm_value = pressed ? LHBM_TARGET_BRIGHTNESS_WHITE_1000NIT
-                                      : LHBM_TARGET_BRIGHTNESS_OFF_FINGER_UP;
-        ioctl(disp_fd_.get(), MI_DISP_IOCTL_SET_LOCAL_HBM, &req);
-        
-        // Notify fingerprint HAL
-        mDevice->extCmd(mDevice, COMMAND_FOD_PRESS_STATUS,
-                        pressed ? PARAM_FOD_PRESSED : PARAM_FOD_RELEASED);
     }
 };
 
