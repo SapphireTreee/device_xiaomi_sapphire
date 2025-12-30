@@ -387,10 +387,6 @@ service vendor.power /vendor/bin/hw/android.hardware.power-service-qti
     class hal
     user system
     group system input 
-   
-on property:sys.boot_completed=1
-    # Enable s2idle
-    write /sys/power/mem_sleep "s2idle"
 
 on late-init
     # === Multi-Gen LRU (MGLRU) Optimization (Forced Activation) ===
