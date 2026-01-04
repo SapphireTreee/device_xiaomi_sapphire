@@ -13,7 +13,14 @@
 
 #include <poll.h>
 #include <sys/ioctl.h>
+#include <fcntl.h>
+#include <unistd.h>
+
 #include <atomic>
+#include <cerrno>
+#include <chrono>
+#include <cstring>
+#include <mutex>
 #include <thread>
 
 #include <display/drm/mi_disp.h>
