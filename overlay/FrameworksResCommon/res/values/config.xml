@@ -208,7 +208,7 @@
     <integer name="config_default_cellular_usage_setting">-1</integer>
 
     <!-- Whether the Unprocessed audio source supports the required frequency range and level -->
-    <bool name="config_supportAudioSourceUnprocessed">false</bool>
+    <bool name="config_supportAudioSourceUnprocessed">true</bool>
 
     <!-- The display uses different gamma curves for different refresh rates. It's hard for panel
          vendor to tune the curves to have exact same brightness for different refresh rate. So
