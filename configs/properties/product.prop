@@ -9,6 +9,11 @@ audio.sys.mute.latency.factor=2
 audio.sys.offload.pstimeout.secs=3
 ro.af.client_heap_size_kbyte=7168
 ro.config.safe_media_volume_index=10
+aaudio.hw_burst_min_usec=2000
+aaudio.mmap_exclusive_policy=2
+audio.offload.video=true
+audio.sys.noisy.broadcast.delay=500
+audio.sys.routing.latency=0
 
 # Display
 ro.sf.lcd_density=420
@@ -37,6 +42,9 @@ bluetooth.profile.pan.nap.enabled?=true
 bluetooth.profile.pan.panu.enabled?=true
 bluetooth.profile.pbap.server.enabled?=true
 bluetooth.profile.sap.server.enabled?=true
+
+# Media
+media.stagefright.audio.deep=false
 
 # Radio
 persist.vendor.radio.enable_temp_dds=true
