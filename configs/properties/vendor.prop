@@ -121,6 +121,10 @@ ro.vendor.audio.feature.fade=true
 ro.vendor.audio.game.mode=true
 
 # Bluetooth
+bluetooth.hardware.power.idle_cur_ma=6
+bluetooth.hardware.power.operating_voltage_mv=3700
+bluetooth.hardware.power.rx_cur_ma=28
+bluetooth.hardware.power.tx_cur_ma=36
 persist.bluetooth.a2dp_offload.disabled=false
 persist.vendor.bt.a2dp_offload_cap=sbc-aptx-aptxtws-aptxhd-aac-ldac
 persist.vendor.qcom.bluetooth.a2dp_offload_cap=sbc-aptx-aptxtws-aptxhd-aac-ldac-aptxadaptive 
