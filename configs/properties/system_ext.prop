@@ -1,3 +1,6 @@
+# Audio
+ro.audio.ihaladaptervendorextension_enabled=true
+
 # Dalvik
 dalvik.vm.dex2oat64.enabled=true
 

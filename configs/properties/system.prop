@@ -1,3 +1,15 @@
+# Audio
+persist.audio.button_jack.profile=volume
+persist.audio.button_jack.switch=0
+ro.vendor.audio.notification.single=true
+tunnel.audio.encode=true
+use.voice.path.for.pcm.voip=true
+
+# Bluetooth
+persist.vendor.btstack.aac_frm_ctl.enabled=true
+ro.bluetooth.emb_wp_mode=false
+ro.bluetooth.wipower=false
+
 # Brightness Curve
 persist.sys.brightness.low.gamma=true
 
