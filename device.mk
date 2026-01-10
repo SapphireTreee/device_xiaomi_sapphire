@@ -176,7 +176,6 @@ PRODUCT_PACKAGES += \
     libdisplayconfig.qti \
     libdisplayconfig.system.qti \
     libgralloc.qti \
-    gralloc.qcom \
     libqdMetaData \
     libqdMetaData.system \
     libsdmcore \
