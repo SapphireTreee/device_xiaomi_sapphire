@@ -388,6 +388,10 @@ service vendor.power /vendor/bin/hw/android.hardware.power-service-qti
     user system
     group system input 
 
+on property:sys.boot_completed=1
+    # Enable suspend to RAM
+    write /sys/power/mem_sleep "deep"
+
 on late-init
     # === Multi-Gen LRU (MGLRU) Optimization (Forced Activation) ===
     # Fixes the issue where the property trigger fails on user builds.
