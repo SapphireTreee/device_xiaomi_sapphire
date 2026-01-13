@@ -419,4 +419,12 @@
         </interface>
         <fqname>@1.0::ITouchFeature/default</fqname>
     </hal>
+    <hal format="aidl" optional="true">
+        <name>android.hardware.dumpstate</name>
+        <version>1</version>
+        <interface>
+           <name>IDumpstateDevice</name>
+           <instance>default</instance>
+        </interface>
+    </hal>
 </manifest>
