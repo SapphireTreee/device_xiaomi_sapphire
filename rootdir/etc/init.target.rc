@@ -92,6 +92,9 @@ on post-fs-data
     mkdir /data/vendor/thermal 0771 root system
     mkdir /data/vendor/thermal/config 0771 root system
 
+    # Enable suspend to RAM
+    write /sys/power/mem_sleep "deep"
+
 # Display feature sysfs node
     chown system system /sys/class/mi_display/disp-DSI-0/disp_param
     chmod 0664 /sys/class/mi_display/disp-DSI-0/disp_param
@@ -387,10 +390,6 @@ service vendor.power /vendor/bin/hw/android.hardware.power-service-qti
     class hal
     user system
     group system input 
-
-on property:sys.boot_completed=1
-    # Enable suspend to RAM
-    write /sys/power/mem_sleep "deep"
 
 on late-init
     # === Multi-Gen LRU (MGLRU) Optimization (Forced Activation) ===
