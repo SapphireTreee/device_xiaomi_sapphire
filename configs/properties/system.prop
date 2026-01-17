@@ -44,9 +44,6 @@ ro.vendor.qti.va_aosp.support=1
 debug.hwui.use_hint_manager=true
 debug.hwui.target_cpu_time_percent=30
 
-# enable tunnel encoding for amrwb
-tunnel.audio.encode=true
-
 # property to latch unsignaled buffer
 debug.sf.latch_unsignaled=0
 
