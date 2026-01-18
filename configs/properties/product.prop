@@ -15,9 +15,6 @@ audio.offload.video=true
 audio.sys.noisy.broadcast.delay=500
 audio.sys.routing.latency=0
 
-# Display
-ro.sf.lcd_density=420
-
 # Netflix
 ro.netflix.channel=004ee050-1a17-11e9-bb61-6f1da27fb55b
 ro.netflix.signup=1
