@@ -66,7 +66,7 @@ TARGET_BOOTLOADER_BOARD_NAME := bengal
 $(call soong_config_set, camera, override_format_from_reserved, true)
 
 # Display
-TARGET_SCREEN_DENSITY := 437
+TARGET_SCREEN_DENSITY := 440
 
 # DTB/DTBO
 BOARD_INCLUDE_DTB_IN_BOOTIMG := true
