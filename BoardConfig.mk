@@ -66,9 +66,6 @@ TARGET_BOOTLOADER_BOARD_NAME := bengal
 $(call soong_config_set, camera, override_format_from_reserved, true)
 
 # Display
-SOONG_CONFIG_NAMESPACES += qcomDisplayVars
-SOONG_CONFIG_qcomDisplayVars += target_panel_dimension_multiplier
-SOONG_CONFIG_qcomDisplayVars_target_panel_dimension_multiplier := 10
 TARGET_SCREEN_DENSITY := 437
 
 # DTB/DTBO
