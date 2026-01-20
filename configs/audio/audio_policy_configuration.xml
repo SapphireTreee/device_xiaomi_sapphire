@@ -445,7 +445,7 @@
         </module>
 
         <!-- A2dp Input Audio HAL -->
-        <xi:include href="/vendor/etc/a2dp_audio_policy_configuration_7_0.xml"/>
+        <xi:include href="/vendor/etc/a2dp_audio_policy_configuration.xml"/>
 
         <!-- Usb Audio HAL -->
         <xi:include href="/vendor/etc/usb_audio_policy_configuration.xml"/>
@@ -454,7 +454,7 @@
         <xi:include href="/vendor/etc/r_submix_audio_policy_configuration.xml"/>
 
         <!-- Bluetooth Audio HAL -->
-        <xi:include href="/vendor/etc/bluetooth_audio_policy_configuration_7_0.xml"/>
+        <xi:include href="/vendor/etc/bluetooth_qti_audio_policy_configuration.xml"/>
 
     </modules>
     <!-- End of Modules section -->
