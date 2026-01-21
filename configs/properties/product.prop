@@ -14,6 +14,17 @@ aaudio.mmap_exclusive_policy=2
 audio.offload.video=true
 audio.sys.noisy.broadcast.delay=500
 audio.sys.routing.latency=0
+ro.vendor.audio.ring.filter=false
+vendor.audio.flac.sw.decoder.24bit=true
+vendor.audio.hw.aac.encoder=true
+vendor.audio.offload.buffer.size.kb=256
+vendor.audio.offload.multiaac.enable=true
+vendor.audio.parser.ip.buffer.size=262144
+vendor.audio.tunnel.encode=false
+vendor.audio.use.sw.alac.decoder=true
+vendor.audio.use.sw.ape.decoder=true
+vendor.audio_hal.period_size=192
+vendor.voice.path.for.pcm.voip=true
 
 # Netflix
 ro.netflix.channel=004ee050-1a17-11e9-bb61-6f1da27fb55b
