@@ -168,7 +168,6 @@ drm.service.enabled=true
 # Display
 debug.mdpcomp.logs=0
 debug.sf.auto_latch_unsignaled=0
-debug.sf.latch_unsignaled=0
 debug.sf.enable_hwc_vds=1
 debug.sf.enable_transaction_tracing=false
 debug.sf.enable_advanced_sf_phase_offset=1
@@ -334,6 +333,10 @@ persist.vendor.viwifi_support=1
 persist.vendor.volte_support=1
 
 # Wi-Fi
+ro.hardware.wlan.dbs=0
+ro.hardware.wlan.mimo=0
+ro.hardware.wlan.vendor=qcom
+ro.hardware.wlan.chip=wcn3988
 wifi.aware.interface=wifi-aware0
 
 # Zygote
