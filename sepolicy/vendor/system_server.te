@@ -6,6 +6,6 @@ allow system_server sysfs_wakeup:file r_file_perms;
 allow system_server vendor_sysfs_battery_supply:file r_file_perms;
 
 # Allow LineageOS health services
-allow system_server default_android_service:service_manager find;
+allow system_server hal_health_service:service_manager find;
 
 allow system_server zygote_tmpfs:file write;
