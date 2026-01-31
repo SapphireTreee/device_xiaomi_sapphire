@@ -46,6 +46,7 @@ debug.hwui.use_hint_manager=true
 debug.hwui.target_cpu_time_percent=50
 
 # HWUI
+debug.sf.enable_hwc_vds=1
 debug.sf.latch_unsignaled=0
 ro.hwui.texture_cache_size=72
 ro.hwui.layer_cache_size=48
