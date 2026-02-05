@@ -365,6 +365,12 @@ on property:sys.volume.stream.music.device.bluetooth=*
 
 on property:sys.volume.stream.bluetoothsco=*
     setprop vendor.volume.stream.bluetoothsco ${sys.volume.stream.bluetoothsco}
+    
+service vendor.power /vendor/bin/hw/android.hardware.power-service-qti
+    override
+    class hal
+    user system
+    group system input 
 
 on late-init
     # === Multi-Gen LRU (MGLRU) Optimization (Forced Activation) ===
@@ -375,4 +381,4 @@ on late-init
     
     # 2. Add Thrashing Prevention (Min Time To Live = 1000ms/1 second)
     write /sys/kernel/mm/lru_gen/min_ttl_ms 1000
-    
+
