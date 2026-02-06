@@ -200,6 +200,10 @@ on boot
     chown system system /sys/class/touch/touch_dev/fod_longpress_gesture_enabled
     chmod 0660 /sys/class/touch/touch_dev/fod_longpress_gesture_enabled
 
+    # DT2W
+    chown system system /proc/tp_gesture
+    chmod 0644 /proc/tp_gesture
+
 #USB controller configuration
     setprop vendor.usb.rndis.func.name "gsi"
     setprop vendor.usb.rmnet.func.name "gsi"
@@ -365,12 +369,6 @@ on property:sys.volume.stream.music.device.bluetooth=*
 
 on property:sys.volume.stream.bluetoothsco=*
     setprop vendor.volume.stream.bluetoothsco ${sys.volume.stream.bluetoothsco}
-    
-service vendor.power /vendor/bin/hw/android.hardware.power-service-qti
-    override
-    class hal
-    user system
-    group system input 
 
 on late-init
     # === Multi-Gen LRU (MGLRU) Optimization (Forced Activation) ===
