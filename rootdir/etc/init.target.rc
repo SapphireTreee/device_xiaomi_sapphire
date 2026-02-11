@@ -119,8 +119,8 @@ on post-fs-data
     chmod 0775 /data/vendor/touchpad
 
 #display feature for fingerprint
-    chown root graphics /dev/disp_feature
-    chmod 666 /dev/disp_feature
+    chown root graphics /dev/mi_display/disp_feature
+    chmod 666 /dev/mi_display/disp_feature
 
 #flashlight permission
     chmod 0660 /sys/class/leds/led:torch/brightness
