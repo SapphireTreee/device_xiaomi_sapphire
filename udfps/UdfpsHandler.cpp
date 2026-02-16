@@ -55,13 +55,7 @@ static bool readBool(int fd) {
     char c;
     int rc;
 
-    rc = lseek(fd, 0, SEEK_SET);
-    if (rc) {
-        LOG(ERROR) << "failed to seek fd, err: " << rc;
-        return false;
-    }
-
-    rc = read(fd, &c, sizeof(char));
+    rc = pread(fd, &c, sizeof(char), 0);
     if (rc != 1) {
         LOG(ERROR) << "failed to read bool from fd, err: " << rc;
         return false;
@@ -123,8 +117,8 @@ class XiaomiSm6225UdfpsHandler : public UdfpsHandler {
         isFpcFod = (fpVendor == "fpc_fod");
 
         // Start monitoring threads
-        std::thread([this]() { fodPressMonitorThread(); }).detach();
-        std::thread([this]() { displayEventMonitorThread(); }).detach();
+        fodThread_ = std::thread([this]() { fodPressMonitorThread(); });
+        dispThread_ = std::thread([this]() { displayEventMonitorThread(); });
 
         LOG(INFO) << "UDFPS handler initialized";
     }
@@ -153,13 +147,15 @@ class XiaomiSm6225UdfpsHandler : public UdfpsHandler {
         
         if (static_cast<AcquiredInfo>(result) == AcquiredInfo::GOOD) {
             // Disable HBM on successful acquisition
-            std::lock_guard<std::mutex> lock(disp_mutex_);
-            if (disp_fd_.get() >= 0) {
-                disp_local_hbm_req req;
-                req.base.flag = 0;
-                req.base.disp_id = MI_DISP_PRIMARY;
-                req.local_hbm_value = LHBM_TARGET_BRIGHTNESS_OFF_FINGER_UP;
-                ioctl(disp_fd_.get(), MI_DISP_IOCTL_SET_LOCAL_HBM, &req);
+            {
+                std::lock_guard<std::mutex> lock(disp_mutex_);
+                if (disp_fd_.get() >= 0) {
+                    disp_local_hbm_req req;
+                    req.base.flag = 0;
+                    req.base.disp_id = MI_DISP_PRIMARY;
+                    req.local_hbm_value = LHBM_TARGET_BRIGHTNESS_OFF_FINGER_UP;
+                    ioctl(disp_fd_.get(), MI_DISP_IOCTL_SET_LOCAL_HBM, &req);
+                }
             }
             
             if (!enrolling.load()) {
@@ -215,10 +211,19 @@ class XiaomiSm6225UdfpsHandler : public UdfpsHandler {
     std::mutex disp_mutex_;
     std::mutex device_mutex_;
 
+    // Thread objects
+    std::thread fodThread_;
+    std::thread dispThread_;
+
     void shutdownThreads() {
         isRunning.store(false);
-        // Give threads time to exit gracefully
-        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        // Join threads if they are running
+        if (fodThread_.joinable()) {
+            fodThread_.join();
+        }
+        if (dispThread_.joinable()) {
+            dispThread_.join();
+        }
     }
 
     void fodPressMonitorThread() {
