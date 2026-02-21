@@ -23,7 +23,6 @@ persist.vendor.dpm.feature=11
 persist.sys.gps.fence=true
 
 # Graphics
-persist.wm.enable_remote_keyguard_animation=0
 ro.surface_flinger.supports_background_blur=1
 
 # Media
