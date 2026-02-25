@@ -1016,7 +1016,6 @@ vendor/bin/lowi-server
 vendor/bin/mlid
 vendor/bin/xtra-daemon
 vendor/bin/xtwifi-client
-vendor/bin/wifilearner
 vendor/etc/apdr.conf
 vendor/etc/batching.conf
 vendor/etc/gnss_antenna_info.conf
@@ -1079,8 +1078,6 @@ vendor/lib64/libtzdrmgenprov.so
 vendor/lib64/libxtadapter.so
 vendor/lib64/vendor.qti.gnss-V4-ndk.so
 vendor/lib64/vendor.qti.gnss-service.so
-vendor/etc/init/vendor.qti.hardware.wifi.wifilearner@1.0-service.rc
-vendor/lib64/vendor.qti.hardware.wifi.wifilearner@1.0.so
 
 # Gatekeeper
 vendor/bin/hw/android.hardware.gatekeeper@1.0-service-qti
