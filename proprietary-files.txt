@@ -1092,7 +1092,7 @@ vendor/lib64/vendor.qti.hardware.secureprocessor.common@1.0.so
 vendor/lib64/vendor.qti.hardware.secureprocessor.config@1.0.so
 vendor/lib64/vendor.qti.hardware.secureprocessor.device@1.0.so
 system_ext/etc/permissions/com.qti.media.secureprocessor.xml
-/system_ext/framework/com.qti.media.secureprocessor.jar
+system_ext/framework/com.qti.media.secureprocessor.jar
 
 # Graphics
 vendor/gpu/kbc/sequence_manifest.bin
