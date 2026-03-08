@@ -1926,3 +1926,4 @@ vendor/bin/cnss-daemon
 vendor/app/TrustZoneAccessService/TrustZoneAccessService.apk
 vendor/app/TxPwrAdmin/TxPwrAdmin.apk
 system_ext/framework/vendor.qti.hardware.sensorscalibrate-V1.0-java.jar
+system_ext/lib64/extractors/libmmparserextractor.so
