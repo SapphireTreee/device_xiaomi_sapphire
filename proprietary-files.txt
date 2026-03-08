@@ -1697,6 +1697,7 @@ system_ext/lib64/vendor.qti.hardware.embmssl@1.0.so
 system_ext/lib64/vendor.qti.hardware.embmssl@1.1.so
 system_ext/lib64/vendor.qti.hardware.embmsslaidl-V2-ndk.so
 system_ext/lib64/libembmstinyxml.so
+system_ext/lib64/libembmsmmparser_lite.so
 
 # SSR
 vendor/bin/ssr_diag
