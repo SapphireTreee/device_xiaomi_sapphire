@@ -1693,6 +1693,10 @@ vendor/lib64/vendor.qti.hardware.radio.uim_remote_client@1.1.so
 vendor/lib64/vendor.qti.hardware.radio.uim_remote_client@1.2.so
 vendor/lib64/vendor.qti.hardware.radio.uim_remote_server@1.0.so
 vendor/lib64/vendor.qti.voiceprint@1.0.so
+system_ext/lib64/vendor.qti.hardware.embmssl@1.0.so
+system_ext/lib64/vendor.qti.hardware.embmssl@1.1.so
+system_ext/lib64/vendor.qti.hardware.embmsslaidl-V2-ndk.so
+system_ext/lib64/libembmstinyxml.so
 
 # SSR
 vendor/bin/ssr_diag
