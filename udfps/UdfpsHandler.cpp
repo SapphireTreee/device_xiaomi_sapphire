@@ -47,12 +47,6 @@
 #define DISP_FEATURE_PATH "/dev/mi_display/disp_feature"
 #define FOD_PRESS_STATUS_PATH "/sys/class/touch/touch_dev/fod_press_status"
 
-// Correct values from mi_disp.h
-#define C_Q_DISP_FEATURE_LOCAL_HBM 9
-#define C_Q_LOCAL_HBM_HLPM_WHITE_1000NIT 6
-#define C_Q_LOCAL_HBM_OFF_TO_HLPM 8
-#define C_Q_MI_DISP_EVENT_DOZE 3
-
 using ::aidl::android::hardware::biometrics::fingerprint::AcquiredInfo;
 
 namespace {
@@ -211,7 +205,6 @@ class XiaomiSm6225UdfpsHandler : public UdfpsHandler {
     std::atomic<bool> enrolling{false};
     std::atomic<bool> isRunning{true};
     bool isFpcFod;
-    bool isDoze{false};
 
     // Mutexes for thread safety
     std::mutex touch_mutex_;
@@ -309,23 +302,6 @@ class XiaomiSm6225UdfpsHandler : public UdfpsHandler {
             return;
         }
 
-        // Register for Doze events
-        req.type = C_Q_MI_DISP_EVENT_DOZE;
-        if (ioctl(fd, MI_DISP_IOCTL_REGISTER_EVENT, &req) < 0) {
-            LOG(ERROR) << "Failed to register for doze events: " << strerror(errno);
-        }
-
-        // Sync initial doze state
-        {
-             disp_doze_brightness_req dozeReq;
-             dozeReq.base.flag = 0;
-             dozeReq.base.disp_id = MI_DISP_PRIMARY;
-             if (ioctl(fd, MI_DISP_IOCTL_GET_DOZE_BRIGHTNESS, &dozeReq) == 0) {
-                 isDoze = (dozeReq.doze_brightness != 0);
-                 LOG(INFO) << "Initial doze state: " << isDoze << " val: " << dozeReq.doze_brightness;
-             }
-        }
-
         struct pollfd dispEventPoll = {
             .fd = fd,
             .events = POLLIN,
@@ -364,13 +340,6 @@ class XiaomiSm6225UdfpsHandler : public UdfpsHandler {
                 continue;
             }
 
-            if (response->base.type == C_Q_MI_DISP_EVENT_DOZE) {
-                int dozeState = response->data[0];
-                isDoze = (dozeState != 0); // 0 is DOZE_TO_NORMAL
-                LOG(INFO) << "Doze state changed to: " << isDoze << " (val: " << dozeState << ")";
-                continue;
-            }
-
             if (response->base.type != MI_DISP_EVENT_FOD) {
                 LOG(WARNING) << "Unexpected display event: " << response->base.type;
                 continue;
@@ -406,14 +375,6 @@ class XiaomiSm6225UdfpsHandler : public UdfpsHandler {
         } else {
             LOG(DEBUG) << "Set FOD status to " << value;
         }
-
-        // Also enable AOD touch mode when FOD is enabled
-        buf[1] = Touch_Aod_Enable;
-        if (ioctl(touch_fd_.get(), TOUCH_IOC_SET_CUR_VALUE, &buf) < 0) {
-            LOG(ERROR) << "Failed to set AOD status: " << strerror(errno);
-        } else {
-            LOG(DEBUG) << "Set AOD status to " << value;
-        }
     }
 
     void setFingerDown(bool pressed) {
@@ -432,26 +393,13 @@ class XiaomiSm6225UdfpsHandler : public UdfpsHandler {
         {
             std::lock_guard<std::mutex> lock(disp_mutex_);
             if (disp_fd_.get() >= 0) {
-                if (isDoze) {
-                    disp_feature_req req;
-                    req.base.flag = 0;
-                    req.base.disp_id = MI_DISP_PRIMARY;
-                    req.feature_id = C_Q_DISP_FEATURE_LOCAL_HBM;
-                    req.feature_val = pressed ? C_Q_LOCAL_HBM_HLPM_WHITE_1000NIT : C_Q_LOCAL_HBM_OFF_TO_HLPM;
-                    if (ioctl(disp_fd_.get(), MI_DISP_IOCTL_SET_FEATURE, &req) < 0) {
-                        LOG(ERROR) << "Failed to set HBM for Doze: " << strerror(errno);
-                    } else {
-                        LOG(DEBUG) << "Set HBM for Doze: " << req.feature_val;
-                    }
-                } else {
-                    disp_local_hbm_req req;
-                    req.base.flag = 0;
-                    req.base.disp_id = MI_DISP_PRIMARY;
-                    req.local_hbm_value = pressed ? LHBM_TARGET_BRIGHTNESS_WHITE_1000NIT
-                                                  : LHBM_TARGET_BRIGHTNESS_OFF_FINGER_UP;
-                    if (ioctl(disp_fd_.get(), MI_DISP_IOCTL_SET_LOCAL_HBM, &req) < 0) {
-                        LOG(ERROR) << "Failed to set HBM: " << strerror(errno);
-                    }
+                disp_local_hbm_req req;
+                req.base.flag = 0;
+                req.base.disp_id = MI_DISP_PRIMARY;
+                req.local_hbm_value = pressed ? LHBM_TARGET_BRIGHTNESS_WHITE_1000NIT
+                                              : LHBM_TARGET_BRIGHTNESS_OFF_FINGER_UP;
+                if (ioctl(disp_fd_.get(), MI_DISP_IOCTL_SET_LOCAL_HBM, &req) < 0) {
+                    LOG(ERROR) << "Failed to set HBM: " << strerror(errno);
                 }
             }
         }
