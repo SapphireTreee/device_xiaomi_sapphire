@@ -320,6 +320,17 @@ on property:init.svc.surfaceflinger=restarting
     stop displayfeature
 #display end
 
+# add display panel color
+service panel_color /vendor/bin/panelcolor_bin
+    class main
+    user root
+    oneshot
+    disabled
+
+on property:sys.boot_completed=1
+    start panel_color
+# add end
+
 #add for wifi 9434 log
 service vendor.tcpdump /vendor/bin/vendor_tcpdump -i any -W 2 -C 2 -s 134 -w /data/vendor/wlan_logs/tcpdump.pcap
     class main

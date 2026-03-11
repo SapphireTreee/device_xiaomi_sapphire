@@ -858,6 +858,7 @@ vendor/lib64/libdiagjni.so
 vendor/lib64/vendor.qti.diaghal@1.0.so
 
 # Display
+vendor/bin/panelcolor_bin
 vendor/bin/hw/vendor.display.color@1.0-service
 vendor/bin/hw/vendor.qti.hardware.display.composer-service
 vendor/bin/init.qti.display_boot.sh
