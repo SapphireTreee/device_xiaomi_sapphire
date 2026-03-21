@@ -139,7 +139,8 @@ BOARD_KERNEL_CMDLINE := \
     kasan=off \
     disable_dma32=on \
     rcu_nocbs=all \
-    rcutree.enable_rcu_lazy=1
+    rcu_normal=1 \
+    rcu_expedited=1
 
 # Kernel prebuilt
 TARGET_KERNEL_ARCH := arm64
