@@ -63,7 +63,7 @@ bluetooth.profile.vcp.controller.enabled=false
 persist.vendor.bt.a2dp.samplerate=true
 
 # Display
-debug.sf.enable_gl_backpressure=1
+debug.sf.enable_gl_backpressure=0
 
 # Media
 media.stagefright.audio.deep=false
