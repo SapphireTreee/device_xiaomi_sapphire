@@ -17,16 +17,13 @@ $(call inherit-product, vendor/lineage/config/common_full_phone.mk)
 # Include our private certificate
 -include vendor/lineage-priv/keys/keys.mk
 
-# Gapps
--include vendor/gms/products/gms.mk
-
-# Gapps config
-TARGET_SUPPORTS_GOOGLE_RECORDER := true
-TARGET_INCLUDE_STOCK_ARCORE := false
-TARGET_INCLUDE_GOOGLE_COMMS := true
-TARGET_INCLUDE_PIXEL_LAUNCHER := false
-TARGET_INCLUDE_LIVE_WALLPAPERS := false
+# Extra Stuffs
+TARGET_SUPPORTS_QUICK_TAP := true
 WITH_GMS := true
+TARGET_ENABLE_BLUR := true
+BUILD_BCR := false
+TARGET_INCLUDE_ACCORD := false
+EVO_BUILD_TYPE := Unofficial
 
 # AudioFX
 TARGET_EXCLUDES_AUDIOFX := true
