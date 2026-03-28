@@ -1,2 +1,2 @@
-typeattribute vendor_camera_prop, system_public_property_type;
+typeattribute vendor_camera_prop, system_property_type;
 
