@@ -12,3 +12,6 @@ vendor_public_prop(vendor_fp_prop)
 
 # WiFi
 vendor_public_prop(vendor_wifimac_prop)
+
+# camera 
+type vendor_camera_prop, property_type;
