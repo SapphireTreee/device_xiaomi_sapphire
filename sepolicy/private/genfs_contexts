@@ -1,2 +1,0 @@
-genfscon proc /sys/net/ipv4/ip_local_unbindable_ports u:object_r:proc_net_local_unbindable_ports:s0
-
