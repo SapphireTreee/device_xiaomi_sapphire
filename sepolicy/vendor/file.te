@@ -12,6 +12,7 @@ type sysfs_tp_fodstatus, fs_type, sysfs_type;
 type vendor_mac_vendor_data_file, data_file_type, file_type, mlstrustedobject;
 
 # Walt scheduler proc files
+type proc_sys_walt, fs_type, proc_type;
 type proc_walt, fs_type, proc_type;
 
 # CPU DMA latency device type
