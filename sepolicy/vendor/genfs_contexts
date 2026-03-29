@@ -86,6 +86,7 @@ genfscon sysfs /class/wakeup(/.*)?               u:object_r:sysfs_wakeup:s0
 # Walt scheduler tunables
 genfscon proc /sys/walt u:object_r:proc_sys_walt:s0
 genfscon proc /sys/walt/sched_per_task_boost u:object_r:proc_walt:s0
+genfscon proc /sys/walt/task_load_boost      u:object_r:proc_walt:s0
 
 genfscon proc /sys/net/ipv4/ip_local_unbindable_ports u:object_r:proc_net_local_unbindable_ports:s0
 
