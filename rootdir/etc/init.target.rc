@@ -220,54 +220,6 @@ on boot
     chmod 0660 /sys/class/qcom-battery/input_suspend
     restorecon /sys/class/qcom-battery/input_suspend
 
-# --- SILVER CLUSTER (CPUs 0-3) ---
-    # Create directories
-    mkdir /sys/devices/system/cpu/cpu0/cpufreq/walt 0755 system system
-    mkdir /sys/devices/system/cpu/cpu1/cpufreq/walt 0755 system system
-    mkdir /sys/devices/system/cpu/cpu2/cpufreq/walt 0755 system system
-    mkdir /sys/devices/system/cpu/cpu3/cpufreq/walt 0755 system system
-
-    # Symlink boost, hispeed_freq, and hispeed_load to Policy 0
-    symlink /sys/devices/system/cpu/cpufreq/policy0/walt/boost /sys/devices/system/cpu/cpu0/cpufreq/walt/boost
-    symlink /sys/devices/system/cpu/cpufreq/policy0/walt/hispeed_freq /sys/devices/system/cpu/cpu0/cpufreq/walt/hispeed_freq
-    symlink /sys/devices/system/cpu/cpufreq/policy0/walt/hispeed_load /sys/devices/system/cpu/cpu0/cpufreq/walt/hispeed_load
-
-    symlink /sys/devices/system/cpu/cpufreq/policy0/walt/boost /sys/devices/system/cpu/cpu1/cpufreq/walt/boost
-    symlink /sys/devices/system/cpu/cpufreq/policy0/walt/hispeed_freq /sys/devices/system/cpu/cpu1/cpufreq/walt/hispeed_freq
-    symlink /sys/devices/system/cpu/cpufreq/policy0/walt/hispeed_load /sys/devices/system/cpu/cpu1/cpufreq/walt/hispeed_load
-
-    symlink /sys/devices/system/cpu/cpufreq/policy0/walt/boost /sys/devices/system/cpu/cpu2/cpufreq/walt/boost
-    symlink /sys/devices/system/cpu/cpufreq/policy0/walt/hispeed_freq /sys/devices/system/cpu/cpu2/cpufreq/walt/hispeed_freq
-    symlink /sys/devices/system/cpu/cpufreq/policy0/walt/hispeed_load /sys/devices/system/cpu/cpu2/cpufreq/walt/hispeed_load
-
-    symlink /sys/devices/system/cpu/cpufreq/policy0/walt/boost /sys/devices/system/cpu/cpu3/cpufreq/walt/boost
-    symlink /sys/devices/system/cpu/cpufreq/policy0/walt/hispeed_freq /sys/devices/system/cpu/cpu3/cpufreq/walt/hispeed_freq
-    symlink /sys/devices/system/cpu/cpufreq/policy0/walt/hispeed_load /sys/devices/system/cpu/cpu3/cpufreq/walt/hispeed_load
-
-    # --- GOLD CLUSTER (CPUs 4-7) ---
-    # Create directories
-    mkdir /sys/devices/system/cpu/cpu4/cpufreq/walt 0755 system system
-    mkdir /sys/devices/system/cpu/cpu5/cpufreq/walt 0755 system system
-    mkdir /sys/devices/system/cpu/cpu6/cpufreq/walt 0755 system system
-    mkdir /sys/devices/system/cpu/cpu7/cpufreq/walt 0755 system system
-
-    # Symlink boost, hispeed_freq, and hispeed_load to Policy 4
-    symlink /sys/devices/system/cpu/cpufreq/policy4/walt/boost /sys/devices/system/cpu/cpu4/cpufreq/walt/boost
-    symlink /sys/devices/system/cpu/cpufreq/policy4/walt/hispeed_freq /sys/devices/system/cpu/cpu4/cpufreq/walt/hispeed_freq
-    symlink /sys/devices/system/cpu/cpufreq/policy4/walt/hispeed_load /sys/devices/system/cpu/cpu4/cpufreq/walt/hispeed_load
-
-    symlink /sys/devices/system/cpu/cpufreq/policy4/walt/boost /sys/devices/system/cpu/cpu5/cpufreq/walt/boost
-    symlink /sys/devices/system/cpu/cpufreq/policy4/walt/hispeed_freq /sys/devices/system/cpu/cpu5/cpufreq/walt/hispeed_freq
-    symlink /sys/devices/system/cpu/cpufreq/policy4/walt/hispeed_load /sys/devices/system/cpu/cpu5/cpufreq/walt/hispeed_load
-
-    symlink /sys/devices/system/cpu/cpufreq/policy4/walt/boost /sys/devices/system/cpu/cpu6/cpufreq/walt/boost
-    symlink /sys/devices/system/cpu/cpufreq/policy4/walt/hispeed_freq /sys/devices/system/cpu/cpu6/cpufreq/walt/hispeed_freq
-    symlink /sys/devices/system/cpu/cpufreq/policy4/walt/hispeed_load /sys/devices/system/cpu/cpu6/cpufreq/walt/hispeed_load
-
-    symlink /sys/devices/system/cpu/cpufreq/policy4/walt/boost /sys/devices/system/cpu/cpu7/cpufreq/walt/boost
-    symlink /sys/devices/system/cpu/cpufreq/policy4/walt/hispeed_freq /sys/devices/system/cpu/cpu7/cpufreq/walt/hispeed_freq
-    symlink /sys/devices/system/cpu/cpufreq/policy4/walt/hispeed_load /sys/devices/system/cpu/cpu7/cpufreq/walt/hispeed_load
-
 on boot && property:persist.vendor.usb.controller.default=*
     setprop vendor.usb.controller ${persist.vendor.usb.controller.default}
 
