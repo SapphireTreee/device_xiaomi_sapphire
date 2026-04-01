@@ -59,6 +59,10 @@ PRODUCT_PROPERTY_OVERRIDES += \
 PRODUCT_PROPERTY_OVERRIDES += \
     ro.surface_flinger.game_default_frame_rate_override=120
 
+# IO Cgroups
+PRODUCT_PROPERTY_OVERRIDES += \
+    ro.vendor.iocgrp.config=1
+
 # Audio
 $(call soong_config_set, android_hardware_audio, run_64bit, true)
 
