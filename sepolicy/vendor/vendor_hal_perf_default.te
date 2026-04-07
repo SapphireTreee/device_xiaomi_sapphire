@@ -19,3 +19,4 @@ allow vendor_hal_perf_default proc_walt:file rw_file_perms;
 allow vendor_hal_perf_default sysfs_devices_system_cpu:file rw_file_perms;
 allow vendor_hal_perf_default hal_fingerprint_default:dir search;
 allow vendor_hal_perf_default hal_fingerprint_default:file r_file_perms;
+allow vendor_hal_perf_default proc_sched:file { read open getattr };
