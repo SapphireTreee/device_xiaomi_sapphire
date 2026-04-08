@@ -235,6 +235,9 @@ ro.vendor.whitepoint_calibration_enable=true
 ro.vendor.xiaomi.bl.poll=true
 sys.displayfeature_hidl=true
 
+# HWUI
+ro.hwui.render_ahead=2
+
 # Enable Incremental
 ro.incremental.enable=true
 
