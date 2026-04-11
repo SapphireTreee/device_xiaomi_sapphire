@@ -36,11 +36,6 @@ persist.device_config.runtime_native_boot.iorap_readahead_enable=true
 # Fwk-Detect
 ro.vendor.qti.va_aosp.support=1
 
-# Hint Manager
-debug.sf.enable_adpf_cpu_hint=true
-debug.hwui.use_hint_manager=true
-debug.hwui.target_cpu_time_percent=50
-
 # HWUI
 debug.sf.enable_hwc_vds=1
 debug.sf.latch_unsignaled=0
