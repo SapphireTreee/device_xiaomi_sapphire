@@ -351,9 +351,6 @@
          strictly needed. -->
     <bool name="config_sf_limitedAlpha">true</bool>
 
-    <!-- media controls -->
-    <bool name="config_mediaControlsTurbulenceByDefault">false</bool>
-
     <!-- Set this to true to enable the platform's auto-power-save modes like doze and
          app standby.  These are not enabled by default because they require a standard
          cloud-to-device messaging service for apps to interact correctly with the modes
