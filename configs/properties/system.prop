@@ -28,11 +28,6 @@ persist.vendor.ims.disableDebugLogs=1
 persist.vendor.ims.disableIMSLogs=1
 persist.vendor.ims.disableQXDMLogs=1
 
-# IOrap
-ro.iorapd.enable=true
-persist.device_config.runtime_native_boot.iorap_perfetto_enable=true
-persist.device_config.runtime_native_boot.iorap_readahead_enable=true
-
 # Fwk-Detect
 ro.vendor.qti.va_aosp.support=1
 
