@@ -46,9 +46,9 @@
             <instance>software</instance>
         </interface>
     </hal>
-    <hal format="hidl" optional="true">
+    <hal format="aidl" optional="true">
         <name>android.hardware.nfc</name>
-        <version>1.0</version>
+        <version>1</version>
         <interface>
             <name>INfc</name>
             <instance>default</instance>
@@ -71,7 +71,7 @@
         </interface>
     </hal>
     <hal format="hidl" optional="true">
-        <name>android.hardware.graphics.composer</name>
+        <name>android.hardware.graphics.allocator</name>
         <interface>
             <name>IComposer</name>
             <instance>default</instance>
@@ -1083,9 +1083,10 @@
         </interface>
     </hal>
     <hal format="hidl" optional="true">
-        <name>android.hardware.graphics.allocator</name>
+        <name>vendor.dolby.hardware.dms</name>
+        <version>2.0</version>
         <interface>
-            <name>IAllocator</name>
+            <name>IDms</name>
             <instance>default</instance>
         </interface>
     </hal>
