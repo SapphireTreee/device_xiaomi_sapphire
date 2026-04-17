@@ -23,11 +23,35 @@ import android.util.Log;
 
 public class BootCompletedReceiver extends BroadcastReceiver {
     private static final String TAG = "XiaomiVoIPFix";
-    private static final boolean DEBUG = true;
+    private static final boolean DEBUG = false;
+
+    private static final String[] VALID_ACTIONS = {
+            Intent.ACTION_BOOT_COMPLETED,
+            "android.intent.action.LOCKED_BOOT_COMPLETED"
+    };
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        if (DEBUG) Log.d(TAG, "Starting VoIP Fix service on boot");
+        if (intent == null || intent.getAction() == null) {
+            Log.w(TAG, "Received null intent or action, ignoring");
+            return;
+        }
+
+        if (!isValidBootAction(intent.getAction())) {
+            Log.w(TAG, "Unexpected action: " + intent.getAction() + ", ignoring");
+            return;
+        }
+
+        if (DEBUG)
+            Log.d(TAG, "Starting VoIP Fix service on boot");
         context.startService(new Intent(context, VoIPFixService.class));
+    }
+
+    private boolean isValidBootAction(String action) {
+        for (String valid : VALID_ACTIONS) {
+            if (valid.equals(action))
+                return true;
+        }
+        return false;
     }
 }
