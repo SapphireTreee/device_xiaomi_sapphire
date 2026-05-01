@@ -43,7 +43,7 @@ import android.view.KeyEvent;
  */
 public class VoIPFixService extends Service {
     private static final String TAG = "VoIPFixService";
-    private static final boolean DEBUG = true;
+    private static final boolean DEBUG = false;
 
     private AudioManager mAudioManager;
     private TelephonyManager mTelephonyManager;
