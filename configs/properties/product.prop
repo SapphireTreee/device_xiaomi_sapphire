@@ -69,6 +69,10 @@ persist.vendor.adapt.sampler=true
 # Media
 media.stagefright.audio.deep=false
 
+# Remote Provisioning
+remote_provisioning.enable_rkpd=true
+remote_provisioning.hostname=remoteprovisioning.googleapis.com
+
 # Radio
 persist.vendor.radio.enable_temp_dds=true
 ro.vendor.radio.fastdormancy=true
