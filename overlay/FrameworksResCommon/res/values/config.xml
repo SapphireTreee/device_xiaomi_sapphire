@@ -99,7 +99,7 @@
     <!-- Safe headphone volume index. When music stream volume is below this index
     the SPL on headphone output is compliant to EN 60950 requirements for portable music
     players. -->
-    <integer name="config_safe_media_volume_index">10</integer>
+    <integer name="config_safe_media_volume_index">100</integer>
 
     <!-- Configure tcp buffer sizes per network type in the form:
          network-type:rmem_min,rmem_def,rmem_max,wmem_min,wmem_def,wmem_max
@@ -141,6 +141,10 @@
 
     <!-- Flag indicating if the speed up audio on mt call code should be executed -->
     <bool name="config_speed_up_audio_on_mt_calls">true</bool>
+
+    <!-- Whether or not wcg (wide color gamut) should be enabled on this device,
+         we only enabled it while the device has ability of mixed color spaces composition -->
+    <bool name="config_enableWcgMode">true</bool>
 
     <!-- set to false if we need to show user confirmation
          when alpha identifier is not provided by the UICC -->
