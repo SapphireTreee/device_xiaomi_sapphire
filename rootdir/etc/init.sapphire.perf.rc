@@ -39,3 +39,7 @@ on property:sys.boot_completed=1
     write /dev/cpuctl/nnapi-hal/cpu.shares 20480 
     write /dev/cpuctl/rt/cpu.shares 20480 
     write /dev/cpuctl/top-app/cpu.shares 20480
+
+    # Miscellaneous
+    write /proc/irq/209/smp_affinity_list 7
+    write /proc/irq/218/smp_affinity_list 6
