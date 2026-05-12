@@ -20,6 +20,8 @@ set_prop(vendor_init, vendor_bluetooth_prop)
 set_prop(vendor_init, vendor_verity_prop)
 set_prop(vendor_init, vendor_mm_prop)
 set_prop(vendor_init, vendor_media_prop)
+get_prop(vendor_init, vendor_ril_prop);
+set_prop(vendor_init, vendor_ril_prop);
 
 # Allow init.qcom.usb.sh to create files in uvc.0
 allow vendor_qti_init_shell configfs:dir create_dir_perms;
