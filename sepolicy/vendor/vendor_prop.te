@@ -1,1 +1,2 @@
 vendor_restricted_prop(vendor_verity_prop)
+vendor_restricted_prop(vendor_mm_prop)
