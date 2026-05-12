@@ -1,5 +1,6 @@
 # IMS telephony services
 type hal_telephony_service, service_manager_type;
+type vendor_hal_factory_aidlservice, service_manager_type;
 
 # LineageOS health services  
 type lineage_health_service, service_manager_type;
