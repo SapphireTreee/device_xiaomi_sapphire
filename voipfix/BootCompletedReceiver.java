@@ -19,6 +19,7 @@ package org.pixelexperience.xiaomi.voipfix;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.util.Log;
 
 public class BootCompletedReceiver extends BroadcastReceiver {
@@ -44,7 +45,13 @@ public class BootCompletedReceiver extends BroadcastReceiver {
 
         if (DEBUG)
             Log.d(TAG, "Starting VoIP Fix service on boot");
-        context.startService(new Intent(context, VoIPFixService.class));
+
+        Intent serviceIntent = new Intent(context, VoIPFixService.class);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            context.startForegroundService(serviceIntent);
+        } else {
+            context.startService(serviceIntent);
+        }
     }
 
     private boolean isValidBootAction(String action) {
