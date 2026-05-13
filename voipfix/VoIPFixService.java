@@ -35,7 +35,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * VoIPFixService - automatically triggers volume adjustments during VoIP calls
- * to resolve muted audio issues on Xiaomi SM8350 devices
+ * to resolve muted audio issues on Xiaomi SM6225 devices
  */
 public class VoIPFixService extends Service {
     private static final String TAG = "XiaomiVoIPFix";
