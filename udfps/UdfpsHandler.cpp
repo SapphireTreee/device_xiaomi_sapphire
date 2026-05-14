@@ -46,7 +46,6 @@
 
 #define DISP_FEATURE_PATH "/dev/mi_display/disp_feature"
 #define FOD_PRESS_STATUS_PATH "/sys/class/touch/touch_dev/fod_press_status"
-#define BRIGHTNESS_PATH "/sys/class/backlight/panel0-backlight/brightness"
 
 using ::aidl::android::hardware::biometrics::fingerprint::AcquiredInfo;
 
@@ -76,7 +75,7 @@ static disp_event_resp* parseDispEvent(int fd) {
         return nullptr;
     }
 
-    if (size < (ssize_t)sizeof(struct disp_event)) {
+    if (size < sizeof(struct disp_event)) {
         LOG(ERROR) << "Invalid event size " << size << ", expect at least "
                    << sizeof(struct disp_event);
         return nullptr;
@@ -120,11 +119,6 @@ class XiaomiSm6225UdfpsHandler : public UdfpsHandler {
         // Start monitoring threads
         fodThread_ = std::thread([this]() { fodPressMonitorThread(); });
         dispThread_ = std::thread([this]() { displayEventMonitorThread(); });
-        
-        // PARCHE MINIMALISTA: Añadimos el centinela de brillo SOLO para FPC
-        if (isFpcFod) {
-            screenThread_ = std::thread([this]() { screenStateMonitorThread(); });
-        }
 
         LOG(INFO) << "UDFPS handler initialized";
     }
@@ -220,41 +214,6 @@ class XiaomiSm6225UdfpsHandler : public UdfpsHandler {
     // Thread objects
     std::thread fodThread_;
     std::thread dispThread_;
-    std::thread screenThread_; // Hilo centinela
-
-    int getBrightness() {
-        int fd = open(BRIGHTNESS_PATH, O_RDONLY);
-        if (fd < 0) return -1;
-        char buf[12];
-        ssize_t len = read(fd, buf, sizeof(buf) - 1);
-        close(fd);
-        if (len <= 0) return -1;
-        buf[len] = '\0';
-        return atoi(buf);
-    }
-
-    void screenStateMonitorThread() {
-        int lastState = -1;
-        while (isRunning.load()) {
-            int brightness = getBrightness();
-            if (brightness != -1) {
-                int currentState = (brightness == 0) ? 0 : 1;
-                if (currentState != lastState) {
-                    if (currentState == 0 && isFpcFod) {
-                        // Pantalla apagada: Mantenemos el panel vivo para que tu módulo Magisk funcione
-                        setFodStatus(FOD_STATUS_ON);
-                    } else if (currentState == 1 && isFpcFod) {
-                        // Pantalla encendida: Apagamos el modo FOD para evitar fogonazos (si no estamos registrando huella)
-                        if (!enrolling.load()) {
-                            setFodStatus(FOD_STATUS_OFF);
-                        }
-                    }
-                    lastState = currentState;
-                }
-            }
-            std::this_thread::sleep_for(std::chrono::milliseconds(200));
-        }
-    }
 
     void shutdownThreads() {
         isRunning.store(false);
@@ -265,9 +224,6 @@ class XiaomiSm6225UdfpsHandler : public UdfpsHandler {
         if (dispThread_.joinable()) {
             dispThread_.join();
         }
-        if (screenThread_.joinable()) {
-            screenThread_.join();
-        }
     }
 
     void fodPressMonitorThread() {
@@ -276,7 +232,7 @@ class XiaomiSm6225UdfpsHandler : public UdfpsHandler {
         int fd = open(FOD_PRESS_STATUS_PATH, O_RDONLY);
         if (fd < 0) {
             LOG(ERROR) << "Failed to open " << FOD_PRESS_STATUS_PATH 
-                       << ", error: " << strerror(errno);
+                      << ", error: " << strerror(errno);
             return;
         }
 
@@ -331,7 +287,7 @@ class XiaomiSm6225UdfpsHandler : public UdfpsHandler {
         int fd = open(DISP_FEATURE_PATH, O_RDWR);
         if (fd < 0) {
             LOG(ERROR) << "Failed to open " << DISP_FEATURE_PATH 
-                       << ", error: " << strerror(errno);
+                      << ", error: " << strerror(errno);
             return;
         }
 
