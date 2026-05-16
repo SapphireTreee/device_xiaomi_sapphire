@@ -153,7 +153,7 @@ class XiaomiSm6225UdfpsHandler : public UdfpsHandler {
         uint64_t elapsed = now - mFbDownTimeMs.load();
         
         if (elapsed < 250) {
-            LOG(INFO) << "UDFPS: Ignorando falso UP del framework (pasaron " << elapsed << "ms)";
+            LOG(INFO) << "UDFPS: Ignoring false framework UP (pasaron " << elapsed << "ms)";
             return;
         }
 
@@ -254,11 +254,11 @@ class XiaomiSm6225UdfpsHandler : public UdfpsHandler {
             if (brightness != -1) {
                 int currentState = (brightness == 0) ? 0 : 1;
                 
-                // Leemos el estado del interruptor de Android
+                // Read Android screen-off toggle state
                 bool isScreenOffEnabled = android::base::GetBoolProperty("persist.vendor.sys.fp.screen_off", true);
 
                 if (currentState != lastState) {
-                    // Si el interruptor esta apagado, el centinela NO enciende el tactil
+                    // If toggle is disabled, do not enable touch FOD
                     if (currentState == 0 && isFpcFod && isScreenOffEnabled) {
                         setFodStatus(FOD_STATUS_ON);
                     } else if (currentState == 1 && isFpcFod) {
@@ -340,19 +340,19 @@ class XiaomiSm6225UdfpsHandler : public UdfpsHandler {
             } else {
                 uint64_t elapsed = now - mFbDownTimeMs.load();
                 if (elapsed < 250) {
-                    LOG(INFO) << "UDFPS: Hardware marco UP muy rapido (" << elapsed << "ms). Esperando 100ms...";
+                    LOG(INFO) << "UDFPS: Hardware UP too fast (" << elapsed << "ms). Esperando 100ms...";
                     std::this_thread::sleep_for(std::chrono::milliseconds(100));
                     if (readBool(fd)) {
-                        LOG(INFO) << "UDFPS: El dedo seguia ahi! Falso UP fisico ignorado.";
+                        LOG(INFO) << "UDFPS: Finger still present, ignoring false physical UP event.";
                         continue; 
                     }
                 }
             }
 
-            // SEGURIDAD: Solo manda el toque si Screen-Off esta activado o la pantalla encendida
+            // SECURITY: Only send touch event if Screen-Off is enabled or screen is on
             bool isScreenOffEnabled = android::base::GetBoolProperty("persist.vendor.sys.fp.screen_off", true);
             if (!isScreenOffEnabled && getBrightness() == 0) {
-                LOG(INFO) << "UDFPS: Toque ignorado. Screen-Off desactivado.";
+                LOG(INFO) << "UDFPS: Touch ignored, Screen-Off feature disabled.";
                 continue;
             }
 
