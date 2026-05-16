@@ -10,6 +10,9 @@ persist.vendor.btstack.aac_frm_ctl.enabled=true
 ro.bluetooth.emb_wp_mode=false
 ro.bluetooth.wipower=false
 
+# Charger
+ro.charger.enable_suspend=1
+
 # Brightness Curve
 persist.sys.brightness.low.gamma=true
 
