@@ -383,6 +383,14 @@
          strictly needed. -->
     <bool name="config_sf_limitedAlpha">true</bool>
 
+    <string-array name="configs_base">
+        <!-- ART heap compaction for cached apps -->
+        <item>activity_manager/use_compaction=true</item>
+
+        <!-- Allow more cached apps in the background -->
+        <item>activity_manager/max_cached_processes=64</item>
+    </string-array>
+
     <!-- Set this to true to enable the platform's auto-power-save modes like doze and
          app standby.  These are not enabled by default because they require a standard
          cloud-to-device messaging service for apps to interact correctly with the modes
