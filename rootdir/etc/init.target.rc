@@ -360,10 +360,6 @@ on property:persist.vendor.tcpdump.enable=false
 on property:persist.sys.cota.carrier=OR
    stop vendor.tcpdump
 
-on property:vendor.post_boot.parsed=1
-    # Set restricted cpuset to the same CPUs as system-background
-    copy /dev/cpuset/system-background/cpus /dev/cpuset/restricted/cpus
-
 on property:sys.boot_completed=1
     write /sys/devices/virtual/thermal/thermal_message/sconfig 20
 
