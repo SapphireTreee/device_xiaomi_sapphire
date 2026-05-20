@@ -219,8 +219,8 @@ fi
 echo $sched_rt_period_us > /proc/sys/kernel/sched_rt_period_us
 echo $sched_rt_runtime_us > /proc/sys/kernel/sched_rt_runtime_us
 
-# Disable Core control on silver
-echo 0 > /sys/devices/system/cpu/cpu0/core_ctl/enable
+# Enable Core control on silver
+echo 1 > /sys/devices/system/cpu/cpu0/core_ctl/enable
 # Core control parameters for gold
 echo 2 > /sys/devices/system/cpu/cpu4/core_ctl/min_cpus
 echo 60 > /sys/devices/system/cpu/cpu4/core_ctl/busy_up_thres
