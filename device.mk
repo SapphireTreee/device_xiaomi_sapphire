@@ -585,7 +585,8 @@ PRODUCT_PACKAGES += libshim
 
 # Thermal
 PRODUCT_PACKAGES += \
-    android.hardware.thermal-service.qti
+    android.hardware.thermal-service.qti \
+    libpsi.vendor
 
 $(call soong_config_set,qti_thermal,netlink,false)
 
