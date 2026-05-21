@@ -69,8 +69,6 @@ $(call soong_config_set_bool, camera, override_format_from_reserved, true)
 
 # Display
 TARGET_SCREEN_DENSITY := 440
-TARGET_HAS_WIDE_COLOR_DISPLAY := true
-TARGET_HAS_HDR_DISPLAY := false
 
 # DTB/DTBO
 BOARD_INCLUDE_DTB_IN_BOOTIMG := true
