@@ -320,7 +320,8 @@ PRODUCT_PACKAGES += \
     init.recovery.qcom.rc \
     init.target.rc \
     init.xiaomi.rc \
-    ueventd.qcom.rc
+    ueventd.qcom.rc \
+    init.qti.display_boot.rc
 
 PRODUCT_PACKAGES += \
     init.class_main.sh \
@@ -337,7 +338,8 @@ PRODUCT_PACKAGES += \
     init.qti.kernel.sh \
     init.qti.write.sh \
     system_dlkm_modprobe.sh \
-    vendor_modprobe.sh
+    vendor_modprobe.sh \
+    init.qti.display_boot.sh
 
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/rootdir/etc/fstab.qcom:$(TARGET_COPY_OUT_VENDOR_RAMDISK)/first_stage_ramdisk/fstab.qcom

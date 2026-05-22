@@ -864,11 +864,9 @@ vendor/lib64/vendor.qti.diaghal@1.0.so
 vendor/bin/panelcolor_bin
 vendor/bin/hw/vendor.display.color@1.0-service
 vendor/bin/hw/vendor.qti.hardware.display.composer-service
-vendor/bin/init.qti.display_boot.sh
 vendor/bin/ppd
 vendor/bin/qdcmss
 vendor/etc/display/advanced_sf_offsets.xml
-vendor/etc/init/init.qti.display_boot.rc
 vendor/etc/init/qdcmss.rc
 vendor/etc/init/vendor.display.color@1.0-service.rc
 vendor/lib64/hw/gralloc.bengal.so
