@@ -216,6 +216,10 @@ PRODUCT_PACKAGES += \
     vendor.qti.hardware.display.config-V5-ndk.vendor \
     vendor.qti.hardware.display.config-V6-ndk.vendor
 
+PRODUCT_PACKAGES += \
+    init.qti.display_boot.rc \
+    init.qti.display_boot.sh
+
 PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.hardware.touchscreen.multitouch.jazzhand.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.touchscreen.multitouch.jazzhand.xml
 
@@ -320,8 +324,7 @@ PRODUCT_PACKAGES += \
     init.recovery.qcom.rc \
     init.target.rc \
     init.xiaomi.rc \
-    ueventd.qcom.rc \
-    init.qti.display_boot.rc
+    ueventd.qcom.rc
 
 PRODUCT_PACKAGES += \
     init.class_main.sh \
@@ -338,8 +341,7 @@ PRODUCT_PACKAGES += \
     init.qti.kernel.sh \
     init.qti.write.sh \
     system_dlkm_modprobe.sh \
-    vendor_modprobe.sh \
-    init.qti.display_boot.sh
+    vendor_modprobe.sh 
 
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/rootdir/etc/fstab.qcom:$(TARGET_COPY_OUT_VENDOR_RAMDISK)/first_stage_ramdisk/fstab.qcom

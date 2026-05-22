@@ -54,13 +54,6 @@ prebuilt_etc {
     vendor: true,
 }
 
-prebuilt_etc {
-    name: "init.qti.display_boot.rc",
-    src: "etc/init.qti.display_boot.rc",
-    sub_dir: "init",
-    vendor: true,
-}
-
 // Init scripts
 sh_binary {
     name: "init.class_main.sh",
@@ -119,12 +112,6 @@ sh_binary {
 sh_binary {
     name: "init.qti.dcvs.sh",
     src: "bin/init.qti.dcvs.sh",
-    vendor: true,
-}
-
-sh_binary {
-    name: "init.qti.display_boot.sh",
-    src: "bin/init.qti.display_boot.sh",
     vendor: true,
 }
 
