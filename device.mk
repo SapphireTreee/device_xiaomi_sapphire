@@ -581,6 +581,7 @@ PRODUCT_PACKAGES += libshim
 
 # Thermal
 PRODUCT_PACKAGES += \
+    android.hardware.thermal@2.0.vendor \
     android.hardware.thermal-service.qti \
     libpsi.vendor
 
