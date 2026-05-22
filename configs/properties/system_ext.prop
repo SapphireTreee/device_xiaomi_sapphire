@@ -23,6 +23,7 @@ persist.vendor.dpm.feature=11
 persist.sys.gps.fence=true
 
 # Graphics
+ro.surface_flinger.blur_disabled_by_default=true
 ro.surface_flinger.supports_background_blur=1
 
 # Media
