@@ -60,6 +60,8 @@ blob_fixups: blob_fixups_user_type = {
         .replace_needed('libprotobuf-cpp-full.so', 'libprotobuf-cpp-full-fromvendor.so'),
     'system_ext/lib64/libprotobuf-cpp-full-fromvendor.so': blob_fixup()
         .replace_needed('libprotobuf-cpp-lite.so','libprotobuf-cpp-lite-fromvendor.so'),
+    'vendor/etc/init/hw/init.qcom.usb.rc': blob_fixup()
+        .regex_replace('on charger', 'on property:init.svc.vendor.charger=running'),
 }
 
 module = ExtractUtilsModule(
