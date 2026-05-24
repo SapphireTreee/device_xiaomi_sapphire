@@ -22,9 +22,6 @@ $(call inherit-product, frameworks/native/build/phone-xhdpi-6144-dalvik-heap.mk)
 # Inherit from the proprietary version
 $(call inherit-product, vendor/xiaomi/sapphire/sapphire-vendor.mk)
 
-# GameBar Performance Overlay
-$(call inherit-product, packages/apps/GameBar/gamebar.mk)
-
 # Disable omx
 TARGET_SUPPORTS_OMX_SERVICE := false
 
