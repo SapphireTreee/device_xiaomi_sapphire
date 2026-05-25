@@ -65,7 +65,7 @@ media.stagefright.enable-scan=true
 media.stagefright.thumbnail.prefer_hw_codecs=true
 
 # NTP
-persist.backup.ntpServer="0.pool.ntp.org"
+persist.backup.ntpServer=0.pool.ntp.org
 
 # Radio
 DEVICE_PROVISIONED=1
@@ -89,6 +89,3 @@ persist.device_config.mglru_native.lru_gen_config=core
 
 # Disable vsync for cpu rendered apps
 debug.cpurend.vsync=false
-
-# Time Services
-persist.backup.ntpServer=0.pool.ntp.org
