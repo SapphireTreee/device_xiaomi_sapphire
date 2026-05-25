@@ -52,8 +52,6 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     com.dsi.ant@1.0.vendor
 
-PRODUCT_IS_LOW_RAM := false
-
 # Memory Configuration
 PRODUCT_PROPERTY_OVERRIDES += \
     ro.config.low_ram=false

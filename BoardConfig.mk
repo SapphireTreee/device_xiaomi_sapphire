@@ -82,9 +82,6 @@ TARGET_GLOBAL_LTO := thin
 TARGET_GLOBAL_OPTIMIZATION := O3
 TARGET_GLOBAL_THINLTO := true
 
-# SoC specific low-ram flag for HALs
-TARGET_HAS_LOW_RAM := false
-
 #Enable PD locater/notifier
 TARGET_PD_SERVICE_ENABLED := true
 
