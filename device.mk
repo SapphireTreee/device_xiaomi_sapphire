@@ -280,6 +280,10 @@ PRODUCT_PACKAGES += \
     android.hardware.health-V1-ndk.vendor \
     android.hardware.health@2.1.vendor
 
+# Charger
+PRODUCT_PACKAGES += \
+    charger_res_images
+
 # HIDL
 PRODUCT_PACKAGES += \
     android.hidl.allocator@1.0.vendor \
