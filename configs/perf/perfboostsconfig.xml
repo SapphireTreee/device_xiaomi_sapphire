@@ -572,7 +572,7 @@
         <!-- DDR_LAT_MINFREQ_GOLD  resource opcode, value -->
          <Config
              Id="0x00001087" Type="1" Enable="true" Timeout="0" Target="khaje" Fps="120"
-             Resources="0x40800000, 2112, 0x40800100, 1516, 0x40C00000, 2,
+             Resources="0x40800000, 1766, 0x40800100, 1516, 0x40C00000, 2,
                         0x4303C000, 768000, 0x43488000, 768000" />
 
     <!--Display on Resource -->
