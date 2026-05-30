@@ -267,8 +267,6 @@ ro.logd.size=256K
 # Media
 vendor.media.omx=0
 vendor.mm.enable.qcom_parser=16777215
-persist.mm.enable.prefetch=true
-ro.mediaserver.64b.enable=true
 
 # Perf
 ro.vendor.beluga.p=0x3

@@ -69,6 +69,7 @@ persist.vendor.adapt.sampler=true
 
 # Media
 media.stagefright.audio.deep=false
+persist.mm.enable.prefetch=true
 
 # Remote Provisioning
 remote_provisioning.enable_rkpd=true
