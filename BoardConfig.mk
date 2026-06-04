@@ -145,7 +145,9 @@ BOARD_KERNEL_CMDLINE := \
     rcu_nocbs=all \
     rcu_normal=1 \
     rcu_expedited=1 \
-    qcom_geni_serial.con_enabled=0
+    qcom_geni_serial.con_enabled=0 \
+    bootinfo.fingerprint=$(LINEAGE_VERSION) \
+    swinfo.fingerprint=$(LINEAGE_VERSION)
 
 # Kernel prebuilt
 TARGET_KERNEL_ARCH := arm64
