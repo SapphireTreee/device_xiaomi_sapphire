@@ -32,3 +32,5 @@ ro.mediaserver.64b.enable=true
 # Radio
 ro.telephony.sim_slots.count=2
 telephony.active_modems.max_count=2
+
+ro.config.isolated_compilation_enabled=true

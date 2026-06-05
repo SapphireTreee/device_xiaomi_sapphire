@@ -1,3 +1,6 @@
+#Disable MTE Async for system server
+arm64.memtag.process.system_server=off
+
 # App
 ro.launcher.blur.appLaunch=0
 
@@ -82,6 +85,14 @@ ro.vendor.radio.features_common=3
 
 # lmkd
 ro.lmk.psi_complete_stall_ms=70
+
+# Dalvik
+dalvik.vm.boot-dex2oat-cpu-set=0,1,2,3
+dalvik.vm.image-dex2oat-cpu-set=0,1,2,3
+dalvik.vm.background-dex2oat-cpu-set=0,1,2,3
+dalvik.vm.dex2oat-threads=4
+
+ro.config.safe_media_volume_index=10
 
 # FS-verity
 ro.apk_verity.mode=2
