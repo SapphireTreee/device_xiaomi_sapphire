@@ -1,3 +1,6 @@
+#Disable MTE Async for system server
+arm64.memtag.process.system_server=off
+
 # Audio
 persist.audio.button_jack.profile=volume
 persist.audio.button_jack.switch=0
