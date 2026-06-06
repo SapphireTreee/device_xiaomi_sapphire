@@ -3,3 +3,6 @@ ro.vendor.audio.karaoke.enable=true
 
 # ODM Fwk-Detect
 ro.vendor.qti.va_odm.support=1
+
+# CameraX
+ro.camerax.extensions.enabled=true

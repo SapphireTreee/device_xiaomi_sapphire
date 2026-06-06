@@ -70,6 +70,8 @@ media.stagefright.thumbnail.prefer_hw_codecs=true
 # NTP
 persist.backup.ntpServer=0.pool.ntp.org
 
+ro.camerax.extensions.enabled=true
+
 # Radio
 DEVICE_PROVISIONED=1
 persist.rcs.supported=1

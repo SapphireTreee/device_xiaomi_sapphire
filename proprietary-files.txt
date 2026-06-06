@@ -763,6 +763,9 @@ vendor/etc/camera/xiaomiSceneDetection.xml
 # Camera postproc
 vendor/lib64/vendor.qti.hardware.camera.postproc@1.0-service-impl.so
 
+# Camera Extensions
+system_ext/framework/camerax-vendor-extensions.jar
+
 # CDSP
 vendor/bin/cdsprpcd
 vendor/etc/init/vendor.qti.cdsprpc-service.rc
