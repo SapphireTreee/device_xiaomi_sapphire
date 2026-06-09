@@ -18,7 +18,7 @@ property Name is called. -->
     <PerfConfigs>
 
                 <!--Vendor Properties -->
-                <Prop Name="vendor.debug.enable.lm" Value="true" />
+                <Prop Name="vendor.debug.enable.lm" Value="false" />
                 <Prop Name="vendor.iop.enable_uxe" Value="0" />
                 <Prop Name="ro.lmk.enable_preferred_apps" Value="true" />
                 <Prop Name="ro.vendor.perf.enable.prefapps" Value="false" />
@@ -31,7 +31,7 @@ property Name is called. -->
                 <Prop Name="vendor.perf.iop_v3.enable" Value="false" />
                 <Prop Name="vendor.perf.iop_v3.enable.debug" Value="false" />
                 <Prop Name="vendor.iop.enable_speed" Value="false" />
-                <Prop Name="vendor.debug.enable.memperfd" Value="true" />
+                <Prop Name="vendor.debug.enable.memperfd" Value="false" />
                 <Prop Name="ro.vendor.perf.enable.procomp" Value="false" />
                 <Prop Name="vendor.perf.pfar.enable" Value="1"/>
 
