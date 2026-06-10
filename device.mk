@@ -399,11 +399,6 @@ PRODUCT_COPY_FILES += \
 PRODUCT_PACKAGES += \
     vendor.qti.hardware.memtrack-service
 
-# NDK
-PRODUCT_PACKAGES += \
-    android.hardware.common-V2-ndk.vendor \
-    android.hardware.identity-V3-ndk.vendor
-
 # Net
 PRODUCT_PACKAGES += \
     android.system.net.netd@1.1.vendor \
