@@ -69,7 +69,6 @@ PRODUCT_PACKAGES += \
     android.hardware.soundtrigger@2.3-impl
 
 PRODUCT_PACKAGES += \
-    sound_trigger.primary.bengal \
     audio.primary.default \
     audio.r_submix.default \
     audio.usb.default \
