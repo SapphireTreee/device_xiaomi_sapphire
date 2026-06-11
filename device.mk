@@ -203,6 +203,9 @@ $(call soong_config_set,qtidisplay,gralloc_handle_has_reserved_size,true)
 
 # Display NDK
 PRODUCT_PACKAGES += \
+    android.hardware.graphics.allocator-V1-ndk.vendor \
+    android.hardware.graphics.common-V3-ndk.vendor \
+    android.hardware.light-V2-ndk.vendor \
     android.hardware.memtrack-V1-ndk.vendor \
     vendor.qti.hardware.display.config-V1-ndk.vendor \
     vendor.qti.hardware.display.config-V2-ndk.vendor \
