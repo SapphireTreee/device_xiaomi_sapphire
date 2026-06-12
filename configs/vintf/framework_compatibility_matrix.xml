@@ -71,7 +71,7 @@
         </interface>
     </hal>
     <hal format="hidl" optional="true">
-        <name>android.hardware.graphics.allocator</name>
+        <name>android.hardware.graphics.composer</name>
         <interface>
             <name>IComposer</name>
             <instance>default</instance>
