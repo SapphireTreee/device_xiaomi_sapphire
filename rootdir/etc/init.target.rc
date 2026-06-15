@@ -360,9 +360,6 @@ on property:persist.vendor.tcpdump.enable=false
 on property:persist.sys.cota.carrier=OR
    stop vendor.tcpdump
 
-on property:sys.boot_completed=1
-    write /sys/devices/virtual/thermal/thermal_message/sconfig 20
-
 #add for btmac property
 on property:persist.ro.ril.oem.btmac=*
   setprop ro.ril.oem.btmac ${persist.ro.ril.oem.btmac}
