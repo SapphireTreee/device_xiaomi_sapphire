@@ -98,17 +98,17 @@ void vendor_load_properties() {
 
     if (sys.totalram > 6144ull * 1024 * 1024) {
         // from - phone-xhdpi-8192-dalvik-heap.mk
-        heapstartsize = "16m";
+        heapstartsize = "24m";
         heapgrowthlimit = "384m";
         heapsize = "512m";
-        heaptargetutilization = "0.5";
+        heaptargetutilization = "0.42";
         heapminfree = "8m";
-        heapmaxfree = "16m";
+        heapmaxfree = "24m";
     } else if (sys.totalram > 4096ull * 1024 * 1024) {
         // from - phone-xhdpi-6144-dalvik-heap.mk
-        heapstartsize = "12m";
+        heapstartsize = "16m";
         heapgrowthlimit = "320m";
-        heapsize = "448m";
+        heapsize = "512m";
         heaptargetutilization = "0.45";
         heapminfree = "8m";
         heapmaxfree = "16m";
