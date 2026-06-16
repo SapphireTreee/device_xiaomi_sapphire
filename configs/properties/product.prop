@@ -86,6 +86,3 @@ ro.lmk.psi_complete_stall_ms=70
 # FS-verity
 ro.apk_verity.mode=2
 
-debug.hwui.use_hint_manager=true
-debug.sf.enable_adpf_cpu_hint=true
-debug.fwk.enable_adpf_cpu_hint=true
