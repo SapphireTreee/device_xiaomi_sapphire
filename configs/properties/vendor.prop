@@ -337,6 +337,9 @@ zygote.critical_window.minute=10
 # Sensors
 ro.vendor.sensors.xiaomi.udfps=true
 
+# IO Cgroups
+ro.vendor.iocgrp.config=1
+
 # Soc
 ro.soc.manufacturer=QTI
 ro.soc.model=SM6225
