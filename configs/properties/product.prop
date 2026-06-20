@@ -85,4 +85,3 @@ ro.lmk.psi_complete_stall_ms=70
 
 # FS-verity
 ro.apk_verity.mode=2
-
