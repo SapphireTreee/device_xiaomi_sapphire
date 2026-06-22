@@ -344,6 +344,13 @@
     -->
     <string name="config_screenRecorderAVCProfileLevel" translatable="false">4.2</string>
 
+    <!-- The database synchronization mode when using the default journal mode.
+         FULL is safest and preserves durability at the cost of extra fsyncs.
+         NORMAL also preserves durability in non-WAL modes and uses checksums to ensure
+         integrity although there is a small chance that an error might go unnoticed.
+         Choices are: FULL, NORMAL, OFF. -->
+    <string name="db_default_sync_mode" translatable="false">NORMAL</string>
+
     <!-- Determines whether the shell features all run on another thread. This is to be overrided
          by the resources of the app using the Shell library. -->
     <bool name="config_enableShellMainThread">true</bool>
