@@ -903,6 +903,8 @@ vendor/lib64/vendor.display.color@1.5.so
 vendor/lib64/vendor.display.postproc@1.0.so
 vendor/lib64/vendor.qti.hardware.qdutils_disp@1.0.so
 vendor/etc/SVIConfig.xml
+product/etc/permissions/com.qti.snapdragon.sdk.display.xml
+product/framework/com.qti.snapdragon.sdk.display.jar
 
 # Display configs
 vendor/etc/mdss_dsi_panel_m7_38_0c_0b_fhdp_video_mi.xml
