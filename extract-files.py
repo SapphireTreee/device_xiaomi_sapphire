@@ -22,7 +22,6 @@ from extract_utils.main import (
 
 namespace_imports = [
     'device/xiaomi/sapphire',
-    'hardware/qcom-caf/sm6225',
     'hardware/qcom-caf/wlan',
     'hardware/xiaomi',
     'vendor/qcom/opensource/commonsys-intf/display',
