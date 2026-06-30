@@ -22,6 +22,7 @@ from extract_utils.main import (
 
 namespace_imports = [
     'device/xiaomi/sapphire',
+    'hardware/qcom-caf/sm6225',
     'hardware/qcom-caf/wlan',
     'hardware/xiaomi',
     'vendor/qcom/opensource/commonsys-intf/display',
@@ -52,6 +53,10 @@ lib_fixups: lib_fixups_user_type = {
 blob_fixups: blob_fixups_user_type = {
     ('vendor/bin/hw/android.hardware.security.keymint-service-qti', 'vendor/lib64/libqtikeymint.so'): blob_fixup()
         .add_needed('android.hardware.security.rkp-V3-ndk.so'),
+    ('vendor/lib64/hw/displayfeature.default.so'): blob_fixup()
+        .replace_needed('libstagefright_foundation.so', 'libstagefright_foundation-v33.so'),
+    'libcodec2_hidl@1.0.so': blob_fixup()
+        .add_needed('libshim.so'),
     'vendor/etc/qcril_database/upgrade/config/6.0_config.sql': blob_fixup()
         .binary_regex_replace(rb'persist\.vendor\.radio\.poweron_opt', rb'persist.vendor.radio.poweron_ign'),
     ('vendor/lib64/libqcrilNr.so', 'vendor/lib64/libril-db.so'): blob_fixup()
@@ -72,13 +77,7 @@ blob_fixups: blob_fixups_user_type = {
     'vendor/bin/STFlashTool': blob_fixup()
         .add_needed('libbase_shim.so'),
     'vendor/lib64/libwvhidl.so': blob_fixup()
-        .add_needed('libcrypto_shim.so'),
-    'system_ext/lib64/vendor.qti.hardware.qccsyshal@1.2-halimpl.so': blob_fixup()
-        .replace_needed('libprotobuf-cpp-full.so', 'libprotobuf-cpp-full-fromvendor.so'),
-    'system_ext/lib64/libprotobuf-cpp-full-fromvendor.so': blob_fixup()
-        .replace_needed('libprotobuf-cpp-lite.so','libprotobuf-cpp-lite-fromvendor.so'),
-    'vendor/etc/init/hw/init.qcom.usb.rc': blob_fixup()
-        .regex_replace('on charger', 'on property:init.svc.vendor.charger=running'),
+        .add_needed('libcrypto_shim.so')
 }
 
 module = ExtractUtilsModule(

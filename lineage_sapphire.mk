@@ -17,8 +17,13 @@ $(call inherit-product, vendor/lineage/config/common_full_phone.mk)
 # Include our private certificate
 -include vendor/lineage-priv/keys/keys.mk
 
-# Gapps
--include vendor/gapps/arm64/arm64-vendor.mk
+# Extra Stuffs
+TARGET_SUPPORTS_QUICK_TAP := true
+WITH_GMS := true
+TARGET_ENABLE_BLUR := true
+BUILD_BCR := false
+TARGET_INCLUDE_ACCORD := false
+EVO_BUILD_TYPE := Unofficial
 
 # AudioFX
 TARGET_EXCLUDES_AUDIOFX := true
@@ -26,7 +31,6 @@ TARGET_EXCLUDES_AUDIOFX := true
 # Device configs
 TARGET_BOOT_ANIMATION_RES = 1080
 TARGET_HAS_UDFPS := true
-WITH_GMS := true
 
 PRODUCT_NAME := lineage_sapphire
 PRODUCT_DEVICE := sapphire
@@ -37,5 +41,5 @@ PRODUCT_MODEL := Redmi Note 13
 PRODUCT_GMS_CLIENTID_BASE := android-xiaomi
 
 PRODUCT_BUILD_PROP_OVERRIDES += \
-    BuildDesc="sapphire_global-user 15 AQ3A.240829.003 OS2.0.211.0.VNGMIXM release-keys" \
-    BuildFingerprint=Redmi/sapphire_global/sapphire:15/AQ3A.240829.003/OS2.0.211.0.VNGMIXM:user/release-keys
+    BuildDesc="sapphire_global-user 15 AQ3A.240829.003 OS2.0.210.0.VNGMIXM release-keys" \
+    BuildFingerprint=Redmi/sapphire_global/sapphire:15/AQ3A.240829.003/OS2.0.210.0.VNGMIXM:user/release-keys
