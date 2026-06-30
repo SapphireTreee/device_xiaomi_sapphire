@@ -1,7 +1,4 @@
 allow init debugfs_tracing_debug:dir mounton;
 allow init proc:file { setattr };
 allow init hal_fingerprint_default:process ptrace;
-allow init vendor_sysfs_scsi_host:file { open write getattr };
-allow vold vendor_sysfs_scsi_host:file { open write getattr };
-allow vold vendor_sysfs_memory:file { open write getattr };
-allow init vendor_sysfs_memory:file { open write getattr };
+allow init vendor_sysfs_memory:file write;

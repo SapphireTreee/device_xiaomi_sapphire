@@ -5,6 +5,7 @@
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
+
     <!-- An Array of "[ConnectivityManager connectionType],
                       [# simultaneous connection types]"  -->
     <string-array name="radioAttributes" translatable="false">
@@ -24,7 +25,7 @@
          in hardware. -->
     <bool name="config_setColorTransformAccelerated">true</bool>
 
-    <!-- Indicate available ColorDisplayManager.COLOR_MODE_xxx. -->
+    <!-- List supported color modes. -->
     <integer-array name="config_availableColorModes">
         <item>0</item> <!-- COLOR_MODE_NATURAL -->
         <item>1</item> <!-- COLOR_MODE_BOOSTED -->
@@ -33,7 +34,7 @@
     <!-- Color mode to use when accessibility transforms are enabled. This color mode must be
          supported by the device, but not necessarily appear in config_availableColorModes. The
          regularly selected color mode will be used if this value is negative. -->
-    <integer name="config_accessibilityColorMode">1</integer>
+    <integer name="config_accessibilityColorMode">2</integer>
 
     <!-- The following two arrays specify which color space to use for display composition when a
          certain color mode is active.
@@ -62,7 +63,7 @@
     <!-- Screen brightness used to dim the screen while dozing in a very low power state.
          May be less than the minimum allowed brightness setting
          that can be set by the user. -->
-    <item name="config_screenBrightnessDozeFloat" format="float" type="dimen">0.06667</item>
+    <integer name="config_screenBrightnessDoze">17</integer>
 
     <!-- The restoring is handled by modem if it is true-->
     <bool name="skip_restoring_network_selection" translatable="false">true</bool>
@@ -90,7 +91,7 @@
 
     <!-- If true, the doze component is not started until after the screen has been
          turned off and the screen off animation has been performed. -->
-    <bool name="config_dozeAfterScreenOffByDefault">false</bool>
+    <bool name="config_dozeAfterScreenOffByDefault">true</bool>
 
     <!-- Power Management: Specifies whether to decouple the interactive state of the
          device from the display on/off state.
@@ -123,7 +124,10 @@
     <!-- Safe headphone volume index. When music stream volume is below this index
     the SPL on headphone output is compliant to EN 60950 requirements for portable music
     players. -->
-    <integer name="config_safe_media_volume_index">100</integer>
+    <integer name="config_safe_media_volume_index">10</integer>
+
+    <!-- Whether safe headphone volume is enabled or not (country specific). --> 
+    <bool name="config_safe_media_volume_enabled">true</bool>
 
     <!-- Configure tcp buffer sizes per network type in the form:
          network-type:rmem_min,rmem_def,rmem_max,wmem_min,wmem_def,wmem_max
@@ -165,10 +169,6 @@
 
     <!-- Flag indicating if the speed up audio on mt call code should be executed -->
     <bool name="config_speed_up_audio_on_mt_calls">true</bool>
-
-    <!-- Whether or not wcg (wide color gamut) should be enabled on this device,
-         we only enabled it while the device has ability of mixed color spaces composition -->
-    <bool name="config_enableWcgMode">true</bool>
 
     <!-- set to false if we need to show user confirmation
          when alpha identifier is not provided by the UICC -->
@@ -344,13 +344,6 @@
     -->
     <string name="config_screenRecorderAVCProfileLevel" translatable="false">4.2</string>
 
-    <!-- The database synchronization mode when using the default journal mode.
-         FULL is safest and preserves durability at the cost of extra fsyncs.
-         NORMAL also preserves durability in non-WAL modes and uses checksums to ensure
-         integrity although there is a small chance that an error might go unnoticed.
-         Choices are: FULL, NORMAL, OFF. -->
-    <string name="db_default_sync_mode" translatable="false">NORMAL</string>
-
     <!-- Determines whether the shell features all run on another thread. This is to be overrided
          by the resources of the app using the Shell library. -->
     <bool name="config_enableShellMainThread">true</bool>
@@ -361,13 +354,8 @@
          strictly needed. -->
     <bool name="config_sf_limitedAlpha">true</bool>
 
-    <string-array name="configs_base">
-        <!-- ART heap compaction for cached apps -->
-        <item>activity_manager/use_compaction=true</item>
-
-        <!-- Allow more cached apps in the background -->
-        <item>activity_manager/max_cached_processes=64</item>
-    </string-array>
+    <!-- media controls -->
+    <bool name="config_mediaControlsTurbulenceByDefault">false</bool>
 
     <!-- Set this to true to enable the platform's auto-power-save modes like doze and
          app standby.  These are not enabled by default because they require a standard
@@ -380,13 +368,4 @@
 
     <!-- Flag indicating whether we should enable the adaptive sleep.-->
     <bool name="config_adaptive_sleep_available">true</bool>
-
-    <!-- Flag indicating whether the surface flinger is inefficient
-         at performing a blur.  Used by parts of the UI to turn off
-         the blur effect where it isn't worth the performance hit.
-         As of Honeycomb, blurring is not supported anymore. -->
-    <bool name="config_sf_slowBlur">false</bool>
-
-    <!-- If this is true, the screen will fade off. -->
-    <bool name="config_animateScreenLights">true</bool>
 </resources>
