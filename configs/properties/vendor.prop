@@ -12,7 +12,7 @@ persist.vendor.audio.fluence.tmic.enabled=false
 persist.vendor.audio.fluence.voicecall=true
 persist.vendor.audio.fluence.voicecomm=true
 persist.vendor.audio.fluence.voicerec=true
-persist.vendor.audio.ras.enabled=true
+persist.vendor.audio.ras.enabled=false
 persist.vendor.audio.spv3.enable=true
 persist.vendor.audio.voicecall.speaker.stereo=true
 ro.vendor.audio.spk.stereo=true
@@ -43,7 +43,7 @@ vendor.audio.gsl.shmem.dmaheap.uncached=true
 vendor.audio.hal.boot.timeout.ms=20000
 vendor.audio.hal.output.suspend.supported=true
 vendor.audio.hw.aac.encoder=false
-vendor.audio.offload.buffer.size.kb=256
+vendor.audio.offload.buffer.size.kb=32
 vendor.audio.offload.gapless.enabled=true
 vendor.audio.offload.multiaac.enable=true
 vendor.audio.offload.multiple.enabled=false
@@ -121,17 +121,11 @@ ro.vendor.audio.feature.fade=true
 ro.vendor.audio.game.mode=true
 
 # Bluetooth
-bluetooth.hardware.power.idle_cur_ma=6
-bluetooth.hardware.power.operating_voltage_mv=3700
-bluetooth.hardware.power.rx_cur_ma=28
-bluetooth.hardware.power.tx_cur_ma=36
 persist.bluetooth.a2dp_offload.disabled=true
 persist.vendor.bt.a2dp_offload_cap=sbc-aptx-aptxtws-aptxhd-aac-ldac
 persist.vendor.qcom.bluetooth.a2dp_offload_cap=sbc-aptx-aptxtws-aptxhd-aac-ldac-aptxadaptive 
 persist.vendor.qcom.bluetooth.aac_frm_ctl.enabled=true
 persist.vendor.qcom.bluetooth.aac_vbr_ctl.enabled=true
-persist.vendor.btstack.enable.twsplus=true
-persist.vendor.btstack.enable.twsplussho=true
 persist.vendor.qcom.bluetooth.a2dp_mcast_test.enabled=false
 persist.vendor.qcom.bluetooth.scram.enabled=false
 persist.vendor.qcom.bluetooth.soc=cherokee
@@ -166,29 +160,38 @@ persist.vendor.dpm.vndr.idletimer.mode=default
 drm.service.enabled=true
 
 # Display
+debug.egl.hw=0
 debug.mdpcomp.logs=0
+debug.sf.enable_hwc_vds=0
 debug.sf.latch_unsignaled=0
-debug.sf.auto_latch_unsignaled=1
+debug.sf.auto_latch_unsignaled=0
 debug.sf.enable_transaction_tracing=false
+debug.sf.defer_refresh_rate_when_off=1
 debug.sf.enable_advanced_sf_phase_offset=1
 debug.sf.high_fps_early_gl_phase_offset_ns=-5000000
 debug.sf.high_fps_early_phase_offset_ns=-5000000
 debug.sf.high_fps_late_app_phase_offset_ns=1000000
 debug.sf.high_fps_late_sf_phase_offset_ns=-5000000
+debug.sf.hw=0
 debug.sf.treat_170m_as_sRGB=1
 debug.sf.enable_egl_image_tracker=0
-persist.sys.sf.color_mode=1
+debug.sf.frame_rate_multiple_threshold=120
+persist.sys.sf.color_mode=0
 persist.sys.sf.color_saturation=1.0
-ro.surface_flinger.set_touch_timer_ms=200
+ro.surface_flinger.set_touch_timer_ms=0
+ro.surface_flinger.set_idle_timer_ms=0
 ro.surface_flinger.max_frame_buffer_acquired_buffers=3
 ro.surface_flinger.force_hwc_copy_for_virtual_displays=true
 ro.surface_flinger.has_HDR_display=false
-ro.surface_flinger.has_wide_color_display=false
+ro.surface_flinger.has_wide_color_display=true
 ro.surface_flinger.max_virtual_display_dimension=4096
 ro.surface_flinger.protected_contents=true
 ro.surface_flinger.use_color_management=true
 ro.surface_flinger.wcg_composition_dataspace=143261696
+ro.surface_flinger.clear_slots_with_set_layer_buffer=true
+ro.surface_flinger.use_content_detection_for_refresh_rate=false
 ro.surface_flinger.enable_frame_rate_override=false
+ro.surface_flinger.uclamp.min=205
 debug.sf.predict_hwc_composition_strategy=0
 ro.vendor.display.type=oled
 vendor.display.camera_noc_efficiency_factor=0.70
@@ -210,8 +213,11 @@ vendor.display.enable_posted_start_dyn=1
 vendor.display.idle_time=0
 vendor.display.normal_noc_efficiency_factor=0.85
 vendor.display.secure_preview_buffer_format=420_sp
-vendor.display.use_smooth_motion=1
-vendor.display.vds_allow_hwc=0
+vendor.display.use_smooth_motion=0
+vendor.display.vds_allow_hwc=1
+vendor.display.override_doze_mode=1
+vendor.display.perf_hint_window=50
+vendor.gralloc.enable_fb_ubwc=1
 vendor.gralloc.disable_ubwc=0
 vendor.gralloc.secure_preview_buffer_format=420_sp
 ro.vendor.display.svi=1
@@ -245,9 +251,6 @@ persist.vendor.fingerprint.sensor_location=540|2109|105
 # FRP
 ro.frp.pst=/dev/block/bootdevice/by-name/frp
 
-# FS-verity
-ro.apk_verity.mode=2
-
 # Gatekeeper
 vendor.gatekeeper.is_security_level_spu=0
 
@@ -256,10 +259,6 @@ graphics.gpu.profiler.support=true
 ro.hardware.egl=adreno
 ro.hardware.vulkan=adreno
 ro.opengles.version=196610
-ro.surface_flinger.support_kernel_idle_timer=true
-debug.hwui.renderer=skiagl
-debug.renderengine.backend=skiaglthreaded
-renderthread.skia.reduceopstasksplitting=true
 
 # Keystore
 ro.hardware.keystore_desede=true
@@ -270,26 +269,19 @@ ro.logd.size=256K
 
 # Media
 vendor.media.omx=0
-media.stagefright.thumbnail.prefer_hw_codecs=true
 vendor.mm.enable.qcom_parser=16777215
-persist.mm.enable.prefetch=true
-ro.mediaserver.64b.enable=true
-
-# Netflix
-vendor.netflix.bsp_rev=Q6115-31409-1
 
 # Perf
+ro.vendor.beluga.p=0x3
+ro.vendor.beluga.c=0x4800
+ro.vendor.beluga.s=0x900
+ro.vendor.beluga.t=0x240
 ro.vendor.extension_library=libqti-perfd-client.so
 ro.vendor.perf-hal.ver=2.3
-ro.vendor.perf.scroll_opt=1
 ro.vendor.qspm.enable=true
 vendor.pasr.activemode.enabled=true
 vendor.perf.framepacing.enable=1
 vendor.power.pasr.enabled=true
-vendor.debug.enable.adpf=1
-
-# QCOM
-persist.vendor.qcomsysd.enabled=1
 
 # Radio
 persist.radio.multisim.config=dsds
@@ -347,6 +339,9 @@ zygote.critical_window.minute=10
 # Sensors
 ro.vendor.sensors.xiaomi.udfps=true
 
-# IO Cgroups
-ro.vendor.iocgrp.config=1
+# Soc
+ro.soc.manufacturer=QTI
+ro.soc.model=SM6225
 
+# Shutdown
+sys.vendor.shutdown.waittime=500

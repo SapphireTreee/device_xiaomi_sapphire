@@ -242,6 +242,9 @@ vendor/lib64/vendor.qti.hardware.factory@1.1.so
 vendor/lib64/vendor.qti.hardware.mwqemadapter@1.0.so
 vendor/lib64/vendor.qti.hardware.slmadapter@1.0.so
 
+# CVP
+system_ext/lib64/vendor.qti.hardware.cvp@1.0.so
+
 # Camera
 system/lib64/libpiex.so
 vendor/lib64/camera/com.qti.sensor.n7_aac_gc16b3c_front_iii.so
@@ -760,6 +763,9 @@ vendor/etc/camera/xiaomiSceneDetection.xml
 # Camera postproc
 vendor/lib64/vendor.qti.hardware.camera.postproc@1.0-service-impl.so
 
+# Camera Extensions
+system_ext/framework/camerax-vendor-extensions.jar
+
 # CDSP
 vendor/bin/cdsprpcd
 vendor/etc/init/vendor.qti.cdsprpc-service.rc
@@ -861,11 +867,9 @@ vendor/lib64/vendor.qti.diaghal@1.0.so;MODULE_SUFFIX=_vendor
 vendor/bin/panelcolor_bin
 vendor/bin/hw/vendor.display.color@1.0-service
 vendor/bin/hw/vendor.qti.hardware.display.composer-service
-vendor/bin/init.qti.display_boot.sh
 vendor/bin/ppd
 vendor/bin/qdcmss
 vendor/etc/display/advanced_sf_offsets.xml
-vendor/etc/init/init.qti.display_boot.rc
 vendor/etc/init/qdcmss.rc
 vendor/etc/init/vendor.display.color@1.0-service.rc
 vendor/lib64/hw/gralloc.bengal.so
@@ -899,6 +903,8 @@ vendor/lib64/vendor.display.color@1.5.so
 vendor/lib64/vendor.display.postproc@1.0.so
 vendor/lib64/vendor.qti.hardware.qdutils_disp@1.0.so
 vendor/etc/SVIConfig.xml
+product/etc/permissions/com.qti.snapdragon.sdk.display.xml
+product/framework/com.qti.snapdragon.sdk.display.jar
 
 # Display configs
 vendor/etc/mdss_dsi_panel_m7_38_0c_0b_fhdp_video_mi.xml
@@ -1480,6 +1486,10 @@ vendor/lib64/vendor.qti.hardware.qccvndhal@1.0.so;MODULE_SUFFIX=_vendor
 # QCV
 vendor/bin/init.qti.qcv.sh
 vendor/etc/init/init.qti.qcv.rc
+
+# Required-QCC Protobuf
+system/lib64/libprotobuf-cpp-full.so:system_ext/lib64/libprotobuf-cpp-full-fromvendor.so
+system/lib64/libprotobuf-cpp-lite.so:system_ext/lib64/libprotobuf-cpp-lite-fromvendor.so
 
 # QMI
 vendor/bin/qmipriod
