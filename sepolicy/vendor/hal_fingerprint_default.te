@@ -63,10 +63,10 @@ allow hal_fingerprint_default vendor_qdsp_device:file r_file_perms;
 allow hal_fingerprint_default vendor_xdsp_device:chr_file r_file_perms;
 allow hal_fingerprint_default vendor_xdsp_device:file r_file_perms;
 allow hal_fingerprint_default vendor_hal_fingerprint_hwservice_xiaomi:hwservice_manager { add find };
-allow vendor_hal_perf_default hal_fingerprint_default:dir { search read write };
+allow vendor_hal_perf_default hal_fingerprint_default:dir { search read };
 allow vendor_hal_perf_default hal_fingerprint_default:file { read write open getattr };
 allow hal_fingerprint_default vendor_camera_prop:file read;
-allow hal_sensors_default sysfs_tp_fodstatus:file read;
+allow hal_sensors_default sysfs_tp_fodstatus:file { read open getattr };
 allow hal_fingerprint_default sysfs_wake_lock:file rw_file_perms;
 
 get_prop(hal_fingerprint_default, vendor_fp_prop)

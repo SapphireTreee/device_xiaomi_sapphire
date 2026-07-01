@@ -13,6 +13,7 @@ KERNEL_PATH := $(DEVICE_PATH)-kernel
 BUILD_BROKEN_DUP_RULES := true
 BUILD_BROKEN_ELF_PREBUILT_PRODUCT_COPY_FILES := true
 BUILD_BROKEN_INCORRECT_PARTITION_IMAGES := true
+BUILD_BROKEN_VENDOR_PROPERTY_NAMESPACE := true
 
 # A/B
 AB_OTA_UPDATER := true
@@ -44,14 +45,15 @@ TARGET_CPU_VARIANT_RUNTIME := cortex-a73
 
 AUDIO_FEATURE_ENABLED_DLKM := true
 AUDIO_FEATURE_ENABLED_DTS_EAGLE := false
-AUDIO_FEATURE_ENABLED_EXTENDED_COMPRESS_FORMAT := false
+AUDIO_FEATURE_ENABLED_EXTENDED_COMPRESS_FORMAT := true
 AUDIO_FEATURE_ENABLED_GEF_SUPPORT := true
 AUDIO_FEATURE_ENABLED_HW_ACCELERATED_EFFECTS := true
 AUDIO_FEATURE_ENABLED_INSTANCE_ID := true
 AUDIO_FEATURE_ENABLED_AGM_HIDL := true
-AUDIO_FEATURE_ENABLED_LSM_HIDL := true
 AUDIO_FEATURE_ENABLED_PAL_HIDL := true
 AUDIO_FEATURE_ENABLED_PROXY_DEVICE := true
+BOARD_SUPPORTS_SOUND_TRIGGER := true
+BOARD_SUPPORTS_SOUND_TRIGGER_HAL := true
 
 TARGET_USES_QCOM_MM_AUDIO := true
 TARGET_PROVIDES_AUDIO_HAL := true
@@ -63,10 +65,12 @@ $(call soong_config_set, ufsbsg, ufsframework, bsg)
 TARGET_BOOTLOADER_BOARD_NAME := bengal
 
 # Camera
-$(call soong_config_set, camera, override_format_from_reserved, true)
+$(call soong_config_set_bool, camera, override_format_from_reserved, true)
 
 # Display
 TARGET_SCREEN_DENSITY := 440
+TARGET_HAS_WIDE_COLOR_DISPLAY := true
+TARGET_HAS_HDR_DISPLAY := false
 
 # DTB/DTBO
 BOARD_INCLUDE_DTB_IN_BOOTIMG := true
@@ -138,7 +142,9 @@ BOARD_KERNEL_CMDLINE := \
     rcu_nocbs=all \
     rcu_normal=1 \
     rcu_expedited=1 \
-    qcom_geni_serial.con_enabled=0
+    qcom_geni_serial.con_enabled=0 \
+    bootinfo.fingerprint=$(LINEAGE_VERSION) \
+    swinfo.fingerprint=$(LINEAGE_VERSION)
 
 # Kernel prebuilt
 TARGET_KERNEL_ARCH := arm64
@@ -172,7 +178,7 @@ BOARD_SYSTEM_DLKMIMAGE_FILE_SYSTEM_TYPE := erofs
 BOARD_VENDOR_DLKMIMAGE_FILE_SYSTEM_TYPE := erofs
 
 BOARD_EROFS_PCLUSTER_SIZE := 262144
-BOARD_EROFS_COMPRESSOR := lz4hc,9
+BOARD_EROFS_SHARE_DUP_BLOCKS := true
 
 TARGET_COPY_OUT_ODM := odm
 TARGET_COPY_OUT_PRODUCT := product
@@ -195,10 +201,6 @@ TARGET_SYSTEM_PROP += $(DEVICE_PATH)/configs/properties/system.prop
 TARGET_SYSTEM_EXT_PROP += $(DEVICE_PATH)/configs/properties/system_ext.prop
 TARGET_VENDOR_PROP += $(DEVICE_PATH)/configs/properties/vendor.prop
 
-# Power
-TARGET_POWERHAL_MODE_EXT := $(DEVICE_PATH)/power/power-mode.cpp
-TARGET_TAP_TO_WAKE_NODE := "/proc/tp_gesture"
-
 # Recovery
 BOARD_EXCLUDE_KERNEL_FROM_RECOVERY_IMAGE := true
 TARGET_RECOVERY_FSTAB := $(DEVICE_PATH)/rootdir/etc/fstab.qcom
@@ -210,7 +212,7 @@ TARGET_USERIMAGES_USE_F2FS := true
 ENABLE_VENDOR_RIL_SERVICE := true
 
 # Security
-BOOT_SECURITY_PATCH := 2026-03-01
+BOOT_SECURITY_PATCH := 2026-05-01
 VENDOR_SECURITY_PATCH := $(BOOT_SECURITY_PATCH)
 
 # Sepolicy
@@ -261,8 +263,7 @@ BOARD_AVB_ODM_ADD_HASHTREE_FOOTER_ARGS += --hash_algorithm sha256
 DEVICE_FRAMEWORK_COMPATIBILITY_MATRIX_FILE := \
     $(DEVICE_PATH)/configs/vintf/framework_compatibility_matrix.xml \
     hardware/qcom-caf/common/vendor_framework_compatibility_matrix.xml \
-    hardware/xiaomi/vintf/xiaomi_framework_compatibility_matrix.xml \
-    vendor/lineage/config/device_framework_matrix.xml
+    hardware/xiaomi/vintf/xiaomi_framework_compatibility_matrix.xml
 DEVICE_FRAMEWORK_MANIFEST_FILE += $(DEVICE_PATH)/configs/vintf/framework_manifest.xml
 DEVICE_MANIFEST_FILE += \
     $(DEVICE_PATH)/configs/vintf/manifest.xml \
