@@ -39,7 +39,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public class VoIPFixService extends Service {
     private static final String TAG = "XiaomiVoIPFix";
-    private static final boolean DEBUG = false;
+    private static final boolean DEBUG = true; // Enable during ROM bringup
 
     private static final int NOTIFICATION_ID = 1;
     private static final String CHANNEL_ID = "voipfix_service";
