@@ -1,5 +1,5 @@
 # App
-ro.launcher.blur.appLaunch=0
+ro.launcher.blur.appLaunch=1
 
 # Audio
 af.fast_track_multiplier=1
