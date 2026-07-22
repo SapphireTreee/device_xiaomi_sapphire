@@ -153,8 +153,30 @@ class XiaomiSm6225UdfpsHandler : public UdfpsHandler {
         uint64_t elapsed = now - mFbDownTimeMs.load();
         
         if (elapsed < 250) {
-            LOG(INFO) << "UDFPS: Ignoring false framework UP (pasaron " << elapsed << "ms)";
-            return;
+            // FIX: Don't blindly drop this as a "false UP" - a genuine quick
+            // tap can also land inside this 250ms window, and previously we
+            // returned here without ever calling setFingerDown(false), which
+            // left the FOD illumination (local HBM) stuck on until some other
+            // event happened to clear it. Verify against the physical touch
+            // node before deciding to ignore it.
+            int fd = open(FOD_PRESS_STATUS_PATH, O_RDONLY);
+            bool stillPressed = false;
+            if (fd >= 0) {
+                stillPressed = readBool(fd);
+                close(fd);
+            } else {
+                LOG(ERROR) << "Failed to open " << FOD_PRESS_STATUS_PATH
+                           << " for UP verification: " << strerror(errno);
+            }
+
+            if (stillPressed) {
+                LOG(INFO) << "UDFPS: Ignoring false framework UP, finger still down ("
+                           << elapsed << "ms)";
+                return;
+            }
+
+            LOG(INFO) << "UDFPS: Fast UP (" << elapsed
+                       << "ms) but finger already released, honoring it";
         }
 
         setFingerDown(false);
