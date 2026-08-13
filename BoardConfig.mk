@@ -59,8 +59,6 @@ BOARD_SUPPORTS_SOUND_TRIGGER_HAL := true
 TARGET_USES_QCOM_MM_AUDIO := true
 TARGET_PROVIDES_AUDIO_HAL := true
 
-BOARD_SHIPPING_API_LEVEL := 33
-
 # Boot control
 $(call soong_config_set, ufsbsg, ufsframework, bsg)
 
