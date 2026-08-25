@@ -226,6 +226,12 @@ PRODUCT_COPY_FILES += \
 # Dolby
 $(call inherit-product, hardware/dolby/dolby.mk)
 
+# Dolby: use device-specific DAX default tuning
+PRODUCT_COPY_FILES := $(filter-out hardware/dolby/configs/dax/dax-default.xml:%,$(PRODUCT_COPY_FILES))
+
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/configs/audio/dax-default.xml:$(TARGET_COPY_OUT_VENDOR)/etc/dolby/dax-default.xml
+
 # DRM
 PRODUCT_PACKAGES += \
     android.hardware.drm@1.4.vendor \
