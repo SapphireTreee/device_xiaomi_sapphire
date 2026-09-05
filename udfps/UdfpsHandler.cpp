@@ -39,14 +39,6 @@
 #define FOD_STATUS_OFF 0
 #define FOD_STATUS_ON 1
 
-// ANTI-FALSO POSITIVO (PRESS): el nodo crudo fod_press_status se dispara
-// con cualquier toque en la zona del sensor, incluso un simple roce/deslizar
-// sin intencion real de desbloquear. Antes de confiar en un "pressed",
-// se re-muestrea varias veces seguidas para confirmar que el dedo se
-// mantiene quieto ahi, evitando que un roce encienda el HBM.
-#define RAW_PRESS_CONFIRM_SAMPLES 3
-#define RAW_PRESS_CONFIRM_INTERVAL_MS 20
-
 #define TOUCH_DEV_PATH "/dev/xiaomi-touch"
 #define TOUCH_MAGIC 'T'
 #define TOUCH_IOC_SET_CUR_VALUE _IO(TOUCH_MAGIC, SET_CUR_VALUE)
@@ -128,14 +120,10 @@ class XiaomiSm6225UdfpsHandler : public UdfpsHandler {
         // Start monitoring threads
         fodThread_ = std::thread([this]() { fodPressMonitorThread(); });
         dispThread_ = std::thread([this]() { displayEventMonitorThread(); });
-
-        // FIX: trước đây thread này chỉ chạy khi isFpcFod == true, nghĩa là
-        // với các vendor khac (vd goodix), Touch_Fod_Enable không bao giờ
-        // được bật khi tắt màn hình -> vùng cảm biến FOD trên touch IC
-        // không được giữ ở chế độ quét -> chạm vào lúc màn hình tắt hoàn
-        // toàn im lặng (không rung, không sáng). Chạy thread này cho mọi
-        // vendor, chỉ còn phụ thuộc toggle persist.vendor.sys.fp.screen_off.
-        screenThread_ = std::thread([this]() { screenStateMonitorThread(); });
+        
+        if (isFpcFod) {
+            screenThread_ = std::thread([this]() { screenStateMonitorThread(); });
+        }
 
         LOG(INFO) << "UDFPS handler initialized";
     }
@@ -163,28 +151,10 @@ class XiaomiSm6225UdfpsHandler : public UdfpsHandler {
         uint64_t now = std::chrono::duration_cast<std::chrono::milliseconds>(
             std::chrono::steady_clock::now().time_since_epoch()).count();
         uint64_t elapsed = now - mFbDownTimeMs.load();
-
+        
         if (elapsed < 250) {
-            // FIX: don't blindly discard this UP just because it came in
-            // fast - verify against the raw sensor node first. Blindly
-            // trusting elapsed time here is what let the HBM circle get
-            // stuck lit (e.g. after a quick failed attempt): a real UP
-            // was thrown away and setFingerDown(false) never ran.
-            int rawFd = open(FOD_PRESS_STATUS_PATH, O_RDONLY);
-            bool stillPressed = false;
-            if (rawFd >= 0) {
-                stillPressed = readBool(rawFd);
-                close(rawFd);
-            }
-
-            if (stillPressed) {
-                LOG(INFO) << "UDFPS: Ignoring false framework UP (" << elapsed
-                           << "ms), finger still detected on sensor";
-                return;
-            }
-
-            LOG(INFO) << "UDFPS: framework UP after " << elapsed
-                       << "ms, but sensor confirms finger is up - honoring it";
+            LOG(INFO) << "UDFPS: Ignoring false framework UP (pasaron " << elapsed << "ms)";
+            return;
         }
 
         setFingerDown(false);
@@ -224,35 +194,10 @@ class XiaomiSm6225UdfpsHandler : public UdfpsHandler {
         }
     }
 
-    void onError(int32_t error, int32_t vendorCode) {
-        LOG(INFO) << __func__ << " error: " << error << " vendorCode: " << vendorCode;
-
-        // FIX: onError() (e.g. ERROR_LOCKOUT after "too many attempts",
-        // ERROR_CANCELED, ERROR_TIMEOUT) ends the auth session on its own -
-        // the framework does not necessarily call onFingerUp() or cancel()
-        // afterwards, since as far as it's concerned the operation already
-        // finished (with an error). This handler had no onError() override
-        // at all, so it fell through to the base class' no-op default and
-        // nothing ever told the touch controller / Local HBM to turn back
-        // off. That's exactly the "stuck lit" white circle seen after a
-        // lockout: it stayed on through the whole PIN entry screen because
-        // no code path ever ran setFingerDown(false) for this case.
-        if (!enrolling.load()) {
-            setFodStatus(FOD_STATUS_OFF);
-        }
-        setFingerDown(false);
-    }
-
     void cancel() {
         LOG(INFO) << __func__;
         enrolling.store(false);
         setFodStatus(FOD_STATUS_OFF);
-        // FIX: cancel() solo apagaba la deteccion cruda del driver de touch,
-        // pero dejaba el Local HBM (brillo blanco) encendido si la sesion se
-        // cancelaba antes de un onFingerUp() real (p.ej. al forzar PIN tras
-        // demasiados intentos fallidos). Sin esto el circulo blanco se queda
-        // pegado en pantalla hasta que algo mas lo resetee.
-        setFingerDown(false);
     }
 
     void preEnroll() {
@@ -269,8 +214,6 @@ class XiaomiSm6225UdfpsHandler : public UdfpsHandler {
         LOG(INFO) << __func__;
         enrolling.store(false);
         setFodStatus(FOD_STATUS_OFF);
-        // FIX: mismo problema que en cancel(), asegurar que el HBM quede apagado.
-        setFingerDown(false);
     }
 
   private:
@@ -282,28 +225,6 @@ class XiaomiSm6225UdfpsHandler : public UdfpsHandler {
     bool isFpcFod;
     
     std::atomic<uint64_t> mFbDownTimeMs{0};
-    // FIX: independent timestamp for the raw hardware sensor thread.
-    // mFbDownTimeMs used to be shared between the real framework
-    // onFingerDown()/onFingerUp() path and fodPressMonitorThread().
-    // The raw thread stamped mFbDownTimeMs on every physical press
-    // pulse, even ones it went on to ignore (e.g. a stray touch on the
-    // "0" PIN key, which sits right over the sensor, with the screen
-    // already on). That reset the clock onFingerUp() uses to detect
-    // bounce, so a real finger-up right after such a stray touch was
-    // misread as "bounce" and setFingerDown(false) was skipped -
-    // leaving the HBM circle stuck on screen. Keeping the raw thread's
-    // own timing fully separate stops it from corrupting the
-    // framework-side debounce.
-    std::atomic<uint64_t> mRawDownTimeMs{0};
-
-    // WATCHDOG: lưới an toàn cuối cùng. Không thể đảm bảo framework/driver
-    // luôn gọi lại onFingerUp()/onError()/cancel() khi kết thúc phiên xác
-    // thực (vd: lockout sau 5 lần sai không phát sinh callback nào xuống
-    // handler này - xem log). Nếu trạng thái "pressed" bị treo quá lâu,
-    // chủ động ép tắt HBM/FOD để đèn vân tay không sáng vĩnh viễn.
-    std::atomic<bool> mFingerIsDown{false};
-    std::atomic<uint64_t> mLastDownTimeMs{0};
-    static constexpr uint64_t WATCHDOG_TIMEOUT_MS = 3000;
 
     // Mutexes for thread safety
     std::mutex touch_mutex_;
@@ -337,12 +258,10 @@ class XiaomiSm6225UdfpsHandler : public UdfpsHandler {
                 bool isScreenOffEnabled = android::base::GetBoolProperty("persist.vendor.sys.fp.screen_off", true);
 
                 if (currentState != lastState) {
-                    // FIX: bỏ điều kiện isFpcFod - áp dụng cho mọi vendor,
-                    // nếu không vùng FOD trên touch IC không được giữ quét
-                    // khi tắt màn hình (xem ghi chú ở init()).
-                    if (currentState == 0 && isScreenOffEnabled) {
+                    // If toggle is disabled, do not enable touch FOD
+                    if (currentState == 0 && isFpcFod && isScreenOffEnabled) {
                         setFodStatus(FOD_STATUS_ON);
-                    } else if (currentState == 1) {
+                    } else if (currentState == 1 && isFpcFod) {
                         if (!enrolling.load()) {
                             setFodStatus(FOD_STATUS_OFF);
                         }
@@ -388,53 +307,15 @@ class XiaomiSm6225UdfpsHandler : public UdfpsHandler {
         };
 
         while (isRunning.load()) {
-            // Trả lại 1000ms: bản 200ms trước đó bị nghi là nguyên nhân
-            // khiến vân tay không hoạt động khi tắt màn hình (theo xác nhận
-            // của người dùng: "trước khi chỉnh 3000ms xuống 200ms" vẫn hoạt
-            // động bình thường). Watchdog "hỏi thẳng raw node" bên dưới vẫn
-            // giữ nguyên, chỉ chạy thưa hơn - vẫn tắt đèn nhanh hơn nhiều so
-            // với bản chỉ chờ 3000ms mù trước đây.
-            int rc = poll(&fodPressStatusPoll, 1, 1000);
-
+            int rc = poll(&fodPressStatusPoll, 1, 1000);  // 1 second timeout
+            
             if (rc < 0) {
                 if (errno == EINTR) continue;
                 LOG(ERROR) << "Poll failed: " << strerror(errno);
                 break;
             }
 
-            if (rc == 0) {
-                if (mFingerIsDown.load()) {
-                    // Ưu tiên hỏi thẳng cảm biến vật lý: nếu ngón tay đã
-                    // thực sự rời cảm biến (raw = released) mà state vẫn
-                    // "pressed" (framework không gửi onFingerUp/onError/
-                    // cancel - đúng tình huống khoá vân tay sau 5 lần sai),
-                    // tắt ngay lập tức, không chờ đủ WATCHDOG_TIMEOUT_MS.
-                    if (!readBool(fd)) {
-                        LOG(WARNING) << "UDFPS: Watchdog - raw sensor already "
-                                        "released while state stuck, forcing off";
-                        setFingerDown(false);
-                        if (!enrolling.load()) {
-                            setFodStatus(FOD_STATUS_OFF);
-                        }
-                    } else {
-                        // Cảm biến vẫn báo có ngón tay nhưng đã quá lâu -
-                        // lưới an toàn cuối cùng, phòng trường hợp không tin
-                        // được node raw (vd: driver kẹt giá trị cũ).
-                        uint64_t now = std::chrono::duration_cast<std::chrono::milliseconds>(
-                            std::chrono::steady_clock::now().time_since_epoch()).count();
-                        if (now - mLastDownTimeMs.load() > WATCHDOG_TIMEOUT_MS) {
-                            LOG(WARNING) << "UDFPS: Watchdog - finger-down state stuck > "
-                                         << WATCHDOG_TIMEOUT_MS
-                                         << "ms despite raw still pressed, forcing off";
-                            setFingerDown(false);
-                            if (!enrolling.load()) {
-                                setFodStatus(FOD_STATUS_OFF);
-                            }
-                        }
-                    }
-                }
-                continue;
-            }
+            if (rc == 0) continue;
 
             // Check for expected events
             if (!(fodPressStatusPoll.revents & (POLLERR | POLLPRI))) {
@@ -449,39 +330,15 @@ class XiaomiSm6225UdfpsHandler : public UdfpsHandler {
             // Clear revents
             fodPressStatusPoll.revents = 0;
 
-            bool pressed = readBool(fd);
-
-            // FILTRO DE FALSOS PRESS HARDWARE (roce/deslizar sobre el sensor)
-            if (pressed) {
-                bool stillPressed = true;
-                for (int sample = 0; sample < RAW_PRESS_CONFIRM_SAMPLES; sample++) {
-                    std::this_thread::sleep_for(
-                        std::chrono::milliseconds(RAW_PRESS_CONFIRM_INTERVAL_MS));
-                    if (!readBool(fd)) {
-                        stillPressed = false;
-                        break;
-                    }
-                }
-                if (!stillPressed) {
-                    LOG(DEBUG) << "UDFPS: Ignorando toque breve (el dedo ya no esta), "
-                                  "probablemente un roce sobre el sensor";
-                    continue;
-                }
-                pressed = true;
-            }
-
+            const bool pressed = readBool(fd);
             uint64_t now = std::chrono::duration_cast<std::chrono::milliseconds>(
                 std::chrono::steady_clock::now().time_since_epoch()).count();
             
             // FILTRO DE FALSOS UP HARDWARE
-            // FIX: use the raw-thread-only timestamp here, not the one
-            // shared with onFingerDown()/onFingerUp(), so a raw pulse
-            // (forwarded or not) can never reset the framework's own
-            // bounce timer.
             if (pressed) {
-                mRawDownTimeMs.store(now);
+                mFbDownTimeMs.store(now);
             } else {
-                uint64_t elapsed = now - mRawDownTimeMs.load();
+                uint64_t elapsed = now - mFbDownTimeMs.load();
                 if (elapsed < 250) {
                     LOG(INFO) << "UDFPS: Hardware UP too fast (" << elapsed << "ms). Esperando 100ms...";
                     std::this_thread::sleep_for(std::chrono::milliseconds(100));
@@ -628,19 +485,6 @@ class XiaomiSm6225UdfpsHandler : public UdfpsHandler {
     }
 
     void setFingerDown(bool pressed) {
-        // DEBUG: single choke point for every HBM/finger-down change, so
-        // logcat can show exactly when and how many times this gets called
-        // with which value, no matter which callback triggered it.
-        LOG(INFO) << "UDFPS setFingerDown(" << (pressed ? "true" : "false") << ") called";
-
-        // WATCHDOG: ghi nhận trạng thái/mốc thời gian để vòng poll bên dưới
-        // có thể phát hiện nếu "pressed" bị treo quá lâu mà không ai tắt.
-        mFingerIsDown.store(pressed);
-        if (pressed) {
-            mLastDownTimeMs.store(std::chrono::duration_cast<std::chrono::milliseconds>(
-                std::chrono::steady_clock::now().time_since_epoch()).count());
-        }
-
         // Update touch controller
         {
             std::lock_guard<std::mutex> lock(touch_mutex_);
