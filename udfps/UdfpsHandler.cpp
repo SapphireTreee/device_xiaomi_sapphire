@@ -351,35 +351,8 @@ class XiaomiSm6225UdfpsHandler : public UdfpsHandler {
 
             // SECURITY: Only send touch event if Screen-Off is enabled or screen is on
             bool isScreenOffEnabled = android::base::GetBoolProperty("persist.vendor.sys.fp.screen_off", true);
-            bool screenOff = (getBrightness() == 0);
-            if (!isScreenOffEnabled && screenOff) {
+            if (!isScreenOffEnabled && getBrightness() == 0) {
                 LOG(INFO) << "UDFPS: Touch ignored, Screen-Off feature disabled.";
-                continue;
-            }
-
-            /*
-             * ANTI-FALSO POSITIVO: este hilo solo existe para permitir que el
-             * sensor despierte el dispositivo con la pantalla APAGADA (el nodo
-             * crudo fod_press_status se dispara por hardware con cualquier
-             * toque en esa zona fisica, sin importar que hay en pantalla).
-             *
-             * El desbloqueo con la pantalla ENCENDIDA ya funciona de forma
-             * fiable via onFingerDown()/onFingerUp(), que el framework solo
-             * invoca cuando el toque cae realmente sobre el icono/overlay de
-             * UDFPS. Reenviar aqui tambien los "pressed" con pantalla
-             * encendida es lo que causaba que se iluminara el HBM al pulsar
-             * el "0" del PIN, al bajar el centro de control o al colgar una
-             * llamada: esos toques caen sobre la misma zona fisica del
-             * sensor por pura coincidencia de layout, no porque el usuario
-             * quisiera usar la huella.
-             *
-             * Los "released" siempre se reenvian para no dejar el HBM/estado
-             * de dedo-abajo colgado si la pantalla cambia de estado a mitad
-             * de un gesto.
-             */
-            if (pressed && !screenOff) {
-                LOG(DEBUG) << "UDFPS: Toque crudo ignorado con pantalla encendida "
-                              "(no es un toque real sobre el icono de huella)";
                 continue;
             }
 
